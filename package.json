@@ -1,0 +1,38 @@
+{
+  "name": "react-movie-app",
+  "version": "1.0.0",
+  "description": "A movie organizer built with React & Node.js",
+  "main": "index.js",
+  "engines": {
+    "node": "17.0.1"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "build": "cd client && npm install && npm run build",
+    "devStart": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victordrumond/react-movie-app.git"
+  },
+  "keywords": [
+    "react",
+    "bootstrap",
+    "node",
+    "express",
+    "mongodb",
+    "mongoose",
+    "github",
+    "heroku"
+  ],
+  "author": "Victor Drumond",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/victordrumond/react-movie-app/issues"
+  },
+  "homepage": "https://github.com/victordrumond/react-movie-app#readme",
+  "dependencies": {
+    "express": "^4.17.2",
+    "nodemon": "^2.0.15"
+  }
+}
