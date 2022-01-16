@@ -1,0 +1,132 @@
+#home-container{
+    min-height: 100vh;
+    gap: 2rem;
+}
+
+#home {
+    width: 45%;
+    height: 400px;
+}
+
+#home-info-one h1 {
+    font-size: 36px;
+    margin: auto 2rem auto 0;
+}
+
+#home-info-one img {
+    margin: auto 0;
+    width: 60px;
+    height: 60px;
+}
+
+#home-info-one p {
+    margin: 1rem 0 2rem;
+    font-size: 22px;
+}
+
+#home-info-two {
+    margin-top: 4rem;
+}
+
+#home-info-two p {
+    margin: 0.5rem 0;
+    font-size: 18px;
+}
+
+#trending {
+    width: 50%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 2rem 0;
+    grid-gap: 0.5rem;
+}
+
+#trending img {
+    width: 120px;
+    height: 100%;
+}
+
+#trending img:hover {
+    transform: scale(1.05);
+    transition: all 0s;
+}
+
+@media screen and (max-width: 991px) {
+    #home-info-one h1 {
+        font-size: 30px;
+        margin: auto 1rem auto 0;
+    }
+
+    #home-info-one img {
+        width: 50px;
+        height: 50px;
+    }
+
+    #home-info-one p {
+        font-size: 20px;
+    }
+    
+    #home-info-two p {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #home-container {
+        flex-direction: column;
+    }
+
+    #home {
+        width: 100%;
+        height: auto;
+        margin-top: 2.5rem;
+    }
+
+    #home-info-one p {
+        margin: 0.5rem 0 1rem;
+        font-size: 18px;
+    }
+
+    #home-info-two {
+        margin-top: 2rem;
+    }
+
+    #home-info-two p {
+        margin: 0.25rem 0;
+        font-size: 15px;
+    }
+
+    #trending {
+        width: 100%;
+        height: auto;
+        margin: 0 0 2.5rem 0;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    #home-info-one h1 {
+        font-size: 26px;
+        margin: auto 1rem auto 0;
+    }
+
+    #home-info-one img {
+        width: 45px;
+        height: 45px;
+    }
+
+    #home-info-one p {
+        font-size: 16px;
+    }
+
+    #login-button {
+        font-size: 14px;
+    }
+
+    #home-info-two {
+        margin-top: 1rem;
+    }
+    
+    #home-info-two p {
+        font-size: 14px;
+    }
+}
