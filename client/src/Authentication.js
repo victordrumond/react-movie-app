@@ -23,42 +23,26 @@ function Authentication() {
                     data.results.forEach(item => setCovers(prev => [...prev, item]));
                 });
         };
-    }, [])
+    }, []);
 
     useEffect(() => {
-        if (window.innerWidth < 768) {
-            let active = covers.filter((item, i) => i >= 0 && i < 10);
-            setActiveCovers(active);
-        } else {
-            let active = covers.filter((item, i) => i >= 0 && i < 20);
-            setActiveCovers(active);
-        };
+        let n = window.innerWidth < 768 ? 10 : 20;
+        let active = covers.filter((item, i) => i >= 0 && i < n);
+        setActiveCovers(active);
     }, [covers]);
 
     useEffect(() => {
-        if (window.innerWidth < 768) {
-            const interval = setInterval(() => {
-                if (index !== 50) {
-                    setIndex(index + 10);
-                } else if (index === 50) {
-                    setIndex(0);
-                };
-                let active = covers.filter((item, i) => i >= index && i < index + 10);
-                setActiveCovers(active);
-            }, 10000);
-            return () => clearInterval(interval);
-        } else {
-            const interval = setInterval(() => {
-                if (index !== 40) {
-                    setIndex(index + 20);
-                } else if (index === 40) {
-                    setIndex(0);
-                };
-                let active = covers.filter((item, i) => i >= index && i < index + 20);
-                setActiveCovers(active);
-            }, 10000);
-            return () => clearInterval(interval);
-        };
+        let n = window.innerWidth < 768 ? 10 : 20;
+        const interval = setInterval(() => {
+            if (index !== 60 - n) {
+                setIndex(index + n);
+            } else if (index === 60 - n) {
+                setIndex(0);
+            };
+            let active = covers.filter((item, i) => i >= index && i < index + n);
+            setActiveCovers(active);
+        }, 10000);
+        return () => clearInterval(interval);
     });
 
     return (
