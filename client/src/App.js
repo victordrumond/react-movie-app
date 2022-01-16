@@ -1,25 +1,23 @@
-import { useEffect, useState } from "react";
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Container from 'react-bootstrap/Container';
+import Dashboard from './Dashboard';
+import Authentication from './Authentication';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function App() {
 
-  const [data, setData] = useState(null);
+  const { isLoading, isAuthenticated } = useAuth0();
 
-  useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-      </header>
-    </div>
-  );
-}
+  if (isLoading) {
+    return <div>Loading...</div>
+  } else {
+    return (
+      <Container id="test">
+        {isAuthenticated ? <Dashboard /> : <Authentication />}
+      </Container>
+    );
+  };
+};
 
 export default App;
