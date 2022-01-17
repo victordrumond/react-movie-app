@@ -33,6 +33,10 @@
   "homepage": "https://github.com/victordrumond/react-movie-app#readme",
   "dependencies": {
     "express": "^4.17.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "cors": "^2.8.5",
+    "dotenv": "^11.0.0",
+    "mongodb": "^4.3.0",
+    "mongoose": "^6.1.6"
   }
 }
