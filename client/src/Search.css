@@ -1,0 +1,49 @@
+#search-container {
+    margin: 1.5rem 0;
+    padding: 0;
+}
+
+#search-icon {
+    font-size: 24px;
+    margin: auto 0.5rem auto 0;
+}
+
+#input {
+    max-width: 550px;
+}
+
+#results {
+    position: fixed;
+    margin: 0.5rem 0 0 2rem;
+    width: 550px;
+    max-height: 555px;
+    z-index: 10;
+    overflow-y: auto;
+}
+
+#results-text p {
+    margin: 0;
+    margin-left: 1rem;
+}
+  
+#results img {
+    width: 50px;
+    height: 75px;
+}
+
+.results-icon {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.fav-icon:hover {
+    color: #DC3545;
+}
+
+.watch-icon:hover {
+    color: #0275D8;
+}
+
+.watched-icon:hover {
+    color: #28A745;
+}

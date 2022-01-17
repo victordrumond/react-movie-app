@@ -1,0 +1,25 @@
+#header-container {
+    margin: 2rem 0 1.5rem;
+}
+
+#header-container h2 {
+    margin: 1rem 0;
+}
+
+#header-container p {
+    margin: auto 0;
+}
+
+#logout {
+    width: 100px;
+    margin: 0.5rem 0 0 auto;
+}
+
+#footer-container {
+    margin: 2rem 0;
+    height: 5vh;
+}
+
+#footer-container p {
+    margin: auto 0;
+}

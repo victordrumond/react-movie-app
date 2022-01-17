@@ -13,7 +13,7 @@ function App() {
     return <div>Loading...</div>
   } else {
     return (
-      <Container id="test">
+      <Container>
         {isAuthenticated ? <Dashboard /> : <Authentication />}
       </Container>
     );
