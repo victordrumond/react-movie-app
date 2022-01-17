@@ -29,7 +29,29 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // GET request: Hello from server!
 app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server!" });
+  res.json({ message: "Hello from server!" });
+});
+
+// POST requests: add movie to database
+app.post('/addmovie', async (req, res) => {
+  const newMovie = {
+    "user": req.body.user,
+    "list": req.body.list,
+    "movie": req.body.movie
+  };
+  const findOnDatabase = await movieModel.find(newMovie);
+  if (!findOnDatabase) {
+    return res.sendStatus(404);
+  } else if (findOnDatabase.length === 0) {
+    const saveOnDatabase = await movieModel.create(newMovie);
+    if (saveOnDatabase) {
+      console.log("Movie saved on " + req.body.list + ".");
+    } else {
+      console.log("An error occurred. Please try again.");
+    };
+  } else {
+    console.log("Movie is already on " + req.body.list + ".");
+  };
 });
 
 // Every other GET request not handled before will return the React app
