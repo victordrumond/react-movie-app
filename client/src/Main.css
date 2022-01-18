@@ -1,0 +1,13 @@
+#main-container {
+    width: 100%;
+    min-height: 62.5vh;
+}
+
+#tabs-nav p {
+    margin: auto 0;
+    padding-right: 0.5rem;
+}
+
+.tabs-icon {
+    font-size: 22px;
+}

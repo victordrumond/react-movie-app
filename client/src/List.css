@@ -1,0 +1,92 @@
+#list-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 0;
+    padding: 0;
+    grid-gap: 1rem;
+}
+
+#movie-card {
+    height: 400px;
+}
+
+#movie-card:hover {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+#close-card {
+    position: absolute;
+    background-color: lightgrey;
+    right: 4px;
+    top: 4px;
+}
+
+.card-img {
+    width: 240px;
+    height: 135px;
+}
+
+#movie-title {
+    font-size: 18px;
+    margin: 0.25rem 0;
+}
+
+#movie-date, #movie-score {
+    font-size: 14px;
+    margin: 0.25rem 0;
+}
+
+#movie-description {
+    font-size: 14px;
+    margin: 0.5rem 0;
+}
+
+#footer-icons {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+}
+
+.footer-icon {
+    font-size: 24px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.footer-icon:hover {
+    transform: scale(1.2);
+    transition: all 0.3s;
+}
+
+#card-button {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    font-size: 14px;
+}
+
+.modal-img {
+    width: 250px;
+    height: 375px;
+}
+
+#movie-modal p {
+    margin: auto 0;
+    font-size: 15px;
+}
+
+#modal-info {
+    margin: 0 1rem;
+}
+
+#modal-stats p {
+    font-weight: bold;
+}
+
+#modal-description {
+    padding: 1rem 0;
+}
+
+#modal-notes p {
+    padding-bottom: 0.25rem;
+}

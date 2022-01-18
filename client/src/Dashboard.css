@@ -1,3 +1,7 @@
+#root, html {
+    background-color: #DEE2E6;
+}
+
 #header-container {
     margin: 2rem 0 1.5rem;
 }
@@ -11,13 +15,12 @@
 }
 
 #logout {
-    width: 100px;
+    width: 80px;
     margin: 0.5rem 0 0 auto;
 }
 
 #footer-container {
     margin: 2rem 0;
-    height: 5vh;
 }
 
 #footer-container p {

@@ -10,22 +10,22 @@ import { BiSearch } from 'react-icons/bi';
 
 const apiKey = process.env.REACT_APP_TMDB_API_KEY;
 
-function Search({ user }) {
+function Search({ user, passDataToDashboard }) {
 
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
     const [data, setData] = useState([]);
+    const [addMovie, setAddMovie] = useState(0);
     const searchRef = useRef(null);
     const resultsRef = useRef(null);
 
     useEffect(() => {
         if (searchFor) {
-            fetch("https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&query=" + searchFor)
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                    if (data.results) {
-                        setData(data.results);
+            axios.get("https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&query=" + searchFor)
+                .then(res => {
+                    console.log(res.data);
+                    if (res.data.results) {
+                        setData(res.data.results);
                     };
                 });
         } else {
@@ -45,7 +45,7 @@ function Search({ user }) {
         };
     }, [resultsRef]);
 
-    const addMovie = (item, list) => {
+    const handleAdd = (item, list) => {
         setSearchFor("");
         axios.post('/addmovie', {
             "user": user.email,
@@ -56,12 +56,14 @@ function Search({ user }) {
         }).catch(err => {
             console.log(err);
         });
+        setAddMovie(addMovie + 1);
+        passDataToDashboard(addMovie + 1);
     };
 
     return (
         <Container id="search-container">
             <div className="d-flex" ref={searchRef}>
-                <BiSearch id="search-icon"/>
+                <BiSearch id="search-icon" />
                 <Form.Control id="input" type="search"
                     placeholder={user.given_name
                         ? "What is your next story, " + user.given_name + "?"
@@ -79,7 +81,7 @@ function Search({ user }) {
                 {data.length !== 0 && searchFor !== "" && data.map(item => (
                     <ListGroup.Item key={item.id} className="result-item d-flex justify-content-between">
                         <div className="d-flex">
-                            <img src={"https://image.tmdb.org/t/p/w500" + item.poster_path} alt="" />
+                            <img src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null} alt="" />
                             <div id="results-text" className="d-flex flex-column">
                                 <p>{item.title}</p>
                                 <p className="text-muted">{item.original_title !== item.title ? item.original_title : null}</p>
@@ -88,15 +90,15 @@ function Search({ user }) {
                         </div>
                         <div className="d-flex flex-column justify-content-between">
                             <MdFavorite title="Add to Favorites"
-                                onClick={() => addMovie(item, "Favorites")}
+                                onClick={() => handleAdd(item, "Favorites")}
                                 className="results-icon fav-icon"
                             />
                             <IoMdEye title="Add to Watch List"
-                                onClick={() => addMovie(item, "Watch List")}
+                                onClick={() => handleAdd(item, "Watch List")}
                                 className="results-icon watch-icon"
                             />
                             <MdTaskAlt title="Add to Watched"
-                                onClick={() => addMovie(item, "Watched")}
+                                onClick={() => handleAdd(item, "Watched")}
                                 className="results-icon watched-icon"
                             />
                         </div>

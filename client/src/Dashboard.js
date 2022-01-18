@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import './Dashboard.css';
 import Search from './Search';
 import Main from './Main';
@@ -9,6 +9,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 function Dashboard() {
 
     const { user, logout } = useAuth0();
+    const [addMovie, setAddMovie] = useState(0);
+
+    const getDataFromSearch = useCallback(value => {
+        setAddMovie(value);
+    }, []);
 
     return (
         <Container>
@@ -21,8 +26,8 @@ function Dashboard() {
                     </Button>
                 </div>
             </div>
-            <Search user={user}/>
-            <Main />
+            <Search user={user} passDataToDashboard={getDataFromSearch} />
+            <Main user={user} addMovie={addMovie} />
             <div id="footer-container" className="d-flex align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
             </div>
