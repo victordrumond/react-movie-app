@@ -34,16 +34,16 @@ app.get("/api", (req, res) => {
 
 // POST requests: add movie to database
 app.post('/addmovie', async (req, res) => {
-  const newMovie = {
+  const movie = {
     "user": req.body.user,
     "list": req.body.list,
     "movie": req.body.movie
   };
-  const findOnDatabase = await movieModel.find(newMovie);
+  const findOnDatabase = await movieModel.find(movie);
   if (!findOnDatabase) {
     return res.sendStatus(404);
   } else if (findOnDatabase.length === 0) {
-    const saveOnDatabase = await movieModel.create(newMovie);
+    const saveOnDatabase = await movieModel.create(movie);
     if (saveOnDatabase) {
       console.log("Movie saved on " + req.body.list + ".");
     } else {
@@ -51,6 +51,39 @@ app.post('/addmovie', async (req, res) => {
     };
   } else {
     console.log("Movie is already on " + req.body.list + ".");
+  };
+});
+
+// POST requests: delete movie from database
+app.post('/deletemovie', async (req, res) => {
+  const movie = {
+    "user": req.body.user,
+    "list": req.body.list,
+    "movie": req.body.movie
+  };
+  const findOnDatabase = await movieModel.find(movie);
+  if (findOnDatabase) {
+    const deleteFromDatabase = await movieModel.deleteOne(movie);
+    if (deleteFromDatabase) {
+      console.log("Movie deleted from database.");
+    } else {
+      console.log("An error occurred. Please try again.");
+    };
+  } else {
+    console.log("Movie is not on database.");
+  };
+});
+
+// GET requests: receive movies from database
+app.get('/' + process.env.GET_KEY + '/:user/:list', async (req, res) => {
+  const findOnDatabase = await movieModel.find({
+    user: req.params.user,
+    list: req.params.list
+  });
+  if (!findOnDatabase) {
+    return res.sendStatus(404);
+  } else {
+    return res.json(findOnDatabase);
   };
 });
 
