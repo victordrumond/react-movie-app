@@ -2,17 +2,22 @@ class Helper {
 
     // Format movie title on card
     static formatTitle = (title) => {
-        if (title.length > 40) return title.substring(0, 40) + "...";
-        else return title;
+        if (window.innerWidth > 575) {
+            if (title.length > 40) return title.substring(0, 40) + "...";
+            else return title;
+        } else {
+            if (title.length > 50) return title.substring(0, 50) + "...";
+            else return title;
+        };
     };
 
     // Format movie description on card
     static formatDescription = (text, title) => {
         if (title.length > 25) {
-            if (text.length > 120) return text.substring(0, 120) + "...";
+            if (text.length > 50) return text.substring(0, 50) + "...";
             else return text;
         } else {
-            if (text.length > 140) return text.substring(0, 140) + "...";
+            if (text.length > 80) return text.substring(0, 80) + "...";
             else return text;
         };
     };

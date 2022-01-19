@@ -7,7 +7,7 @@
 }
 
 #movie-card {
-    height: 400px;
+    height: 350px;
 }
 
 #movie-card:hover {
@@ -89,4 +89,60 @@
 
 #modal-notes p {
     padding-bottom: 0.25rem;
+}
+
+@media screen and (max-width: 1199px) {
+    #list-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #list-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #list-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 575px) {
+    #list-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 0.5rem;
+    }
+
+    .card-body {
+        padding: 0.5rem !important;
+    }
+
+    #movie-card {
+        height: 100%;
+    }
+
+    #movie-title {
+        font-size: 14px;
+        margin-bottom: 2.25rem;
+    }
+
+    #footer-icons {
+        left: 0.5rem;
+        bottom: 0.5rem;
+    }
+
+    #card-button {
+        right: 0.5rem;
+        bottom: 0.5rem;
+        font-size: 12px;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+@media screen and (max-width: 399px) {
+    .card-img {
+        padding-bottom: 1.75rem !important;
+    }
 }

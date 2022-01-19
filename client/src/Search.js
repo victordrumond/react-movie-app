@@ -81,7 +81,11 @@ function Search({ user, passDataToDashboard }) {
                 {data.length !== 0 && searchFor !== "" && data.map(item => (
                     <ListGroup.Item key={item.id} className="result-item d-flex justify-content-between">
                         <div className="d-flex">
-                            <img src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null} alt="" />
+                            <img
+                                src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null}
+                                alt="search_movie_covers"
+                                className="img-fluid"
+                            />
                             <div id="results-text" className="d-flex flex-column">
                                 <p>{item.title}</p>
                                 <p className="text-muted">{item.original_title !== item.title ? item.original_title : null}</p>

@@ -6,3 +6,7 @@
     box-sizing: border-box;
     font-family: "Encode Sans";
 }
+
+#app-container {
+    padding: 0;
+}

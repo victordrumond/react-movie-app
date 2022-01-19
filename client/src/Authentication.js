@@ -52,7 +52,7 @@ function Authentication() {
                     <div className="d-flex">
                         <h1>React Movie App</h1>
                         <div className="d-flex">
-                            <img src={logo} alt="" className="img-fluid" />
+                            <img src={logo} alt="app_logo" className="img-fluid" />
                         </div>
                     </div>
                     <p>Organize your movie collection in a simple and easy way.</p>
@@ -68,8 +68,12 @@ function Authentication() {
             </div>
             <div id="trending">
                 {activeCovers.length > 0 && activeCovers.map(item => (
-                    <img key={item.poster_path} src={"https://image.tmdb.org/t/p/w500" + item.poster_path} alt=""
-                        className="img-fluid" />
+                    <img
+                        key={item.poster_path}
+                        src={"https://image.tmdb.org/t/p/w500" + item.poster_path}
+                        alt="popular_movie_covers"
+                        className="img-fluid"
+                    />
                 ))}
             </div>
         </Container>

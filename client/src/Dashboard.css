@@ -26,3 +26,34 @@
 #footer-container p {
     margin: auto 0;
 }
+
+@media screen and (max-width: 767px) {
+    #header-container h2 {
+        font-size: 25px;
+    }
+
+    #header-container p {
+        font-size: 14px;
+    }
+
+    #logout {
+        font-size: 14px;
+        width: 65px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    #dashboard-container {
+        padding: 0 1rem;
+    }
+
+    #header-container {
+        margin: 2rem 0 5.5rem;
+    }
+
+    #logout-wrapper {
+        position: fixed;
+        top: 100px;
+        right: 1rem;
+    }
+}

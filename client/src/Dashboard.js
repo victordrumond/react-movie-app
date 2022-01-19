@@ -16,10 +16,10 @@ function Dashboard() {
     }, []);
 
     return (
-        <Container>
+        <Container id="dashboard-container">
             <div id="header-container" className="d-flex justify-content-between">
                 <h2>React Movie App</h2>
-                <div className="d-flex flex-column">
+                <div id="logout-wrapper" className="d-flex flex-column">
                     <p>Welcome back, <b>{user.email}</b> :-)</p>
                     <Button id="logout" variant="primary" onClick={() => logout()}>
                         Logout

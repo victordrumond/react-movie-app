@@ -13,7 +13,7 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 const apiKey = process.env.REACT_APP_TMDB_API_KEY;
 const getKey = process.env.REACT_APP_GET_KEY;
 
-function List({ user, list, addMovie }) {
+function List({ user, list, addMovie, passDataToMain }) {
 
     const [data, setData] = useState([]);
     const [activeCard, setActiveCard] = useState(null);
@@ -29,13 +29,23 @@ function List({ user, list, addMovie }) {
 
     useEffect(() => {
         setTimeout(() => {
-            axios.get('/' + getKey + '/' + user + '/' + list).then(res => setData(res.data));
-        }, 350);     
+            axios
+                .get('/' + getKey + '/' + user + '/' + list)
+                .then(res => {
+                    setData(res.data);
+                    passDataToMain(res.data.length);
+                });
+        }, 350);
         // eslint-disable-next-line   
     }, [addMovie, deleteMovie]);
 
     useEffect(() => {
-        axios.get('/' + getKey + '/' + user + '/' + list).then(res => setData(res.data));
+        axios
+            .get('/' + getKey + '/' + user + '/' + list)
+            .then(res => {
+                setData(res.data);
+                passDataToMain(res.data.length);
+            });
         // eslint-disable-next-line   
     }, [user, list]);
 
@@ -83,32 +93,84 @@ function List({ user, list, addMovie }) {
 
     return (
         <Container id="list-container">
-            {data.length !== 0 && data.map((item, index) => (
+            {data.length !== 0 && data.slice(0).reverse().map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
-                    {activeCard === index
-                        ? <CloseButton
-                            id="close-card"
-                            onClick={() => {
-                                setDeleteData(item.movie);
-                                setDeleteMovie(true);
-                            }}
-                        />
-                        : null}
-                    <Card.Img
-                        variant="top"
-                        src={item.movie.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.movie.backdrop_path : null}
-                        className="card-img"
-                    />
-                    <Card.Body>
-                        <Card.Title id="movie-title" title={item.movie.original_title}>{Helper.formatTitle(item.movie.title)}</Card.Title>
-                        <div className="d-flex justify-content-between">
-                            <Card.Text id="movie-date">{Helper.formatDate(item.movie.release_date)}</Card.Text>
-                            <Card.Text id="movie-score">{Helper.formatScore(item.movie.vote_average)}</Card.Text>
-                        </div>
-                        <Card.Text id="movie-description">{Helper.formatDescription(item.movie.overview, item.movie.original_title)}</Card.Text>
+                    {window.innerWidth > 991 &&
                         <div>
                             {activeCard === index
-                                ? <div id="footer-icons">
+                                ? <CloseButton
+                                    id="close-card"
+                                    onClick={() => {
+                                        setDeleteData(item.movie);
+                                        setDeleteMovie(true);
+                                    }}
+                                />
+                                : null}
+                        </div>
+                    }
+                    {window.innerWidth < 992 && 
+                        <div>
+                            <CloseButton
+                                id="close-card"
+                                onClick={() => {
+                                    setDeleteData(item.movie);
+                                    setDeleteMovie(true);
+                                }}
+                            />
+                        </div>
+                    }
+                    {window.innerWidth < 400
+                        ? <Card.Img
+                            variant="top"
+                            src={item.movie.poster_path ? "https://image.tmdb.org/t/p/w500" + item.movie.poster_path : null}
+                            className="card-img img-fluid"
+                        />
+                        : <Card.Img
+                            variant="top"
+                            src={item.movie.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.movie.backdrop_path : null}
+                            className="card-img img-fluid"
+                        />
+                    }
+                    <Card.Body>
+                        {window.innerWidth > 400 &&
+                            <Card.Title id="movie-title" title={item.movie.original_title}>{Helper.formatTitle(item.movie.title)}</Card.Title>
+                        }
+                        {window.innerWidth > 575 &&
+                            <div className="d-flex justify-content-between">
+                                <Card.Text id="movie-date">{Helper.formatDate(item.movie.release_date)}</Card.Text>
+                                <Card.Text id="movie-score">{Helper.formatScore(item.movie.vote_average)}</Card.Text>
+                            </div>
+                        }
+                        {window.innerWidth > 575 &&
+                            <Card.Text id="movie-description">{Helper.formatDescription(item.movie.overview, item.movie.original_title)}</Card.Text>
+                        }
+                        {window.innerWidth > 991 &&
+                            <div>
+                                {activeCard === index
+                                    ? <div id="footer-icons">
+                                        {list !== "Favorites" &&
+                                            <MdFavorite title="Add to Favorites"
+                                                onClick={() => handleAdd(item, "Favorites")}
+                                                className="footer-icon fav-icon"
+                                            />}
+                                        {list !== "Watch List" &&
+                                            <IoMdEye title="Add to Watch List"
+                                                onClick={() => handleAdd(item, "Watch List")}
+                                                className="footer-icon watch-icon"
+                                            />}
+                                        {list !== "Watched" &&
+                                            <MdTaskAlt title="Add to Watched"
+                                                onClick={() => handleAdd(item, "Watched")}
+                                                className="footer-icon watched-icon"
+                                            />}
+                                    </div>
+                                    : null}
+                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item.movie)}>Info</Button>
+                            </div>
+                        }
+                        {window.innerWidth < 992 &&
+                            <div>
+                                <div id="footer-icons">
                                     {list !== "Favorites" &&
                                         <MdFavorite title="Add to Favorites"
                                             onClick={() => handleAdd(item, "Favorites")}
@@ -125,9 +187,9 @@ function List({ user, list, addMovie }) {
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                : null}
-                            <Button id="card-button" variant="primary" onClick={() => handleInfo(item.movie)}>Info</Button>
-                        </div>
+                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item.movie)}>Info</Button>
+                            </div>
+                        }
                     </Card.Body>
                 </Card>
             ))}
@@ -173,7 +235,7 @@ function List({ user, list, addMovie }) {
                         <div>
                             <img
                                 src={infoData.poster_path ? "https://image.tmdb.org/t/p/w500" + infoData.poster_path : null}
-                                alt=""
+                                alt="movie_cover"
                                 className="modal-img"
                             />
                         </div>

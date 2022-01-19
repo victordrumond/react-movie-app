@@ -1,6 +1,7 @@
 #main-container {
     width: 100%;
     min-height: 62.5vh;
+    padding: 0;
 }
 
 #tabs-nav p {
@@ -10,4 +11,36 @@
 
 .tabs-icon {
     font-size: 22px;
+}
+
+#list-stat {
+    margin: auto 0;
+    font-size: 15px;
+}
+
+@media screen and (max-width: 767px) {
+    #tabs-nav {
+        flex-direction: column;
+    }
+
+    #list-stat {
+        font-size: 14px;
+        text-align: end;
+        padding: 0.25rem 0 0.5rem;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    #tabs-nav {
+        flex-direction: row;
+    }
+
+    #list-stat {
+        font-size: 14px;
+        padding: 0;
+    }
+
+    .nav-link {
+        padding: 0.5rem 0.75rem !important;
+    }
 }
