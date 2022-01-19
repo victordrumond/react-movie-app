@@ -10,9 +10,6 @@ import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
-const apiKey = process.env.REACT_APP_TMDB_API_KEY;
-const getKey = process.env.REACT_APP_GET_KEY;
-
 function List({ user, list, addMovie, passDataToMain }) {
 
     const [data, setData] = useState([]);
@@ -29,39 +26,31 @@ function List({ user, list, addMovie, passDataToMain }) {
 
     useEffect(() => {
         setTimeout(() => {
-            axios
-                .get('/' + getKey + '/' + user + '/' + list)
-                .then(res => {
-                    setData(res.data);
-                    passDataToMain(res.data.length);
-                });
+            axios.get('http://localhost:3001/users/' + user + '/' + list).then(res => {
+                setData(res.data);
+                passDataToMain(res.data.length);
+            });
         }, 350);
         // eslint-disable-next-line   
     }, [addMovie, deleteMovie]);
 
     useEffect(() => {
-        axios
-            .get('/' + getKey + '/' + user + '/' + list)
-            .then(res => {
-                setData(res.data);
-                passDataToMain(res.data.length);
-            });
+        axios.get('http://localhost:3001/users/' + user + '/' + list).then(res => {
+            setData(res.data);
+            passDataToMain(res.data.length);
+        });
         // eslint-disable-next-line   
     }, [user, list]);
 
     const handleInfo = (item) => {
-        axios.get('https://api.themoviedb.org/3/movie/' + item.id + '?api_key=' + apiKey + '&append_to_response=credits,release_dates')
-            .then(res => {
-                setInfoData(res.data);
-                console.log(res.data);
-            });
-        setTimeout(() => {
+        axios.get('http://localhost:3001/movie/' + item.id).then(res => {
+            setInfoData(res.data);
             setShowInfoModal(true);
-        }, 150);
+        });
     };
 
     const handleAdd = (item, newList) => {
-        axios.post('/addmovie', {
+        axios.post('http://localhost:3001/addmovie', {
             "user": item.user,
             "list": newList,
             "movie": item.movie
@@ -77,7 +66,7 @@ function List({ user, list, addMovie, passDataToMain }) {
     };
 
     const handleDelete = (movie) => {
-        axios.post('/deletemovie', {
+        axios.post('http://localhost:3001/deletemovie', {
             "user": user,
             "list": list,
             "movie": movie
@@ -108,7 +97,7 @@ function List({ user, list, addMovie, passDataToMain }) {
                                 : null}
                         </div>
                     }
-                    {window.innerWidth < 992 && 
+                    {window.innerWidth < 992 &&
                         <div>
                             <CloseButton
                                 id="close-card"
@@ -238,12 +227,12 @@ function List({ user, list, addMovie, passDataToMain }) {
                                     src={infoData.poster_path ? "https://image.tmdb.org/t/p/w500" + infoData.poster_path : null}
                                     alt="movie_cover"
                                     className="modal-img"
-                                 />
+                                />
                                 : <img
                                     src={infoData.backdrop_path ? "https://image.tmdb.org/t/p/w500" + infoData.backdrop_path : null}
                                     alt="movie_cover"
                                     className="modal-img img-fluid"
-                                 />
+                                />
                             }
                         </div>
                         <div id="modal-info">

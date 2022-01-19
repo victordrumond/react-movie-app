@@ -4,8 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import logo from './logo.png';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-
-const apiKey = process.env.REACT_APP_TMDB_API_KEY;
+import axios from 'axios';
 
 function Authentication() {
 
@@ -15,14 +14,7 @@ function Authentication() {
     const [index, setIndex] = useState(window.innerWidth < 768 ? 10 : 20);
 
     useEffect(() => {
-        for (let i = 1; i <= 3; i++) {
-            fetch("https://api.themoviedb.org/3/movie/popular?api_key=" + apiKey + "&page=" + i)
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                    data.results.forEach(item => setCovers(prev => [...prev, item]));
-                });
-        };
+        axios.get("http://localhost:3001/authcovers").then(res => setCovers(res.data));
     }, []);
 
     useEffect(() => {

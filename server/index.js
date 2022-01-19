@@ -1,6 +1,7 @@
 // Require dependencies & basic configuration
 const path = require('path');
 const express = require("express");
+const axios = require("axios");
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -30,6 +31,35 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 // GET request: Hello from server!
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
+});
+
+// GET request: receive trending movies to display on home page
+app.get("/authcovers", async (req, res) => {
+  let covers = [];
+  for (let i = 1; i <= 3; i++) {
+    await axios
+      .get("https://api.themoviedb.org/3/movie/popular?api_key=" + process.env.TMDB_API_KEY + "&page=" + i)
+      .then(res => {
+        res.data.results.forEach(item => covers.push(item));
+      });
+  };
+  res.json(covers);
+});
+
+// GET request: receive data from specific movie
+app.get("/movie/:movieid", async (req, res) => {
+  await axios.get('https://api.themoviedb.org/3/movie/' + req.params.movieid + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates')
+    .then(response => {
+      res.json(response.data);
+    });
+});
+
+// GET request: receive data from search
+app.get("/search/:query", async (req, res) => {
+  await axios.get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + req.params.query)
+    .then(response => {
+      res.json(response.data);
+    });
 });
 
 // POST requests: add movie to database
@@ -75,7 +105,7 @@ app.post('/deletemovie', async (req, res) => {
 });
 
 // GET requests: receive movies from database
-app.get('/' + process.env.GET_KEY + '/:user/:list', async (req, res) => {
+app.get('/users/:user/:list', async (req, res) => {
   const findOnDatabase = await movieModel.find({
     user: req.params.user,
     list: req.params.list

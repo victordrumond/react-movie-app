@@ -8,8 +8,6 @@ import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 
-const apiKey = process.env.REACT_APP_TMDB_API_KEY;
-
 function Search({ user, passDataToDashboard }) {
 
     const [searchInput, setSearchInput] = useState("");
@@ -21,13 +19,11 @@ function Search({ user, passDataToDashboard }) {
 
     useEffect(() => {
         if (searchFor) {
-            axios.get("https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&query=" + searchFor)
-                .then(res => {
-                    console.log(res.data);
-                    if (res.data.results) {
-                        setData(res.data.results);
-                    };
-                });
+            axios.get("http://localhost:3001/search/" + searchFor).then(res => {
+                if (res.data.results) {
+                    setData(res.data.results);
+                };
+            });
         } else {
             setData([]);
         };
@@ -47,7 +43,7 @@ function Search({ user, passDataToDashboard }) {
 
     const handleAdd = (item, list) => {
         setSearchFor("");
-        axios.post('/addmovie', {
+        axios.post('http://localhost:3001/addmovie', {
             "user": user.email,
             "list": list,
             "movie": item
