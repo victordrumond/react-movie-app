@@ -26,7 +26,7 @@ function List({ user, list, addMovie, passDataToMain }) {
 
     useEffect(() => {
         setTimeout(() => {
-            axios.get('http://localhost:3001/users/' + user + '/' + list).then(res => {
+            axios.get('/users/' + user + '/' + list).then(res => {
                 setData(res.data);
                 passDataToMain(res.data.length);
             });
@@ -35,7 +35,7 @@ function List({ user, list, addMovie, passDataToMain }) {
     }, [addMovie, deleteMovie]);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/users/' + user + '/' + list).then(res => {
+        axios.get('/users/' + user + '/' + list).then(res => {
             setData(res.data);
             passDataToMain(res.data.length);
         });
@@ -43,14 +43,14 @@ function List({ user, list, addMovie, passDataToMain }) {
     }, [user, list]);
 
     const handleInfo = (item) => {
-        axios.get('http://localhost:3001/movie/' + item.id).then(res => {
+        axios.get('/movie/' + item.id).then(res => {
             setInfoData(res.data);
             setShowInfoModal(true);
         });
     };
 
     const handleAdd = (item, newList) => {
-        axios.post('http://localhost:3001/addmovie', {
+        axios.post('/addmovie', {
             "user": item.user,
             "list": newList,
             "movie": item.movie
@@ -66,7 +66,7 @@ function List({ user, list, addMovie, passDataToMain }) {
     };
 
     const handleDelete = (movie) => {
-        axios.post('http://localhost:3001/deletemovie', {
+        axios.post('/deletemovie', {
             "user": user,
             "list": list,
             "movie": movie

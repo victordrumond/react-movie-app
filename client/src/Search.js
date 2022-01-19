@@ -19,7 +19,7 @@ function Search({ user, passDataToDashboard }) {
 
     useEffect(() => {
         if (searchFor) {
-            axios.get("http://localhost:3001/search/" + searchFor).then(res => {
+            axios.get("/search/" + searchFor).then(res => {
                 if (res.data.results) {
                     setData(res.data.results);
                 };
@@ -43,7 +43,7 @@ function Search({ user, passDataToDashboard }) {
 
     const handleAdd = (item, list) => {
         setSearchFor("");
-        axios.post('http://localhost:3001/addmovie', {
+        axios.post('/addmovie', {
             "user": user.email,
             "list": list,
             "movie": item

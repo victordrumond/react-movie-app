@@ -14,7 +14,7 @@ function Authentication() {
     const [index, setIndex] = useState(window.innerWidth < 768 ? 10 : 20);
 
     useEffect(() => {
-        axios.get("http://localhost:3001/authcovers").then(res => setCovers(res.data));
+        axios.get("/authcovers").then(res => setCovers(res.data));
     }, []);
 
     useEffect(() => {
