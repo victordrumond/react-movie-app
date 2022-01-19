@@ -83,7 +83,7 @@ function Search({ user, passDataToDashboard }) {
                         <div className="d-flex">
                             <img
                                 src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null}
-                                alt="search_movie_covers"
+                                alt=""
                                 className="img-fluid"
                             />
                             <div id="results-text" className="d-flex flex-column">

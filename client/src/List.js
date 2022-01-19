@@ -231,13 +231,20 @@ function List({ user, list, addMovie, passDataToMain }) {
                     <Modal.Header closeButton>
                         <Modal.Title>{infoData.release_date ? infoData.title + " (" + Helper.formatDate(infoData.release_date) + ")" : infoData.title}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className="d-flex">
+                    <Modal.Body id="modal-body" className="d-flex">
                         <div>
-                            <img
-                                src={infoData.poster_path ? "https://image.tmdb.org/t/p/w500" + infoData.poster_path : null}
-                                alt="movie_cover"
-                                className="modal-img"
-                            />
+                            {window.innerWidth > 399
+                                ? <img
+                                    src={infoData.poster_path ? "https://image.tmdb.org/t/p/w500" + infoData.poster_path : null}
+                                    alt="movie_cover"
+                                    className="modal-img"
+                                 />
+                                : <img
+                                    src={infoData.backdrop_path ? "https://image.tmdb.org/t/p/w500" + infoData.backdrop_path : null}
+                                    alt="movie_cover"
+                                    className="modal-img img-fluid"
+                                 />
+                            }
                         </div>
                         <div id="modal-info">
                             <div id="modal-stats" className="d-flex justify-content-between">

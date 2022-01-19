@@ -101,6 +101,12 @@
     #list-container {
         grid-template-columns: repeat(3, 1fr);
     }
+
+    #modal-body img {
+        margin-bottom: 1.5rem;
+        width: 150px;
+        height: 225px;
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -139,10 +145,27 @@
         font-size: 12px;
         padding: 0.25rem 0.5rem;
     }
+
+    .modal-title {
+        font-size: 20px !important;
+    }
+
+    #modal-info p {
+        font-size: 14px;
+    }
 }
 
 @media screen and (max-width: 399px) {
     .card-img {
         padding-bottom: 1.75rem !important;
+    }
+
+    #modal-body {
+        flex-direction: column;
+    }
+
+    #modal-body img {
+        width: 100%;
+        height: auto;
     }
 }
