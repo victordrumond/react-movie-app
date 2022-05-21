@@ -33,6 +33,11 @@ class Helper {
         else return score.toString();
     };
 
+    // Normalize list name
+    static getNormalizedListName = (listName) => {
+        return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
+    };
+
 };
 
 export default Helper;
