@@ -9,17 +9,28 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 function Dashboard() {
 
+    let initUser = {
+        user: '',
+        lists: { favorites: [], watchList: [], watched: [] }
+    }
+
     const { user, logout } = useAuth0();
-    const [addMovie, setAddMovie] = useState(0);
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState(initUser);
 
     const updatedFromSearch = useCallback(updatedData => {
+        console.log('User data updated');
+        setUserData(updatedData);
+    }, []);
+
+    const updatedFromMain = useCallback(updatedData => {
+        console.log('User data updated');
         setUserData(updatedData);
     }, []);
 
     useEffect(() => {
         axios.get(`/users/${user.email}`).then((res) => {
                 if (res.data) {
+                    console.log('User data updated');
                     console.log(res)
                     setUserData(res.data);
                 } else {
@@ -47,7 +58,7 @@ function Dashboard() {
                 </div>
             </div>
             <Search user={user} updateDashboard={updatedFromSearch} />
-            {/* <Main user={user} addMovie={addMovie} userData={userData}/> */}
+            <Main user={user} userData={userData} updateDashboard={updatedFromMain}/>
             <div id="footer-container" className="d-flex align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
             </div>

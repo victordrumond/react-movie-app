@@ -13,7 +13,6 @@ function Search({ user, updateDashboard }) {
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
     const [data, setData] = useState([]);
-    const [addMovie, setAddMovie] = useState(0);
     const searchRef = useRef(null);
     const resultsRef = useRef(null);
 
@@ -46,13 +45,12 @@ function Search({ user, updateDashboard }) {
         axios
             .post('/addmovie', { user: user.email, list: list, movie: item })
             .then(res => {
-                console.log(res);
                 updateDashboard(res.data);
             })
             .catch(err => {
                 console.log(err);
-            });
-        setAddMovie(addMovie + 1);
+            })
+        ;
     };
 
     return (

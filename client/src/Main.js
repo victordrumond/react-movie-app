@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './Main.css';
+import Helper from "./Helper";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
@@ -7,14 +8,30 @@ import List from './List';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
-function Main({ user, addMovie }) {
+function Main({ user, userData, updateDashboard }) {
 
     const [activeList, setActiveList] = useState("Favorites");
-    const [length, setLength] = useState(0);
+    const [activeListLength, setActiveListLength] = useState(0);
 
-    const getLengthFromList = (value) => {
-        setLength(value);
-    };
+    const [favoritesData, setFavoritesData] = useState([]);
+    const [watchListData, setWatchListData] = useState([]);
+    const [watchedData, setWatchedData] = useState([]);
+
+    useEffect(() => {
+        setFavoritesData(userData.lists.favorites);
+        setWatchListData(userData.lists.watchList);
+        setWatchedData(userData.lists.watched);
+        getListLength(activeList);
+    }, [userData, activeList])
+
+    const updatedFromList = useCallback(updatedData => {
+        updateDashboard(updatedData);
+    }, []);
+
+    const getListLength = (list) => {
+        let listName = Helper.getNormalizedListName(list);
+        setActiveListLength(userData.lists[listName].length);
+    }
 
     return (
         <Container id="main-container">
@@ -22,7 +39,7 @@ function Main({ user, addMovie }) {
                 <Card.Header>
                     <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" className="d-flex justify-content-between">
                         {window.innerWidth > 575 && window.innerWidth < 768 &&
-                            <p id="list-stat">You have {length === 1 ? length + " movie" : length + " movies"} on {activeList}</p>
+                            <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"} on {activeList}</p>
                         }
                         <div className="d-flex">
                             <Nav.Item>
@@ -45,34 +62,34 @@ function Main({ user, addMovie }) {
                             </Nav.Item>
                         </div>
                         {window.innerWidth > 767 &&
-                            <p id="list-stat">You have {length === 1 ? length + " movie" : length + " movies"} on {activeList}</p>
+                            <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"} on {activeList}</p>
                         }
                         {window.innerWidth < 576 &&
-                            <p id="list-stat">{activeList} - {length === 1 ? length + " movie" : length + " movies"}</p>
+                            <p id="list-stat">{activeList} - {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"}</p>
                         }
                     </Nav>
                 </Card.Header>
                 <Card.Body id="content-body">
                     {activeList === "Favorites" &&
                         <List
-                            user={user.email}
+                            user={user}
                             list="Favorites"
-                            addMovie={addMovie}
-                            passDataToMain={getLengthFromList}
+                            listData={favoritesData}
+                            updateMain={updatedFromList}
                         />}
                     {activeList === "Watch List" &&
                         <List
-                            user={user.email}
+                            user={user}
                             list="Watch List"
-                            addMovie={addMovie}
-                            passDataToMain={getLengthFromList}
+                            listData={watchListData}
+                            updateMain={updatedFromList}
                         />}
                     {activeList === "Watched" &&
                         <List
-                            user={user.email}
+                            user={user}
                             list="Watched"
-                            addMovie={addMovie}
-                            passDataToMain={getLengthFromList}
+                            listData={watchedData}
+                            updateMain={updatedFromList}
                         />}
                 </Card.Body>
             </Card>

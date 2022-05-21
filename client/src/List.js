@@ -10,9 +10,8 @@ import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
-function List({ user, list, addMovie, passDataToMain }) {
+function List({ user, list, listData, updateMain }) {
 
-    const [data, setData] = useState([]);
     const [activeCard, setActiveCard] = useState(null);
 
     const [showInfoModal, setShowInfoModal] = useState(false);
@@ -24,24 +23,6 @@ function List({ user, list, addMovie, passDataToMain }) {
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    useEffect(() => {
-        setTimeout(() => {
-            axios.get('/users/' + user + '/' + list).then(res => {
-                setData(res.data);
-                passDataToMain(res.data.length);
-            });
-        }, 350);
-        // eslint-disable-next-line   
-    }, [addMovie, deleteMovie]);
-
-    useEffect(() => {
-        axios.get('/users/' + user + '/' + list).then(res => {
-            setData(res.data);
-            passDataToMain(res.data.length);
-        });
-        // eslint-disable-next-line   
-    }, [user, list]);
-
     const handleInfo = (item) => {
         axios.get('/movie/' + item.id).then(res => {
             setInfoData(res.data);
@@ -49,48 +30,47 @@ function List({ user, list, addMovie, passDataToMain }) {
         });
     };
 
-    const handleAdd = (item, newList) => {
-        axios.post('/addmovie', {
-            "user": item.user,
-            "list": newList,
-            "movie": item.movie
-        }).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        });
-        setTimeout(() => {
-            setAddMovieToList(true);
-            setAddData({ "movie": item.movie, "list": newList });
-        }, 350);
+    const handleAdd = (item, list) => {
+        let newList = Helper.getNormalizedListName(list);
+        axios
+            .post('/addmovie', { user: user.email, list: newList, movie: item })
+            .then(res => {
+                updateMain(res.data);
+                setAddData([item.title, list]);
+                setAddMovieToList(true);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        ;
     };
 
-    const handleDelete = (movie) => {
-        axios.post('/deletemovie', {
-            "user": user,
-            "list": list,
-            "movie": movie
-        }).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        });
-        setTimeout(() => {
-            setDeleteMovie(false);
-        }, 350);
-    };
+    // const handleDelete = (movie) => {
+    //     axios.post('/deletemovie', {
+    //         "user": user.email,
+    //         "list": list,
+    //         "movie": movie
+    //     }).then(res => {
+    //         console.log(res);
+    //     }).catch(err => {
+    //         console.log(err);
+    //     });
+    //     setTimeout(() => {
+    //         setDeleteMovie(false);
+    //     }, 350);
+    // };
 
     return (
         <Container id="list-container">
-            {data.length !== 0 && data.slice(0).reverse().map((item, index) => (
+            {listData.length !== 0 && listData.map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
-                    {window.innerWidth > 991 &&
+                    {/* {window.innerWidth > 991 &&
                         <div>
                             {activeCard === index
                                 ? <CloseButton
                                     id="close-card"
                                     onClick={() => {
-                                        setDeleteData(item.movie);
+                                        setDeleteData(item);
                                         setDeleteMovie(true);
                                     }}
                                 />
@@ -102,36 +82,36 @@ function List({ user, list, addMovie, passDataToMain }) {
                             <CloseButton
                                 id="close-card"
                                 onClick={() => {
-                                    setDeleteData(item.movie);
+                                    setDeleteData(item);
                                     setDeleteMovie(true);
                                 }}
                             />
                         </div>
-                    }
+                    } */}
                     {window.innerWidth < 400
                         ? <Card.Img
                             variant="top"
-                            src={item.movie.poster_path ? "https://image.tmdb.org/t/p/w500" + item.movie.poster_path : null}
+                            src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null}
                             className="card-img img-fluid"
                         />
                         : <Card.Img
                             variant="top"
-                            src={item.movie.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.movie.backdrop_path : null}
+                            src={item.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.backdrop_path : null}
                             className="card-img img-fluid"
                         />
                     }
                     <Card.Body>
                         {window.innerWidth > 400 &&
-                            <Card.Title id="movie-title" title={item.movie.original_title}>{Helper.formatTitle(item.movie.title)}</Card.Title>
+                            <Card.Title id="movie-title" title={item.original_title}>{Helper.formatTitle(item.title)}</Card.Title>
                         }
                         {window.innerWidth > 575 &&
                             <div className="d-flex justify-content-between">
-                                <Card.Text id="movie-date">{Helper.formatDate(item.movie.release_date)}</Card.Text>
-                                <Card.Text id="movie-score">{Helper.formatScore(item.movie.vote_average)}</Card.Text>
+                                <Card.Text id="movie-date">{Helper.formatDate(item.release_date)}</Card.Text>
+                                <Card.Text id="movie-score">{Helper.formatScore(item.vote_average)}</Card.Text>
                             </div>
                         }
                         {window.innerWidth > 575 &&
-                            <Card.Text id="movie-description">{Helper.formatDescription(item.movie.overview, item.movie.original_title)}</Card.Text>
+                            <Card.Text id="movie-description">{Helper.formatDescription(item.overview, item.original_title)}</Card.Text>
                         }
                         {window.innerWidth > 991 &&
                             <div>
@@ -154,7 +134,7 @@ function List({ user, list, addMovie, passDataToMain }) {
                                             />}
                                     </div>
                                     : null}
-                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item.movie)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button>
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -176,7 +156,7 @@ function List({ user, list, addMovie, passDataToMain }) {
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item.movie)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button>
                             </div>
                         }
                     </Card.Body>
@@ -189,7 +169,7 @@ function List({ user, list, addMovie, passDataToMain }) {
                         <Modal.Title>Add To New List</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {addData ? addData.movie.title : null} was added to {addData ? addData.list : null}.
+                        {addData ? addData[0] : null} was added to {addData ? addData[1] : null}.
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="success" onClick={() => setAddMovieToList(false)}>
@@ -199,7 +179,7 @@ function List({ user, list, addMovie, passDataToMain }) {
                 </Modal>
             )}
 
-            {deleteMovie && (
+            {/* {deleteMovie && (
                 <Modal id="delete-modal" show={deleteMovie} onHide={() => setDeleteMovie(false)} animation={true} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Delete From List</Modal.Title>
@@ -213,9 +193,9 @@ function List({ user, list, addMovie, passDataToMain }) {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-            )}
+            )} */}
 
-            {infoData && (
+            {/* {infoData && (
                 <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true}>
                     <Modal.Header closeButton>
                         <Modal.Title>{infoData.release_date ? infoData.title + " (" + Helper.formatDate(infoData.release_date) + ")" : infoData.title}</Modal.Title>
@@ -255,7 +235,7 @@ function List({ user, list, addMovie, passDataToMain }) {
                         </div>
                     </Modal.Body>
                 </Modal>
-            )}
+            )} */}
         </Container>
     );
 };
