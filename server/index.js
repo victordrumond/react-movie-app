@@ -73,37 +73,35 @@ app.post('/addmovie', async (req, res) => {
   if (!userData) {
     return res.sendStatus(404);
   } else {
-    let isMovieOnList = userData.lists[req.body.list].find(mov => mov.id === req.body.movie.id);
-    if (!isMovieOnList) {
+    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.id === req.body.movie.id);
+    if (isMovieOnList < 0) {
       userData.lists[req.body.list].push(req.body.movie);
       userData = await userData.save();
-      console.log(`Movie ${req.body.movie.title} added to ${req.body.list}`);
+      console.log(`${req.body.movie.title} added to ${req.body.list}`);
     } else {
-      console.log(`Movie ${req.body.movie.title} already on ${req.body.list}`);
+      console.log(`${req.body.movie.title} already on ${req.body.list}`);
     }
   }
   return res.json(userData);
 })
 
-// POST requests: delete movie from database
+// POST request: delete movie from database
 app.post('/deletemovie', async (req, res) => {
-  const movie = {
-    "user": req.body.user,
-    "list": req.body.list,
-    "movie": req.body.movie
-  };
-  const findOnDatabase = await movieModel.find(movie);
-  if (findOnDatabase) {
-    const deleteFromDatabase = await movieModel.deleteOne(movie);
-    if (deleteFromDatabase) {
-      console.log("Movie deleted from database.");
-    } else {
-      console.log("An error occurred. Please try again.");
-    };
+  let userData = await movieModel.findOne({ user: req.body.user });
+  if (!userData) {
+    return res.sendStatus(404);
   } else {
-    console.log("Movie is not on database.");
-  };
-});
+    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.id === req.body.movie.id);
+    if (isMovieOnList < 0) {
+      console.log(`${req.body.movie.title} is not on ${req.body.list}`);
+    } else {
+      userData.lists[req.body.list].splice(isMovieOnList, 1);
+      userData = await userData.save();
+      console.log(`${req.body.movie.title} deleted from ${req.body.list}`);
+    }
+  }
+  return res.json(userData);
+})
 
 // GET request: fetch user data from database
 app.get('/users/:user', async (req, res) => {
