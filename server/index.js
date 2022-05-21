@@ -60,33 +60,30 @@ app.get("/movie/:movieid", async (req, res) => {
 
 // GET request: receive data from search
 app.get("/search/:query", async (req, res) => {
-  await axios.get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + req.params.query)
+  await axios
+    .get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + req.params.query)
     .then(response => {
-      res.json(response.data);
+      return res.json(response.data);
     });
 });
 
-// POST requests: add movie to database
+// POST request: add movie to database
 app.post('/addmovie', async (req, res) => {
-  const movie = {
-    "user": req.body.user,
-    "list": req.body.list,
-    "movie": req.body.movie
-  };
-  const findOnDatabase = await movieModel.find(movie);
-  if (!findOnDatabase) {
+  let userData = await movieModel.findOne({ user: req.body.user });
+  if (!userData) {
     return res.sendStatus(404);
-  } else if (findOnDatabase.length === 0) {
-    const saveOnDatabase = await movieModel.create(movie);
-    if (saveOnDatabase) {
-      console.log("Movie saved on " + req.body.list + ".");
-    } else {
-      console.log("An error occurred. Please try again.");
-    };
   } else {
-    console.log("Movie is already on " + req.body.list + ".");
-  };
-});
+    let isMovieOnList = userData.lists[req.body.list].find(mov => mov.id === req.body.movie.id);
+    if (!isMovieOnList) {
+      userData.lists[req.body.list].push(req.body.movie);
+      userData = await userData.save();
+      console.log(`Movie ${req.body.movie.title} added to ${req.body.list}`);
+    } else {
+      console.log(`Movie ${req.body.movie.title} already on ${req.body.list}`);
+    }
+  }
+  return res.json(userData);
+})
 
 // POST requests: delete movie from database
 app.post('/deletemovie', async (req, res) => {
@@ -111,7 +108,6 @@ app.post('/deletemovie', async (req, res) => {
 // GET request: fetch user data from database
 app.get('/users/:user', async (req, res) => {
   const findUserOnDatabase = await movieModel.findOne({ user: req.params.user });
-  console.log(findUserOnDatabase);
   return res.json(findUserOnDatabase);
 })
 
@@ -122,7 +118,6 @@ app.post('/newuser/:user', async (req, res) => {
     lists: { favorites: [], watchList: [], watched: [] }
   }
   const saveNewUser = await movieModel.create(newUser);
-  console.log(saveNewUser);
   return res.json(saveNewUser);
 })
 
