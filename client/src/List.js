@@ -23,12 +23,12 @@ function List({ user, list, listData, updateMain }) {
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    const handleInfo = (item) => {
-        axios.get('/movie/' + item.id).then(res => {
-            setInfoData(res.data);
-            setShowInfoModal(true);
-        });
-    };
+    // const handleInfo = (item) => {
+    //     axios.get('/movie/' + item.id).then(res => {
+    //         setInfoData(res.data);
+    //         setShowInfoModal(true);
+    //     });
+    // };
 
     const handleAdd = (item, list) => {
         let newList = Helper.getNormalizedListName(list);
@@ -45,26 +45,26 @@ function List({ user, list, listData, updateMain }) {
         ;
     };
 
-    // const handleDelete = (movie) => {
-    //     axios.post('/deletemovie', {
-    //         "user": user.email,
-    //         "list": list,
-    //         "movie": movie
-    //     }).then(res => {
-    //         console.log(res);
-    //     }).catch(err => {
-    //         console.log(err);
-    //     });
-    //     setTimeout(() => {
-    //         setDeleteMovie(false);
-    //     }, 350);
-    // };
+    const handleDelete = (item) => {
+        let currentList = Helper.getNormalizedListName(list);
+        axios
+            .post('/deletemovie', { user: user.email, list: currentList, movie: item })
+            .then(res => {
+                updateMain(res.data);
+                setDeleteMovie(false);
+                setDeleteData(null);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        ;
+    };
 
     return (
         <Container id="list-container">
             {listData.length !== 0 && listData.map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
-                    {/* {window.innerWidth > 991 &&
+                    {window.innerWidth > 991 &&
                         <div>
                             {activeCard === index
                                 ? <CloseButton
@@ -87,7 +87,7 @@ function List({ user, list, listData, updateMain }) {
                                 }}
                             />
                         </div>
-                    } */}
+                    }
                     {window.innerWidth < 400
                         ? <Card.Img
                             variant="top"
@@ -134,7 +134,7 @@ function List({ user, list, listData, updateMain }) {
                                             />}
                                     </div>
                                     : null}
-                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button>
+                                {/* <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button> */}
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -156,7 +156,7 @@ function List({ user, list, listData, updateMain }) {
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button>
+                                {/* <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button> */}
                             </div>
                         }
                     </Card.Body>
@@ -179,13 +179,13 @@ function List({ user, list, listData, updateMain }) {
                 </Modal>
             )}
 
-            {/* {deleteMovie && (
+            {deleteMovie && (
                 <Modal id="delete-modal" show={deleteMovie} onHide={() => setDeleteMovie(false)} animation={true} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Delete From List</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Proceed to delete {deleteData.title} from {list}?
+                        Are you sure you want to delete {deleteData.title} from {list}?
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => handleDelete(deleteData)}>
@@ -193,7 +193,7 @@ function List({ user, list, listData, updateMain }) {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-            )} */}
+            )}
 
             {/* {infoData && (
                 <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true}>
