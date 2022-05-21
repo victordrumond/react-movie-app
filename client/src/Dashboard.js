@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './Dashboard.css';
+import axios from 'axios';
 import Search from './Search';
 import Main from './Main';
 import Container from 'react-bootstrap/Container';
@@ -10,10 +11,32 @@ function Dashboard() {
 
     const { user, logout } = useAuth0();
     const [addMovie, setAddMovie] = useState(0);
+    const [userData, setUserData] = useState([]);
 
     const getDataFromSearch = useCallback(value => {
         setAddMovie(value);
     }, []);
+
+    useEffect(() => {
+        axios
+            .get(`/users/${user.email}`)
+            .then((res) => {
+                if (res.data) {
+                    setUserData(res.data);
+                } else {
+                    axios
+                        .post(`/newuser/${user.email}`)
+                        .then((res) => {
+                            if (res.data) {
+                                setUserData(res.data);
+                            }
+                        })
+                    ;
+
+                }
+            })
+        ;
+    }, [user]);
 
     return (
         <Container id="dashboard-container">
@@ -26,8 +49,8 @@ function Dashboard() {
                     </Button>
                 </div>
             </div>
-            <Search user={user} passDataToDashboard={getDataFromSearch} />
-            <Main user={user} addMovie={addMovie} />
+            {/* <Search user={user} passDataToDashboard={getDataFromSearch} /> */}
+            {/* <Main user={user} addMovie={addMovie} /> */}
             <div id="footer-container" className="d-flex align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
             </div>

@@ -17,8 +17,11 @@ mongoose.connect(process.env.MONGO_URI, {
 // Set Mongoose schema & model
 const movieSchema = new mongoose.Schema({
   user: String,
-  list: String,
-  movie: Object
+  lists: {
+    favorites: Array,
+    watchList: Array,
+    watched: Array
+  }
 });
 const movieModel = mongoose.model("Movie", movieSchema);
 
@@ -33,7 +36,7 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-// GET request: receive trending movies to display on home page
+// GET request: fetch trending movies to display on home page
 app.get("/authcovers", async (req, res) => {
   let covers = [];
   for (let i = 1; i <= 3; i++) {
@@ -41,10 +44,11 @@ app.get("/authcovers", async (req, res) => {
       .get("https://api.themoviedb.org/3/movie/popular?api_key=" + process.env.TMDB_API_KEY + "&page=" + i)
       .then(res => {
         res.data.results.forEach(item => covers.push(item));
-      });
-  };
-  res.json(covers);
-});
+      })
+    ;
+  }
+  return res.json(covers);
+})
 
 // GET request: receive data from specific movie
 app.get("/movie/:movieid", async (req, res) => {
@@ -104,18 +108,23 @@ app.post('/deletemovie', async (req, res) => {
   };
 });
 
-// GET requests: receive movies from database
-app.get('/users/:user/:list', async (req, res) => {
-  const findOnDatabase = await movieModel.find({
+// GET request: fetch user data from database
+app.get('/users/:user', async (req, res) => {
+  const findUserOnDatabase = await movieModel.findOne({ user: req.params.user });
+  console.log(findUserOnDatabase);
+  return res.json(findUserOnDatabase);
+})
+
+// POST request: init user data on database
+app.post('/newuser/:user', async (req, res) => {
+  let newUser = {
     user: req.params.user,
-    list: req.params.list
-  });
-  if (!findOnDatabase) {
-    return res.sendStatus(404);
-  } else {
-    return res.json(findOnDatabase);
-  };
-});
+    lists: { favorites: [], watchList: [], watched: [] }
+  }
+  const saveNewUser = await movieModel.create(newUser);
+  console.log(saveNewUser);
+  return res.json(saveNewUser);
+})
 
 // Every other GET request not handled before will return the React app
 app.get('*', (req, res) => {
