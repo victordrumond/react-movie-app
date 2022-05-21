@@ -11,28 +11,25 @@ function Dashboard() {
 
     const { user, logout } = useAuth0();
     const [addMovie, setAddMovie] = useState(0);
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState({});
 
-    const getDataFromSearch = useCallback(value => {
-        setAddMovie(value);
+    const updatedFromSearch = useCallback(updatedData => {
+        setUserData(updatedData);
     }, []);
 
     useEffect(() => {
-        axios
-            .get(`/users/${user.email}`)
-            .then((res) => {
+        axios.get(`/users/${user.email}`).then((res) => {
                 if (res.data) {
+                    console.log(res)
                     setUserData(res.data);
                 } else {
-                    axios
-                        .post(`/newuser/${user.email}`)
-                        .then((res) => {
+                    axios.post(`/newuser/${user.email}`).then((res) => {
                             if (res.data) {
+                                console.log(res)
                                 setUserData(res.data);
                             }
                         })
                     ;
-
                 }
             })
         ;
@@ -43,14 +40,14 @@ function Dashboard() {
             <div id="header-container" className="d-flex justify-content-between">
                 <h2>React Movie App</h2>
                 <div id="logout-wrapper" className="d-flex flex-column">
-                    <p>Welcome back, <b>{user.email}</b> :-)</p>
+                    <p>Welcome back, <b>{user.email}</b>!</p>
                     <Button id="logout" variant="primary" onClick={() => logout()}>
                         Logout
                     </Button>
                 </div>
             </div>
-            {/* <Search user={user} passDataToDashboard={getDataFromSearch} /> */}
-            {/* <Main user={user} addMovie={addMovie} /> */}
+            <Search user={user} updateDashboard={updatedFromSearch} />
+            {/* <Main user={user} addMovie={addMovie} userData={userData}/> */}
             <div id="footer-container" className="d-flex align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
             </div>

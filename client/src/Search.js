@@ -8,7 +8,7 @@ import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 
-function Search({ user, passDataToDashboard }) {
+function Search({ user, updateDashboard }) {
 
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
@@ -43,17 +43,16 @@ function Search({ user, passDataToDashboard }) {
 
     const handleAdd = (item, list) => {
         setSearchFor("");
-        axios.post('/addmovie', {
-            "user": user.email,
-            "list": list,
-            "movie": item
-        }).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        });
+        axios
+            .post('/addmovie', { user: user.email, list: list, movie: item })
+            .then(res => {
+                console.log(res);
+                updateDashboard(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            });
         setAddMovie(addMovie + 1);
-        passDataToDashboard(addMovie + 1);
     };
 
     return (
@@ -61,10 +60,7 @@ function Search({ user, passDataToDashboard }) {
             <div className="d-flex" ref={searchRef}>
                 <BiSearch id="search-icon" />
                 <Form.Control id="input" type="search"
-                    placeholder={user.given_name
-                        ? "What is your next story, " + user.given_name + "?"
-                        : "What is your next story, " + user.nickname + "?"
-                    }
+                    placeholder={`What's your next story, ${user.given_name ? user.given_name : user.nickname}?`}
                     value={searchInput}
                     onChange={e => {
                         setSearchInput(e.target.value);
@@ -90,15 +86,15 @@ function Search({ user, passDataToDashboard }) {
                         </div>
                         <div className="d-flex flex-column justify-content-between">
                             <MdFavorite title="Add to Favorites"
-                                onClick={() => handleAdd(item, "Favorites")}
+                                onClick={() => handleAdd(item, "favorites")}
                                 className="results-icon fav-icon"
                             />
                             <IoMdEye title="Add to Watch List"
-                                onClick={() => handleAdd(item, "Watch List")}
+                                onClick={() => handleAdd(item, "watchList")}
                                 className="results-icon watch-icon"
                             />
                             <MdTaskAlt title="Add to Watched"
-                                onClick={() => handleAdd(item, "Watched")}
+                                onClick={() => handleAdd(item, "watched")}
                                 className="results-icon watched-icon"
                             />
                         </div>
