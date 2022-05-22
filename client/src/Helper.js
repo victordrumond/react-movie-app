@@ -9,7 +9,7 @@ class Helper {
             if (title.length > 50) return title.substring(0, 50) + "...";
             else return title;
         };
-    };
+    }
 
     // Format movie description on card
     static formatDescription = (text, title) => {
@@ -20,43 +20,24 @@ class Helper {
             if (text.length > 80) return text.substring(0, 80) + "...";
             else return text;
         };
-    };
+    }
 
     // Format movie release date
     static formatDate = (date) => {
         return date.substring(0, 4);
-    };
+    }
 
     // Format movie score
     static formatScore = (score) => {
         if (score.toString().length === 1) return score.toString() + ".0";
         else return score.toString();
-    };
+    }
 
     // Normalize list name
     static getNormalizedListName = (listName) => {
         return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
-    };
+    }
 
-    // Apply filtering to data
-    static sortData = (data, config) => {
-        if (config.filtering === 'title') {
-            return data.sort((a, b) => a.data.title.localeCompare(b.data.title));
-        }
-        if (config.filtering === 'highest_score') {
-            return data.sort((a, b) => b.data.vote_average - a.data.vote_average);
-        }
-        if (config.filtering === 'lowest_score') {
-            return data.sort((a, b) => a.data.vote_average - b.data.vote_average);
-        }
-        if (config.filtering === 'last_added') {
-            return data.sort((a, b) => b.timestamp - a.timestamp);
-        }
-        if (config.filtering === 'first_added') {
-            return data.sort((a, b) => a.timestamp - b.timestamp);
-        }
-    };
-
-};
+}
 
 export default Helper;

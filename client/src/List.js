@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './List.css';
 import axios from 'axios';
 import Helper from "./Helper";
+import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import CloseButton from 'react-bootstrap/CloseButton';
@@ -62,7 +63,7 @@ function List({ user, list, listData, listConfig, updateMain }) {
 
     return (
         <Container id="list-container">
-            {listData.length !== 0 && Helper.sortData(listData, listConfig).map((item, index) => (
+            {listData.length !== 0 && ListConfig.sortData(listData, listConfig).map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
                     {window.innerWidth > 991 &&
                         <div>
