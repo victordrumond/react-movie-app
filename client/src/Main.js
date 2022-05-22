@@ -1,12 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import './Main.css';
-import axios from 'axios';
 import Helper from "./Helper";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import ListSettings from './ListSettings';
 import List from './List';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
@@ -31,30 +29,16 @@ function Main({ user, userData, updateDashboard }) {
         setFavoritesConfig(userData.config.lists.favorites);
         setWatchListConfig(userData.config.lists.watchList);
         setWatchedConfig(userData.config.lists.watched);
-        getListLength(activeList);
+        setActiveListLength(userData.lists[Helper.getNormalizedListName(activeList)].length);
     }, [userData, activeList])
 
     const updatedFromList = useCallback(updatedData => {
         updateDashboard(updatedData);
-    }, []);
+    }, [updateDashboard]);
 
-    const getListLength = (list) => {
-        let listName = Helper.getNormalizedListName(list);
-        setActiveListLength(userData.lists[listName].length);
-    };
-
-    const handleUpdateFilter = (newFilter) => {
-        let listName = Helper.getNormalizedListName(activeList);
-        axios
-            .post('/updatefilter', { user: user.email, list: listName, value: newFilter })
-            .then(res => {
-                updateDashboard(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        ;
-    };
+    const updatedFromListSettings = useCallback(updatedData => {
+        updateDashboard(updatedData);
+    }, [updateDashboard]);
 
     return (
         <Container id="main-container">
@@ -94,29 +78,11 @@ function Main({ user, userData, updateDashboard }) {
                 </Card.Header>
                 <Card.Body id="content-body">
 
-
-                    {/* TESTING FEATURE */}
-                    <Navbar expand="lg">
-                        <Container>
-                            <Navbar.Toggle aria-controls="navbar-dark-example" />
-                            <Navbar.Collapse id="navbar-dark-example">
-                                <Nav>
-                                    <NavDropdown
-                                        id="nav-dropdown-dark-example"
-                                        title="Filter"
-                                    >
-                                        <NavDropdown.Item onClick={() => handleUpdateFilter('title')}>Title</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={() => handleUpdateFilter('highest_score')}>Highest rated</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={() => handleUpdateFilter('lowest_score')}>Lowest rated</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={() => handleUpdateFilter('last_added')}>Last added</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={() => handleUpdateFilter('first_added')}>First added</NavDropdown.Item>
-                                    </NavDropdown>
-                                </Nav>
-                            </Navbar.Collapse>
-                        </Container>
-                    </Navbar>
-                    {/* TESTING FEATURE */}
-
+                    <ListSettings
+                        user={user}
+                        activeList={activeList}
+                        updateMain={updatedFromListSettings}
+                    />
 
                     {activeList === "Favorites" &&
                         <List

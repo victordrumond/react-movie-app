@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './List.css';
 import axios from 'axios';
 import Helper from "./Helper";
