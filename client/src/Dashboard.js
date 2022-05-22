@@ -31,12 +31,11 @@ function Dashboard() {
         axios.get(`/users/${user.email}`).then((res) => {
                 if (res.data) {
                     console.log('User data updated');
-                    console.log(res)
                     setUserData(res.data);
                 } else {
                     axios.post(`/newuser/${user.email}`).then((res) => {
                             if (res.data) {
-                                console.log(res)
+                                console.log('User data updated');
                                 setUserData(res.data);
                             }
                         })

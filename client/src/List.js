@@ -70,7 +70,7 @@ function List({ user, list, listData, updateMain }) {
                                 ? <CloseButton
                                     id="close-card"
                                     onClick={() => {
-                                        setDeleteData(item);
+                                        setDeleteData(item.data);
                                         setDeleteMovie(true);
                                     }}
                                 />
@@ -82,7 +82,7 @@ function List({ user, list, listData, updateMain }) {
                             <CloseButton
                                 id="close-card"
                                 onClick={() => {
-                                    setDeleteData(item);
+                                    setDeleteData(item.data);
                                     setDeleteMovie(true);
                                 }}
                             />
@@ -91,27 +91,27 @@ function List({ user, list, listData, updateMain }) {
                     {window.innerWidth < 400
                         ? <Card.Img
                             variant="top"
-                            src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null}
+                            src={item.data.poster_path ? "https://image.tmdb.org/t/p/w500" + item.data.poster_path : null}
                             className="card-img img-fluid"
                         />
                         : <Card.Img
                             variant="top"
-                            src={item.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.backdrop_path : null}
+                            src={item.data.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.data.backdrop_path : null}
                             className="card-img img-fluid"
                         />
                     }
                     <Card.Body>
                         {window.innerWidth > 400 &&
-                            <Card.Title id="movie-title" title={item.original_title}>{Helper.formatTitle(item.title)}</Card.Title>
+                            <Card.Title id="movie-title" title={item.data.original_title}>{Helper.formatTitle(item.data.title)}</Card.Title>
                         }
                         {window.innerWidth > 575 &&
                             <div className="d-flex justify-content-between">
-                                <Card.Text id="movie-date">{Helper.formatDate(item.release_date)}</Card.Text>
-                                <Card.Text id="movie-score">{Helper.formatScore(item.vote_average)}</Card.Text>
+                                <Card.Text id="movie-date">{Helper.formatDate(item.data.release_date)}</Card.Text>
+                                <Card.Text id="movie-score">{Helper.formatScore(item.data.vote_average)}</Card.Text>
                             </div>
                         }
                         {window.innerWidth > 575 &&
-                            <Card.Text id="movie-description">{Helper.formatDescription(item.overview, item.original_title)}</Card.Text>
+                            <Card.Text id="movie-description">{Helper.formatDescription(item.data.overview, item.data.original_title)}</Card.Text>
                         }
                         {window.innerWidth > 991 &&
                             <div>
@@ -119,22 +119,22 @@ function List({ user, list, listData, updateMain }) {
                                     ? <div id="footer-icons">
                                         {list !== "Favorites" &&
                                             <MdFavorite title="Add to Favorites"
-                                                onClick={() => handleAdd(item, "Favorites")}
+                                                onClick={() => handleAdd(item.data, "Favorites")}
                                                 className="footer-icon fav-icon"
                                             />}
                                         {list !== "Watch List" &&
                                             <IoMdEye title="Add to Watch List"
-                                                onClick={() => handleAdd(item, "Watch List")}
+                                                onClick={() => handleAdd(item.data, "Watch List")}
                                                 className="footer-icon watch-icon"
                                             />}
                                         {list !== "Watched" &&
                                             <MdTaskAlt title="Add to Watched"
-                                                onClick={() => handleAdd(item, "Watched")}
+                                                onClick={() => handleAdd(item.data, "Watched")}
                                                 className="footer-icon watched-icon"
                                             />}
                                     </div>
                                     : null}
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.id)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.data.id)}>Info</Button>
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -142,21 +142,21 @@ function List({ user, list, listData, updateMain }) {
                                 <div id="footer-icons">
                                     {list !== "Favorites" &&
                                         <MdFavorite title="Add to Favorites"
-                                            onClick={() => handleAdd(item, "Favorites")}
+                                            onClick={() => handleAdd(item.data, "Favorites")}
                                             className="footer-icon fav-icon"
                                         />}
                                     {list !== "Watch List" &&
                                         <IoMdEye title="Add to Watch List"
-                                            onClick={() => handleAdd(item, "Watch List")}
+                                            onClick={() => handleAdd(item.data, "Watch List")}
                                             className="footer-icon watch-icon"
                                         />}
                                     {list !== "Watched" &&
                                         <MdTaskAlt title="Add to Watched"
-                                            onClick={() => handleAdd(item, "Watched")}
+                                            onClick={() => handleAdd(item.data, "Watched")}
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.id)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.data.id)}>Info</Button>
                             </div>
                         }
                     </Card.Body>

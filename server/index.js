@@ -18,9 +18,9 @@ mongoose.connect(process.env.MONGO_URI, {
 const movieSchema = new mongoose.Schema({
   user: String,
   lists: {
-    favorites: Array,
-    watchList: Array,
-    watched: Array
+    favorites: [{ timestamp: Number, data: Object }],
+    watchList: [{ timestamp: Number, data: Object }],
+    watched: [{ timestamp: Number, data: Object }]
   }
 });
 const movieModel = mongoose.model("Movie", movieSchema);
@@ -73,9 +73,13 @@ app.post('/addmovie', async (req, res) => {
   if (!userData) {
     return res.sendStatus(404);
   } else {
-    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.id === req.body.movie.id);
+    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
     if (isMovieOnList < 0) {
-      userData.lists[req.body.list].push(req.body.movie);
+      let newMovie = {
+        timestamp: Date.now(),
+        data: req.body.movie
+      }
+      userData.lists[req.body.list].push(newMovie);
       userData = await userData.save();
       console.log(`${req.body.movie.title} added to ${req.body.list}`);
     } else {
@@ -91,7 +95,7 @@ app.post('/deletemovie', async (req, res) => {
   if (!userData) {
     return res.sendStatus(404);
   } else {
-    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.id === req.body.movie.id);
+    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
     if (isMovieOnList < 0) {
       console.log(`${req.body.movie.title} is not on ${req.body.list}`);
     } else {
