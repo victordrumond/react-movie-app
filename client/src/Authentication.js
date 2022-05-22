@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './Authentication.css';
+import Requests from "./Requests";
 import { useAuth0 } from '@auth0/auth0-react';
 import logo from './logo.png';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import axios from 'axios';
 
 function Authentication() {
 
@@ -14,7 +14,7 @@ function Authentication() {
     const [index, setIndex] = useState(window.innerWidth < 768 ? 10 : 20);
 
     useEffect(() => {
-        axios.get("/authcovers").then(res => setCovers(res.data));
+        Requests.getCovers().then(res => setCovers(res.data));
     }, []);
 
     useEffect(() => {

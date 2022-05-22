@@ -1,25 +1,21 @@
 import React from 'react';
 import './List.css';
-import axios from 'axios';
 import Helper from "./Helper";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
+import Requests from './Requests';
 
 function ListSettings({ user, activeList, updateMain }) {
 
     const handleUpdateFilter = (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);
-        axios
-            .post('/updatefilter', { user: user.email, list: listName, value: newFilter })
-            .then(res => {
-                updateMain(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        ;
+        Requests.setFilter(user.email, listName, newFilter).then(res => {
+            updateMain(res.data);
+        }).catch(err => {
+            console.log(err);
+        });
     };
 
     return (

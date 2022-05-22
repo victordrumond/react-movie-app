@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import './Dashboard.css';
-import axios from 'axios';
 import Search from './Search';
 import Main from './Main';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { useAuth0 } from '@auth0/auth0-react';
+import Requests from './Requests';
 
 function Dashboard() {
 
@@ -35,21 +35,19 @@ function Dashboard() {
     }, []);
 
     useEffect(() => {
-        axios.get(`/users/${user.email}`).then((res) => {
-                if (res.data) {
-                    console.log('User data updated');
-                    setUserData(res.data);
-                } else {
-                    axios.post(`/newuser/${user.email}`).then((res) => {
-                            if (res.data) {
-                                console.log('User data updated');
-                                setUserData(res.data);
-                            }
-                        })
-                    ;
-                }
-            })
-        ;
+        Requests.getUser(user.email).then((res) => {
+            if (res.data) {
+                console.log('User data updated');
+                setUserData(res.data);
+            } else {
+                Requests.setUser(user.email).then((res) => {
+                    if (res.data) {
+                        console.log('User data updated');
+                        setUserData(res.data);
+                    }
+                })
+            }
+        })
     }, [user]);
 
     return (

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Search.css';
-import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
+import Requests from './Requests';
 
 function Search({ user, updateDashboard }) {
 
@@ -18,7 +18,7 @@ function Search({ user, updateDashboard }) {
 
     useEffect(() => {
         if (searchFor) {
-            axios.get("/search/" + searchFor).then(res => {
+            Requests.searchFor(searchFor).then(res => {
                 if (res.data.results) {
                     setData(res.data.results);
                 };
@@ -42,15 +42,11 @@ function Search({ user, updateDashboard }) {
 
     const handleAdd = (item, list) => {
         setSearchFor("");
-        axios
-            .post('/addmovie', { user: user.email, list: list, movie: item })
-            .then(res => {
-                updateDashboard(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        ;
+        Requests.addMovie(user.email, list, item).then(res => {
+            updateDashboard(res.data);
+        }).catch(err => {
+            console.log(err);
+        });
     };
 
     return (

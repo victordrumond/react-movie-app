@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './List.css';
-import axios from 'axios';
 import Helper from "./Helper";
 import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
@@ -10,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
+import Requests from './Requests';
 
 function List({ user, list, listData, listConfig, updateMain }) {
 
@@ -25,7 +25,7 @@ function List({ user, list, listData, listConfig, updateMain }) {
     const [addData, setAddData] = useState(null);
 
     const getMovieExpandedInfo = (movieId) => {
-        axios.get('/movie/' + movieId).then(res => {
+        Requests.getMovieInfo(movieId).then(res => {
             setInfoData(res.data);
             setShowInfoModal(true);
         });
@@ -33,32 +33,24 @@ function List({ user, list, listData, listConfig, updateMain }) {
 
     const handleAdd = (item, list) => {
         let newList = Helper.getNormalizedListName(list);
-        axios
-            .post('/addmovie', { user: user.email, list: newList, movie: item })
-            .then(res => {
-                updateMain(res.data);
-                setAddData([item.title, list]);
-                setAddMovieToList(true);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        ;
+        Requests.addMovie(user.email, newList, item).then(res => {
+            updateMain(res.data);
+            setAddData([item.title, list]);
+            setAddMovieToList(true);
+        }).catch(err => {
+            console.log(err);
+        });
     };
 
     const handleDelete = (item) => {
         let currentList = Helper.getNormalizedListName(list);
-        axios
-            .post('/deletemovie', { user: user.email, list: currentList, movie: item })
-            .then(res => {
-                updateMain(res.data);
-                setDeleteMovie(false);
-                setDeleteData(null);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        ;
+        Requests.deleteMovie(user.email, currentList, item).then(res => {
+            updateMain(res.data);
+            setDeleteMovie(false);
+            setDeleteData(null);
+        }).catch(err => {
+            console.log(err);
+        });
     };
 
     return (
