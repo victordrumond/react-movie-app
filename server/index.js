@@ -21,6 +21,13 @@ const movieSchema = new mongoose.Schema({
     favorites: [{ timestamp: Number, data: Object }],
     watchList: [{ timestamp: Number, data: Object }],
     watched: [{ timestamp: Number, data: Object }]
+  },
+  config: {
+    lists: {
+      favorites: { filtering: String },
+      watchList: { filtering: String },
+      watched: { filtering: String }
+    }
   }
 });
 const movieModel = mongoose.model("Movie", movieSchema);
@@ -117,10 +124,35 @@ app.get('/users/:user', async (req, res) => {
 app.post('/newuser/:user', async (req, res) => {
   let newUser = {
     user: req.params.user,
-    lists: { favorites: [], watchList: [], watched: [] }
+    lists: { favorites: [], watchList: [], watched: [] },
+    config: {
+      lists: {
+        favorites: { filtering: "last_added" },
+        watchList: { filtering: "last_added" },
+        watched: { filtering: "last_added" }
+      }
+    }
   }
   const saveNewUser = await movieModel.create(newUser);
   return res.json(saveNewUser);
+})
+
+// POST request: update list filtering
+app.post('/updatefilter', async (req, res) => {
+  let userData = await movieModel.findOne({ user: req.body.user });
+  if (!userData) {
+    return res.sendStatus(404);
+  } else {
+    let currentFilter = userData.config.lists[req.body.list].filtering;
+    if (currentFilter !== req.body.value) {
+      userData.config.lists[req.body.list].filtering = req.body.value;
+      userData = await userData.save();
+      console.log(`Filter updated to ${req.body.value} on ${req.body.list}`);
+      return res.json(userData);
+    } else {
+      console.log(`Current filter on ${req.body.list} is already ${req.body.value}`);
+    }
+  }
 })
 
 // Every other GET request not handled before will return the React app

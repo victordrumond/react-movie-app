@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
-function List({ user, list, listData, updateMain }) {
+function List({ user, list, listData, listConfig, updateMain }) {
 
     const [activeCard, setActiveCard] = useState(null);
 
@@ -62,7 +62,7 @@ function List({ user, list, listData, updateMain }) {
 
     return (
         <Container id="list-container">
-            {listData.length !== 0 && listData.map((item, index) => (
+            {listData.length !== 0 && Helper.sortData(listData, listConfig).map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
                     {window.innerWidth > 991 &&
                         <div>

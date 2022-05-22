@@ -11,7 +11,14 @@ function Dashboard() {
 
     let initUser = {
         user: '',
-        lists: { favorites: [], watchList: [], watched: [] }
+        lists: { favorites: [], watchList: [], watched: [] },
+        config: {
+            lists: {
+                favorites: { filtering: "last_added" },
+                watchList: { filtering: "last_added" },
+                watched: { filtering: "last_added" }
+            }
+        }
     }
 
     const { user, logout } = useAuth0();
