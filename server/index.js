@@ -50,13 +50,13 @@ app.get("/authcovers", async (req, res) => {
   return res.json(covers);
 })
 
-// GET request: receive data from specific movie
+// GET request: fetch more complete data from specific movie
 app.get("/movie/:movieid", async (req, res) => {
   await axios.get('https://api.themoviedb.org/3/movie/' + req.params.movieid + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates')
     .then(response => {
-      res.json(response.data);
+      return res.json(response.data);
     });
-});
+})
 
 // GET request: receive data from search
 app.get("/search/:query", async (req, res) => {

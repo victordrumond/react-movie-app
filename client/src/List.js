@@ -23,12 +23,12 @@ function List({ user, list, listData, updateMain }) {
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    // const handleInfo = (item) => {
-    //     axios.get('/movie/' + item.id).then(res => {
-    //         setInfoData(res.data);
-    //         setShowInfoModal(true);
-    //     });
-    // };
+    const getMovieExpandedInfo = (movieId) => {
+        axios.get('/movie/' + movieId).then(res => {
+            setInfoData(res.data);
+            setShowInfoModal(true);
+        });
+    };
 
     const handleAdd = (item, list) => {
         let newList = Helper.getNormalizedListName(list);
@@ -134,7 +134,7 @@ function List({ user, list, listData, updateMain }) {
                                             />}
                                     </div>
                                     : null}
-                                {/* <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button> */}
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.id)}>Info</Button>
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -156,7 +156,7 @@ function List({ user, list, listData, updateMain }) {
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                {/* <Button id="card-button" variant="primary" onClick={() => handleInfo(item)}>Info</Button> */}
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.id)}>Info</Button>
                             </div>
                         }
                     </Card.Body>
@@ -195,7 +195,7 @@ function List({ user, list, listData, updateMain }) {
                 </Modal>
             )}
 
-            {/* {infoData && (
+            {infoData && (
                 <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true}>
                     <Modal.Header closeButton>
                         <Modal.Title>{infoData.release_date ? infoData.title + " (" + Helper.formatDate(infoData.release_date) + ")" : infoData.title}</Modal.Title>
@@ -235,7 +235,7 @@ function List({ user, list, listData, updateMain }) {
                         </div>
                     </Modal.Body>
                 </Modal>
-            )} */}
+            )}
         </Container>
     );
 };
