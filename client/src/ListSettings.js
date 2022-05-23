@@ -7,7 +7,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
 import Requests from './Requests';
 
-function ListSettings({ user, activeList, updateMain }) {
+function ListSettings({ user, activeList, listsConfig, updateMain }) {
 
     const handleUpdateFilter = (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);
@@ -18,6 +18,10 @@ function ListSettings({ user, activeList, updateMain }) {
         });
     };
 
+    const getActiveListFiltering = (activeList) => {
+        return listsConfig[Helper.getNormalizedListName(activeList)].filtering;
+    }
+
     return (
         <Container id="list-settings-container">
             <Navbar expand="sm">
@@ -25,11 +29,21 @@ function ListSettings({ user, activeList, updateMain }) {
                     <Navbar.Collapse>
                         <Nav>
                             <NavDropdown id="filter-dropdown" title="Filter">
-                                <NavDropdown.Item onClick={() => handleUpdateFilter('title')}>Title</NavDropdown.Item>
-                                <NavDropdown.Item onClick={() => handleUpdateFilter('highest_score')}>Highest rated</NavDropdown.Item>
-                                <NavDropdown.Item onClick={() => handleUpdateFilter('lowest_score')}>Lowest rated</NavDropdown.Item>
-                                <NavDropdown.Item onClick={() => handleUpdateFilter('last_added')}>Last added</NavDropdown.Item>
-                                <NavDropdown.Item onClick={() => handleUpdateFilter('first_added')}>First added</NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => handleUpdateFilter('title')}>
+                                    {getActiveListFiltering(activeList) === 'title' ? <b>Title</b> : 'Title'}
+                                </NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => handleUpdateFilter('highest_score')}>
+                                    {getActiveListFiltering(activeList) === 'highest_score' ? <b>Highest rated</b> : 'Highest rated'}
+                                </NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => handleUpdateFilter('lowest_score')}>
+                                    {getActiveListFiltering(activeList) === 'lowest_score' ? <b>Lowest rated</b> : 'Lowest rated'}
+                                </NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => handleUpdateFilter('last_added')}>
+                                    {getActiveListFiltering(activeList) === 'last_added' ? <b>Last added</b> : 'Last added'}
+                                </NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => handleUpdateFilter('first_added')}>
+                                    {getActiveListFiltering(activeList) === 'first_added' ? <b>First added</b> : 'First added'}
+                                </NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>

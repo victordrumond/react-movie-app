@@ -81,6 +81,7 @@ function Main({ user, userData, updateDashboard }) {
                     <ListSettings
                         user={user}
                         activeList={activeList}
+                        listsConfig={userData.config.lists}
                         updateMain={updatedFromListSettings}
                     />
 
