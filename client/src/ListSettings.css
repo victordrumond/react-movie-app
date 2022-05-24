@@ -1,3 +1,13 @@
+#empty-list-config {
+    padding: 0.5rem 0;
+}
+
+#empty-list-config p {
+    padding: 0 0.5rem;
+    margin: 0;
+    color: #0000008C;
+}
+
 #list-settings-container {
     margin: 0;
     padding: 0;
@@ -10,5 +20,9 @@
 
     .filter-option {
         font-size: 14px !important;
+    }
+
+    #empty-list-config p {
+        font-size: 15px;
     }
 }

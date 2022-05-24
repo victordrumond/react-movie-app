@@ -85,19 +85,13 @@ function Main({ user, userData, updateDashboard }) {
                 </Card.Header>
                 <Card.Body id="content-body">
 
-                    {!isListEmpty() &&
-                        <ListSettings
-                            user={user}
-                            activeList={activeList}
-                            listsConfig={userData.config.lists}
-                            updateMain={updatedFromListSettings}
-                        />
-                    }
-
-                    {isListEmpty() &&
-                    <div id="empty-list-config">
-                        <p>Use the search bar to add a movie to {activeList}</p>
-                    </div>}
+                    <ListSettings
+                        user={user}
+                        activeList={activeList}
+                        isListEmpty={isListEmpty()}
+                        listsConfig={userData.config.lists}
+                        updateMain={updatedFromListSettings}
+                    />
 
                     {activeList === "Favorites" &&
                         <List
