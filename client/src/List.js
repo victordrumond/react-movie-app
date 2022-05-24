@@ -56,9 +56,9 @@ function List({ user, list, listData, listConfig, updateMain }) {
 
     return (
         <Container id="list-container">
-            {/* {listData.length === 0 &&
+            {listData.length === 0 &&
                 <ExampleMovieCard list={list}/>
-            } */}
+            }
 
             {listData.length !== 0 && ListConfig.sortData(listData, listConfig).map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
