@@ -18,6 +18,16 @@
     font-size: 15px;
 }
 
+#empty-list-config {
+    padding: 0.5rem 0;
+}
+
+#empty-list-config p {
+    padding: 0.5rem;
+    margin: 0;
+    color: #0000008C;
+}
+
 @media screen and (max-width: 767px) {
     #tabs-nav {
         flex-direction: column;
@@ -43,4 +53,9 @@
     .nav-link {
         padding: 0.5rem 0.75rem !important;
     }
+
+    #empty-list-config p {
+        font-size: 15px;
+    }
+    
 }

@@ -40,6 +40,13 @@ function Main({ user, userData, updateDashboard }) {
         updateDashboard(updatedData);
     }, [updateDashboard]);
 
+    const isListEmpty = () => {
+        if (activeList === 'Favorites' && favoritesData.length === 0) return true;
+        if (activeList === 'Watch List' && watchListData.length === 0) return true;
+        if (activeList === 'Watched' && watchedData.length === 0) return true;
+        return false;
+    }
+
     return (
         <Container id="main-container">
             <Card className="d-flex flex-column">
@@ -78,12 +85,19 @@ function Main({ user, userData, updateDashboard }) {
                 </Card.Header>
                 <Card.Body id="content-body">
 
-                    <ListSettings
-                        user={user}
-                        activeList={activeList}
-                        listsConfig={userData.config.lists}
-                        updateMain={updatedFromListSettings}
-                    />
+                    {!isListEmpty() &&
+                        <ListSettings
+                            user={user}
+                            activeList={activeList}
+                            listsConfig={userData.config.lists}
+                            updateMain={updatedFromListSettings}
+                        />
+                    }
+
+                    {isListEmpty() &&
+                    <div id="empty-list-config">
+                        <p>Use the search bar to add a movie to {activeList}</p>
+                    </div>}
 
                     {activeList === "Favorites" &&
                         <List
