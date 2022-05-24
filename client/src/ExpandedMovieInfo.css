@@ -1,0 +1,54 @@
+.modal-img {
+    width: 250px;
+    height: 375px;
+}
+
+#movie-modal p {
+    margin: auto 0;
+    font-size: 15px;
+}
+
+#modal-info {
+    margin: 0 1rem;
+}
+
+#modal-stats p {
+    font-weight: bold;
+}
+
+#modal-description {
+    padding: 1rem 0;
+}
+
+#modal-notes p {
+    padding-bottom: 0.25rem;
+}
+
+@media screen and (max-width: 991px) {
+    #modal-body img {
+        margin-bottom: 1.5rem;
+        width: 150px;
+        height: 225px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .modal-title {
+        font-size: 20px !important;
+    }
+
+    #modal-info p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 399px) {
+     #modal-body {
+        flex-direction: column;
+    }
+
+    #modal-body img {
+        width: 100%;
+        height: auto;
+    }
+}

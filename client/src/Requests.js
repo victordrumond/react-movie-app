@@ -23,7 +23,7 @@ class Requests {
     }
 
     // Get detailed data from specific movie
-    static getMovieInfo = (movieId) => {
+    static getMovieData = (movieId) => {
         return axios.get(`/movie/${movieId}`);
     }
 

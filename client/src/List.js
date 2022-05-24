@@ -11,13 +11,14 @@ import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Requests from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
+import ExpandedMovieInfo from './ExpandedMovieInfo';
 
 function List({ user, list, listData, listConfig, updateMain }) {
 
     const [activeCard, setActiveCard] = useState(null);
 
-    const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoData, setInfoData] = useState(null);
+    const [showExpandedInfo, setShowExpandedInfo] = useState(false);
 
     const [deleteMovie, setDeleteMovie] = useState(false);
     const [deleteData, setDeleteData] = useState(null);
@@ -25,10 +26,11 @@ function List({ user, list, listData, listConfig, updateMain }) {
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    const getMovieExpandedInfo = (movieId) => {
-        Requests.getMovieInfo(movieId).then(res => {
+    const getMovieExpandedData = (movieId) => {
+        Requests.getMovieData(movieId).then(res => {
+            console.log(res.data)
             setInfoData(res.data);
-            setShowInfoModal(true);
+            setShowExpandedInfo(true);
         });
     };
 
@@ -57,7 +59,7 @@ function List({ user, list, listData, listConfig, updateMain }) {
     return (
         <Container id="list-container">
             {listData.length === 0 &&
-                <ExampleMovieCard list={list}/>
+                <ExampleMovieCard list={list} />
             }
 
             {listData.length !== 0 && ListConfig.sortData(listData, listConfig).map((item, index) => (
@@ -132,7 +134,7 @@ function List({ user, list, listData, listConfig, updateMain }) {
                                             />}
                                     </div>
                                     : null}
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.data.id)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.data.id)}>Info</Button>
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -154,7 +156,7 @@ function List({ user, list, listData, listConfig, updateMain }) {
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedInfo(item.data.id)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.data.id)}>Info</Button>
                             </div>
                         }
                     </Card.Body>
@@ -193,47 +195,11 @@ function List({ user, list, listData, listConfig, updateMain }) {
                 </Modal>
             )}
 
-            {infoData && (
-                <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{infoData.release_date ? infoData.title + " (" + Helper.formatDate(infoData.release_date) + ")" : infoData.title}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body id="modal-body" className="d-flex">
-                        <div>
-                            {window.innerWidth > 399
-                                ? <img
-                                    src={infoData.poster_path ? "https://image.tmdb.org/t/p/w500" + infoData.poster_path : null}
-                                    alt="movie_cover"
-                                    className="modal-img"
-                                />
-                                : <img
-                                    src={infoData.backdrop_path ? "https://image.tmdb.org/t/p/w500" + infoData.backdrop_path : null}
-                                    alt="movie_cover"
-                                    className="modal-img img-fluid"
-                                />
-                            }
-                        </div>
-                        <div id="modal-info">
-                            <div id="modal-stats" className="d-flex justify-content-between">
-                                <p>{"Status: " + infoData.status}</p>
-                                <p>{infoData.runtime + " min"}</p>
-                                <p>{infoData.release_dates.results.filter(item => item.iso_3166_1 === "US").length > 0
-                                    ? infoData.release_dates.results.filter(item => item.iso_3166_1 === "US")[0].release_dates[0].certification
-                                    : "Not Rated"}
-                                </p>
-                                <p>{Helper.formatScore(infoData.vote_average)}</p>
-                            </div>
-                            <p id="modal-description">{infoData.overview}</p>
-                            <div id="modal-notes" className="d-flex flex-column">
-                                <p><b>Genres: </b>{infoData.genres.map(item => (" " + item.name)) + "."}</p>
-                                <p><b>Starring: </b>{infoData.credits.cast.filter((item, i) => item.known_for_department === "Acting" && i < 8).map(item => (" " + item.name)) + "."}</p>
-                                <p><b>Direction: </b>{infoData.credits.crew.filter(item => item.job === "Director").map(item => (" " + item.name)) + "."}</p>
-                                <p><b>Production: </b>{infoData.production_companies.map(item => (" " + item.name)) + "."}</p>
-                            </div>
-                        </div>
-                    </Modal.Body>
-                </Modal>
-            )}
+            {showExpandedInfo &&
+                <ExpandedMovieInfo
+                    movieObj={infoData}
+                />
+            }
         </Container>
     );
 };

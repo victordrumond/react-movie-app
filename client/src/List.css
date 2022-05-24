@@ -65,32 +65,6 @@
     font-size: 14px;
 }
 
-.modal-img {
-    width: 250px;
-    height: 375px;
-}
-
-#movie-modal p {
-    margin: auto 0;
-    font-size: 15px;
-}
-
-#modal-info {
-    margin: 0 1rem;
-}
-
-#modal-stats p {
-    font-weight: bold;
-}
-
-#modal-description {
-    padding: 1rem 0;
-}
-
-#modal-notes p {
-    padding-bottom: 0.25rem;
-}
-
 @media screen and (max-width: 1199px) {
     #list-container {
         grid-template-columns: repeat(4, 1fr);
@@ -100,12 +74,6 @@
 @media screen and (max-width: 991px) {
     #list-container {
         grid-template-columns: repeat(3, 1fr);
-    }
-
-    #modal-body img {
-        margin-bottom: 1.5rem;
-        width: 150px;
-        height: 225px;
     }
 }
 
@@ -145,27 +113,10 @@
         font-size: 12px;
         padding: 0.25rem 0.5rem;
     }
-
-    .modal-title {
-        font-size: 20px !important;
-    }
-
-    #modal-info p {
-        font-size: 14px;
-    }
 }
 
 @media screen and (max-width: 399px) {
     .card-img {
         padding-bottom: 1.75rem !important;
-    }
-
-    #modal-body {
-        flex-direction: column;
-    }
-
-    #modal-body img {
-        width: 100%;
-        height: auto;
     }
 }
