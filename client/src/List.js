@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Requests from './Requests';
+import ExampleMovieCard from './ExampleMovieCard';
 
 function List({ user, list, listData, listConfig, updateMain }) {
 
@@ -55,6 +56,10 @@ function List({ user, list, listData, listConfig, updateMain }) {
 
     return (
         <Container id="list-container">
+            {/* {listData.length === 0 &&
+                <ExampleMovieCard list={list}/>
+            } */}
+
             {listData.length !== 0 && ListConfig.sortData(listData, listConfig).map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
                     {window.innerWidth > 991 &&
