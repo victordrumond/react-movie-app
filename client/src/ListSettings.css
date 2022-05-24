@@ -1,0 +1,14 @@
+#list-settings-container {
+    margin: 0;
+    padding: 0;
+}
+
+@media screen and (max-width: 575px) {
+    #filter-dropdown {
+        font-size: 15px;
+    }
+
+    .filter-option {
+        font-size: 14px !important;
+    }
+}
