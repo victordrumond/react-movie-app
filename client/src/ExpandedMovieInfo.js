@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './ExpandedMovieInfo.css';
-import Container from 'react-bootstrap/Container';
 import Modal from 'react-bootstrap/Modal';
 import Movie from './Movie';
 

@@ -14,9 +14,9 @@ function ExampleMovieCard({ list }) {
                 {list === 'Watched' && <MdTaskAlt className="example-card-img img-fluid"/>}
             </Card.Header>
             <Card.Body className="d-flex flex-column justify-content-center">
-                {list === 'Favorites' && <p>Your first favorite movie will be shown here!</p>}
-                {list === 'Watch List' && <p>Your first movie to watch will be shown here!</p>}
-                {list === 'Watched' && <p>Your first watched movie will be shown here!</p>}
+                {list === 'Favorites' && <p>Your first favorite movie will be shown here</p>}
+                {list === 'Watch List' && <p>Your first movie to watch will be shown here</p>}
+                {list === 'Watched' && <p>Your first watched movie will be shown here</p>}
             </Card.Body>
         </Card>
     )
