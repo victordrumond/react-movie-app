@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './List.css';
+import { UserContext } from './UserContext';
 import Helper from "./Helper";
 import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
@@ -13,7 +14,9 @@ import Requests from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
 
-function List({ user, list, listData, listConfig, updateMain }) {
+function List({ list, listData, listConfig, updateMain }) {
+
+    const user = useContext(UserContext);
 
     const [activeCard, setActiveCard] = useState(null);
 
@@ -57,6 +60,8 @@ function List({ user, list, listData, listConfig, updateMain }) {
     };
 
     return (
+        <UserContext.Consumer>
+        {() =>
         <Container id="list-container">
             {listData.length === 0 &&
                 <ExampleMovieCard list={list} />
@@ -194,13 +199,15 @@ function List({ user, list, listData, listConfig, updateMain }) {
                     </Modal.Footer>
                 </Modal>
             )}
-
+            
             {showExpandedInfo &&
                 <ExpandedMovieInfo
                     movieObj={infoData}
                 />
             }
         </Container>
+        }
+        </UserContext.Consumer>
     );
 };
 

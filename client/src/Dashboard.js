@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import './Dashboard.css';
 import Requests from './Requests';
 import { useAuth0 } from '@auth0/auth0-react';
+import { UserContext } from './UserContext';
 import logo from './logo.png';
 import Search from './Search';
 import Main from './Main';
@@ -52,6 +53,7 @@ function Dashboard() {
     }, [user]);
 
     return (
+        <UserContext.Provider value={user}>
         <Container id="dashboard-container">
             <div id="header-container" className="d-flex justify-content-between">
                 <div id="name-and-logo" className="d-flex">
@@ -67,12 +69,13 @@ function Dashboard() {
                     </Button>
                 </div>
             </div>
-            <Search user={user} updateDashboard={updatedFromSearch} />
-            <Main user={user} userData={userData} updateDashboard={updatedFromMain} />
+            <Search updateDashboard={updatedFromSearch} />
+            <Main userData={userData} updateDashboard={updatedFromMain} />
             <div id="footer-container" className="d-flex align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
             </div>
         </Container>
+        </UserContext.Provider>
     );
 };
 

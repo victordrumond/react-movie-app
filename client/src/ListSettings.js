@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './ListSettings.css';
+import { UserContext } from './UserContext';
 import Helper from "./Helper";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -7,7 +8,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
 import Requests from './Requests';
 
-function ListSettings({ user, activeList, isListEmpty, listsConfig, updateMain }) {
+function ListSettings({ activeList, isListEmpty, listsConfig, updateMain }) {
+
+    const user = useContext(UserContext);
 
     const handleUpdateFilter = (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);
@@ -23,6 +26,8 @@ function ListSettings({ user, activeList, isListEmpty, listsConfig, updateMain }
     }
 
     return (
+        <UserContext.Consumer>
+        {() =>
         <Container id="list-settings-container">
             <Navbar>
                 {isListEmpty &&
@@ -30,7 +35,7 @@ function ListSettings({ user, activeList, isListEmpty, listsConfig, updateMain }
                         <p>Use the search bar to add a movie</p>
                     </div>
                 }
-
+                
                 {!isListEmpty &&
                     <Navbar.Collapse>
                         <Nav>
@@ -56,6 +61,8 @@ function ListSettings({ user, activeList, isListEmpty, listsConfig, updateMain }
                 }
             </Navbar>
         </Container>
+        }
+        </UserContext.Consumer>
     );
 };
 

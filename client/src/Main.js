@@ -9,7 +9,7 @@ import List from './List';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
-function Main({ user, userData, updateDashboard }) {
+function Main({ userData, updateDashboard }) {
 
     const [activeList, setActiveList] = useState("Favorites");
     const [activeListLength, setActiveListLength] = useState(0);
@@ -86,7 +86,6 @@ function Main({ user, userData, updateDashboard }) {
                 <Card.Body id="content-body">
 
                     <ListSettings
-                        user={user}
                         activeList={activeList}
                         isListEmpty={isListEmpty()}
                         listsConfig={userData.config.lists}
@@ -95,7 +94,6 @@ function Main({ user, userData, updateDashboard }) {
 
                     {activeList === "Favorites" &&
                         <List
-                            user={user}
                             list="Favorites"
                             listData={favoritesData}
                             listConfig={favoritesConfig}
@@ -103,7 +101,6 @@ function Main({ user, userData, updateDashboard }) {
                         />}
                     {activeList === "Watch List" &&
                         <List
-                            user={user}
                             list="Watch List"
                             listData={watchListData}
                             listConfig={watchListConfig}
@@ -111,7 +108,6 @@ function Main({ user, userData, updateDashboard }) {
                         />}
                     {activeList === "Watched" &&
                         <List
-                            user={user}
                             list="Watched"
                             listData={watchedData}
                             listConfig={watchedConfig}

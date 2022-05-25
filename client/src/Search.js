@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Search.css';
+import { UserContext } from './UserContext';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -8,8 +9,9 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
 
-function Search({ user, updateDashboard }) {
+function Search({ updateDashboard }) {
 
+    const user = useContext(UserContext);
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
     const [data, setData] = useState([]);
@@ -50,6 +52,8 @@ function Search({ user, updateDashboard }) {
     };
 
     return (
+        <UserContext.Consumer>
+        {() =>
         <Container id="search-container">
             <div className="d-flex" ref={searchRef}>
                 <BiSearch id="search-icon" />
@@ -96,6 +100,8 @@ function Search({ user, updateDashboard }) {
                 ))}
             </ListGroup>
         </Container>
+        }
+        </UserContext.Consumer>
     );
 };
 
