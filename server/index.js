@@ -16,7 +16,15 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Set Mongoose schema & model
 const movieSchema = new mongoose.Schema({
-  user: String,
+  user: {
+    email: String,
+    email_verified: Boolean,
+    name: String,
+    nickname: String,
+    picture: String,
+    sub: String,
+    updated_at: String
+  },
   lists: {
     favorites: [{ timestamp: Number, data: Object }],
     watchList: [{ timestamp: Number, data: Object }],
@@ -76,7 +84,7 @@ app.get("/search/:query", async (req, res) => {
 
 // POST request: add movie to database
 app.post('/addmovie', async (req, res) => {
-  let userData = await movieModel.findOne({ user: req.body.user });
+  let userData = await movieModel.findOne({ "user.email": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {
@@ -98,7 +106,7 @@ app.post('/addmovie', async (req, res) => {
 
 // POST request: delete movie from database
 app.post('/deletemovie', async (req, res) => {
-  let userData = await movieModel.findOne({ user: req.body.user });
+  let userData = await movieModel.findOne({ "user.email": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {
@@ -116,14 +124,14 @@ app.post('/deletemovie', async (req, res) => {
 
 // GET request: fetch user data from database
 app.get('/users/:user', async (req, res) => {
-  const findUserOnDatabase = await movieModel.findOne({ user: req.params.user });
+  const findUserOnDatabase = await movieModel.findOne({ "user.email": req.params.user });
   return res.json(findUserOnDatabase);
 })
 
 // POST request: init user data on database
-app.post('/newuser/:user', async (req, res) => {
+app.post('/newuser', async (req, res) => {
   let newUser = {
-    user: req.params.user,
+    user: req.body.user,
     lists: { favorites: [], watchList: [], watched: [] },
     config: {
       lists: {
@@ -139,7 +147,7 @@ app.post('/newuser/:user', async (req, res) => {
 
 // POST request: update list filtering
 app.post('/updatefilter', async (req, res) => {
-  let userData = await movieModel.findOne({ user: req.body.user });
+  let userData = await movieModel.findOne({ "user.email": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {

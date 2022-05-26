@@ -13,8 +13,8 @@ class Requests {
     }
 
     // Set new user on database
-    static setUser = (user) => {
-        return axios.post(`/newuser/${user}`);
+    static setUser = (userObj) => {
+        return axios.post(`/newuser`, { user: userObj });
     }
 
     // Get data to fill search results

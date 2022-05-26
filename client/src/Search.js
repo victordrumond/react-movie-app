@@ -9,9 +9,15 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
 
-function Search({ updateDashboard }) {
+function Search() {
 
-    const user = useContext(UserContext);
+    const context = useContext(UserContext);
+    const [user, setUser] = useState(context.userData.user)
+
+    useEffect(() => {
+        setUser(context.userData.user);
+    }, [context]);
+
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
     const [data, setData] = useState([]);
@@ -45,15 +51,13 @@ function Search({ updateDashboard }) {
     const handleAdd = (item, list) => {
         setSearchFor("");
         Requests.addMovie(user.email, list, item).then(res => {
-            updateDashboard(res.data);
+            context.setUserData(res.data);
         }).catch(err => {
             console.log(err);
         });
     };
 
     return (
-        <UserContext.Consumer>
-        {() =>
         <Container id="search-container">
             <div className="d-flex" ref={searchRef}>
                 <BiSearch id="search-icon" />
@@ -100,8 +104,6 @@ function Search({ updateDashboard }) {
                 ))}
             </ListGroup>
         </Container>
-        }
-        </UserContext.Consumer>
     );
 };
 

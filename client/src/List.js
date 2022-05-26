@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './List.css';
 import { UserContext } from './UserContext';
 import Helper from "./Helper";
@@ -14,9 +14,16 @@ import Requests from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
 
-function List({ list, listData, listConfig, updateMain }) {
+function List({ list, listData }) {
 
-    const user = useContext(UserContext);
+    const context = useContext(UserContext);
+    const [user, setUser] = useState(context.userData.user)
+    const [listConfig, setListConfig] = useState(context.userData.config.lists[Helper.getNormalizedListName(list)])
+
+    useEffect(() => {
+        setUser(context.userData.user);
+        setListConfig(context.userData.config.lists[Helper.getNormalizedListName(list)]);
+    }, [context, list]);
 
     const [activeCard, setActiveCard] = useState(null);
 
@@ -31,7 +38,6 @@ function List({ list, listData, listConfig, updateMain }) {
 
     const getMovieExpandedData = (movieId) => {
         Requests.getMovieData(movieId).then(res => {
-            console.log(res.data)
             setInfoData(res.data);
             setShowExpandedInfo(true);
         });
@@ -40,7 +46,7 @@ function List({ list, listData, listConfig, updateMain }) {
     const handleAdd = (item, list) => {
         let newList = Helper.getNormalizedListName(list);
         Requests.addMovie(user.email, newList, item).then(res => {
-            updateMain(res.data);
+            context.setUserData(res.data);
             setAddData([item.title, list]);
             setAddMovieToList(true);
         }).catch(err => {
@@ -51,7 +57,7 @@ function List({ list, listData, listConfig, updateMain }) {
     const handleDelete = (item) => {
         let currentList = Helper.getNormalizedListName(list);
         Requests.deleteMovie(user.email, currentList, item).then(res => {
-            updateMain(res.data);
+            context.setUserData(res.data);
             setDeleteMovie(false);
             setDeleteData(null);
         }).catch(err => {
@@ -60,8 +66,6 @@ function List({ list, listData, listConfig, updateMain }) {
     };
 
     return (
-        <UserContext.Consumer>
-        {() =>
         <Container id="list-container">
             {listData.length === 0 &&
                 <ExampleMovieCard list={list} />
@@ -199,15 +203,13 @@ function List({ list, listData, listConfig, updateMain }) {
                     </Modal.Footer>
                 </Modal>
             )}
-            
+
             {showExpandedInfo &&
                 <ExpandedMovieInfo
                     movieObj={infoData}
                 />
             }
         </Container>
-        }
-        </UserContext.Consumer>
     );
 };
 

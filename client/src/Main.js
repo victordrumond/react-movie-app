@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Main.css';
+import { UserContext } from './UserContext';
 import Helper from "./Helper";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -9,36 +10,26 @@ import List from './List';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
-function Main({ userData, updateDashboard }) {
+function Main() {
 
-    const [activeList, setActiveList] = useState("Favorites");
-    const [activeListLength, setActiveListLength] = useState(0);
+    const context = useContext(UserContext);
 
     const [favoritesData, setFavoritesData] = useState([]);
     const [watchListData, setWatchListData] = useState([]);
     const [watchedData, setWatchedData] = useState([]);
 
-    const [favoritesConfig, setFavoritesConfig] = useState(userData.config.lists.favorites);
-    const [watchListConfig, setWatchListConfig] = useState(userData.config.lists.watchList);
-    const [watchedConfig, setWatchedConfig] = useState(userData.config.lists.watched);
+    useEffect(() => {
+        setFavoritesData(context.userData.lists.favorites);
+        setWatchListData(context.userData.lists.watchList);
+        setWatchedData(context.userData.lists.watched);
+    }, [context]);
+
+    const [activeList, setActiveList] = useState("Favorites");
+    const [activeListLength, setActiveListLength] = useState(0);
 
     useEffect(() => {
-        setFavoritesData(userData.lists.favorites);
-        setWatchListData(userData.lists.watchList);
-        setWatchedData(userData.lists.watched);
-        setFavoritesConfig(userData.config.lists.favorites);
-        setWatchListConfig(userData.config.lists.watchList);
-        setWatchedConfig(userData.config.lists.watched);
-        setActiveListLength(userData.lists[Helper.getNormalizedListName(activeList)].length);
-    }, [userData, activeList])
-
-    const updatedFromList = useCallback(updatedData => {
-        updateDashboard(updatedData);
-    }, [updateDashboard]);
-
-    const updatedFromListSettings = useCallback(updatedData => {
-        updateDashboard(updatedData);
-    }, [updateDashboard]);
+        setActiveListLength(context.userData.lists[Helper.getNormalizedListName(activeList)].length);
+    }, [context, activeList])
 
     const isListEmpty = () => {
         if (activeList === 'Favorites' && favoritesData.length === 0) return true;
@@ -88,30 +79,22 @@ function Main({ userData, updateDashboard }) {
                     <ListSettings
                         activeList={activeList}
                         isListEmpty={isListEmpty()}
-                        listsConfig={userData.config.lists}
-                        updateMain={updatedFromListSettings}
                     />
 
                     {activeList === "Favorites" &&
                         <List
                             list="Favorites"
                             listData={favoritesData}
-                            listConfig={favoritesConfig}
-                            updateMain={updatedFromList}
                         />}
                     {activeList === "Watch List" &&
                         <List
                             list="Watch List"
                             listData={watchListData}
-                            listConfig={watchListConfig}
-                            updateMain={updatedFromList}
                         />}
                     {activeList === "Watched" &&
                         <List
                             list="Watched"
                             listData={watchedData}
-                            listConfig={watchedConfig}
-                            updateMain={updatedFromList}
                         />}
                 </Card.Body>
             </Card>

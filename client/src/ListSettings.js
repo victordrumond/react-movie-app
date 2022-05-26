@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './ListSettings.css';
 import { UserContext } from './UserContext';
 import Helper from "./Helper";
@@ -8,14 +8,21 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
 import Requests from './Requests';
 
-function ListSettings({ activeList, isListEmpty, listsConfig, updateMain }) {
+function ListSettings({ activeList, isListEmpty }) {
 
-    const user = useContext(UserContext);
+    const context = useContext(UserContext);
+    const [user, setUser] = useState(context.userData.user);
+    const [listsConfig, setListsConfig] = useState(context.userData.config.lists);
+    
+    useEffect(() => {
+        setUser(context.userData.user);
+        setListsConfig(context.userData.config.lists);
+    }, [context]);
 
     const handleUpdateFilter = (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);
         Requests.setFilter(user.email, listName, newFilter).then(res => {
-            updateMain(res.data);
+            context.setUserData(res.data);
         }).catch(err => {
             console.log(err);
         });
@@ -23,11 +30,9 @@ function ListSettings({ activeList, isListEmpty, listsConfig, updateMain }) {
 
     const getActiveListFiltering = (activeList) => {
         return listsConfig[Helper.getNormalizedListName(activeList)].filtering;
-    }
+    };
 
     return (
-        <UserContext.Consumer>
-        {() =>
         <Container id="list-settings-container">
             <Navbar>
                 {isListEmpty &&
@@ -61,8 +66,6 @@ function ListSettings({ activeList, isListEmpty, listsConfig, updateMain }) {
                 }
             </Navbar>
         </Container>
-        }
-        </UserContext.Consumer>
     );
 };
 
