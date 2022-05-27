@@ -16,17 +16,12 @@ function Main() {
     const context = useContext(UserContext);
     const location = useLocation();
 
-    const [favoritesData, setFavoritesData] = useState([]);
-    const [watchListData, setWatchListData] = useState([]);
-    const [watchedData, setWatchedData] = useState([]);
-
     const [activeList, setActiveList] = useState("Favorites");
     const [activeListLength, setActiveListLength] = useState(0);
+    const [listData, setListData] = useState(context.userData.lists);
 
     useEffect(() => {
-        setFavoritesData(context.userData.lists.favorites);
-        setWatchListData(context.userData.lists.watchList);
-        setWatchedData(context.userData.lists.watched);
+        setListData(context.userData.lists);
         if (location.pathname === '/home/watched') {
             setActiveList("Watched");
         } else if (location.pathname === '/home/watchlist') {
@@ -39,10 +34,7 @@ function Main() {
     }, [context, activeList])
 
     const isListEmpty = () => {
-        if (activeList === 'Favorites' && favoritesData.length === 0) return true;
-        if (activeList === 'Watch List' && watchListData.length === 0) return true;
-        if (activeList === 'Watched' && watchedData.length === 0) return true;
-        return false;
+        return listData[Helper.getNormalizedListName(activeList)] ? true : false;
     }
 
     return (
@@ -88,12 +80,8 @@ function Main() {
                         isListEmpty={isListEmpty()}
                     />
 
-                    {activeList === "Favorites" &&
-                        <List list="Favorites" listData={favoritesData} />}
-                    {activeList === "Watch List" &&
-                        <List list="Watch List" listData={watchListData} />}
-                    {activeList === "Watched" &&
-                        <List list="Watched" listData={watchedData} />}
+                    <List list={activeList} listData={listData[Helper.getNormalizedListName(activeList)]} />
+
                 </Card.Body>
             </Card>
         </Container>
