@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './Authentication.css';
 import Requests from "./Requests";
 import { useAuth0 } from '@auth0/auth0-react';
@@ -7,6 +8,12 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 
 function Authentication() {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      navigate('/start');
+    }, [navigate]);
 
     const { loginWithRedirect } = useAuth0();
     const [covers, setCovers] = useState([]);
