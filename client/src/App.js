@@ -10,7 +10,7 @@ function App() {
   const { isLoading, isAuthenticated } = useAuth0();
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <div id="loading-msg">Loading...</div>
   } else {
     return (
       <Container id="app-container">

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
 import './List.css';
 import { UserContext } from './UserContext';
 import Helper from "./Helper";
@@ -16,12 +15,6 @@ import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
 
 function List({ list, listData }) {
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        navigate(`/home/${Helper.getNormalizedPathName(list)}`);
-    }, [navigate, list]);
 
     const context = useContext(UserContext);
     const user = context.userData.user;

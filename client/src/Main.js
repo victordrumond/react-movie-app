@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import './Main.css';
 import { UserContext } from './UserContext';
 import Helper from "./Helper";
@@ -25,6 +25,8 @@ function Main() {
             setActiveList("Watched");
         } else if (location.pathname === '/home/watchlist') {
             setActiveList("Watch List");
+        } else if (location.pathname === '/home/favorites') {
+            setActiveList("Favorites");
         };
     }, [location.pathname]);
 
@@ -40,25 +42,25 @@ function Main() {
         <Container id="main-container">
             <Card className="d-flex flex-column">
                 <Card.Header>
-                    <Nav id="tabs-nav" variant="tabs" defaultActiveKey="/home/favorites" activeKey={location.pathname} className="d-flex justify-content-between">
+                    <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" activeKey={activeList} className="d-flex justify-content-between">
                         {window.innerWidth > 575 && window.innerWidth < 768 &&
                             <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"} on {activeList}</p>
                         }
                         <div className="d-flex">
                             <Nav.Item>
-                                <Nav.Link eventKey="/home/favorites" onClick={() => setActiveList("Favorites")} className="d-flex">
+                                <Nav.Link as={Link} to="favorites" eventKey="Favorites" onClick={() => setActiveList("Favorites")} className="d-flex">
                                     {window.innerWidth > 575 && <p>Favorites</p>}
                                     <MdFavorite className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="/home/watchlist" onClick={() => setActiveList("Watch List")} className="d-flex">
+                                <Nav.Link as={Link} to="watchlist" eventKey="Watch List" onClick={() => setActiveList("Watch List")} className="d-flex">
                                     {window.innerWidth > 575 && <p>Watch List</p>}
                                     <IoMdEye className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="/home/watched" onClick={() => setActiveList("Watched")} className="d-flex">
+                                <Nav.Link as={Link} to="watched" eventKey="Watched" onClick={() => setActiveList("Watched")} className="d-flex">
                                     {window.innerWidth > 575 && <p>Watched</p>}
                                     <MdTaskAlt className="tabs-icon" />
                                 </Nav.Link>
@@ -79,7 +81,11 @@ function Main() {
                         isListEmpty={isListEmpty()}
                     />
 
-                    <List list={activeList} listData={listData[Helper.getNormalizedListName(activeList)]} />
+                    <Routes>
+                        <Route path="favorites" element={<List list="Favorites" listData={listData.favorites} />} />
+                        <Route path="watchlist" element={<List list="Watch List" listData={listData.watchList} />} />
+                        <Route path="watched" element={<List list="Watched" listData={listData.watched} />} />
+                    </Routes>
 
                 </Card.Body>
             </Card>

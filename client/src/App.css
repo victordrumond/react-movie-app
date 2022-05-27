@@ -10,3 +10,7 @@
 #app-container {
     padding: 0;
 }
+
+#loading-msg {
+    margin: 10px;
+}

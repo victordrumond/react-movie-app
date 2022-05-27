@@ -11,7 +11,7 @@ const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 ReactDOM.render(
   <BrowserRouter>
-    <Auth0Provider domain={domain} clientId={clientId} redirectUri={window.location.origin}>
+    <Auth0Provider domain={domain} clientId={clientId} redirectUri={`${window.location.origin}/home`}>
       <App />
     </Auth0Provider>
   </BrowserRouter>,
