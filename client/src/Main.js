@@ -16,25 +16,24 @@ function Main() {
     const context = useContext(UserContext);
     const location = useLocation();
 
+    const listData = context.userData.lists;
     const [activeList, setActiveList] = useState("Favorites");
     const [activeListLength, setActiveListLength] = useState(0);
-    const [listData, setListData] = useState(context.userData.lists);
 
     useEffect(() => {
-        setListData(context.userData.lists);
         if (location.pathname === '/home/watched') {
             setActiveList("Watched");
         } else if (location.pathname === '/home/watchlist') {
             setActiveList("Watch List");
         };
-    }, [context, location.pathname]);
+    }, [location.pathname]);
 
     useEffect(() => {
-        setActiveListLength(context.userData.lists[Helper.getNormalizedListName(activeList)].length);
-    }, [context, activeList])
+        setActiveListLength(listData[Helper.getNormalizedListName(activeList)].length);
+    }, [listData, activeList])
 
     const isListEmpty = () => {
-        return listData[Helper.getNormalizedListName(activeList)] ? true : false;
+        return listData[Helper.getNormalizedListName(activeList)].length === 0 ? true : false;
     }
 
     return (

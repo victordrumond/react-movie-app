@@ -38,6 +38,11 @@ class Helper {
         return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
     }
 
+    // Normalize path name
+    static getNormalizedPathName = (listName) => {
+        return listName.toLowerCase().replace(' ', '')
+    }
+
 }
 
 export default Helper;

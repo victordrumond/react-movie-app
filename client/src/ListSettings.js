@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import './ListSettings.css';
 import { UserContext } from './UserContext';
 import Helper from "./Helper";
@@ -11,13 +11,8 @@ import Requests from './Requests';
 function ListSettings({ activeList, isListEmpty }) {
 
     const context = useContext(UserContext);
-    const [user, setUser] = useState(context.userData.user);
-    const [listsConfig, setListsConfig] = useState(context.userData.config.lists);
-    
-    useEffect(() => {
-        setUser(context.userData.user);
-        setListsConfig(context.userData.config.lists);
-    }, [context]);
+    const user = context.userData.user;
+    const listsConfig = context.userData.config.lists;
 
     const handleUpdateFilter = (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);

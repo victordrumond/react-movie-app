@@ -20,17 +20,12 @@ function List({ list, listData }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        navigate(`/home/${list.toLowerCase().replace(' ', '')}`);
+        navigate(`/home/${Helper.getNormalizedPathName(list)}`);
     }, [navigate, list]);
 
     const context = useContext(UserContext);
-    const [user, setUser] = useState(context.userData.user)
-    const [listConfig, setListConfig] = useState(context.userData.config.lists[Helper.getNormalizedListName(list)])
-
-    useEffect(() => {
-        setUser(context.userData.user);
-        setListConfig(context.userData.config.lists[Helper.getNormalizedListName(list)]);
-    }, [context, list]);
+    const user = context.userData.user;
+    const listConfig = context.userData.config.lists[Helper.getNormalizedListName(list)];
 
     const [activeCard, setActiveCard] = useState(null);
 

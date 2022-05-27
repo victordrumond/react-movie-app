@@ -12,11 +12,7 @@ import Requests from './Requests';
 function Search() {
 
     const context = useContext(UserContext);
-    const [user, setUser] = useState(context.userData.user)
-
-    useEffect(() => {
-        setUser(context.userData.user);
-    }, [context]);
+    const user = context.userData.user;
 
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
