@@ -70,6 +70,22 @@ class Movie {
     getProductionCompanies() {
         return this.movie.production_companies.map(item => (" " + item.name)) || 'Production companies not found';
     }
+
+    getStreamingServices() {
+        let providers = Object.entries(this.movie["watch/providers"].results);
+        let streamingServices = []
+        for (const provider of providers) {
+            let code = provider[0];
+            let data = provider[1];
+            if (data.hasOwnProperty('flatrate')) {
+                streamingServices.push({
+                    country: code,
+                    services: data.flatrate
+                });
+            };
+        };
+        return streamingServices;
+    }
 }
 
 export default Movie;

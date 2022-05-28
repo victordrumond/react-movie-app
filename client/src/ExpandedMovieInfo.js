@@ -1,19 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './ExpandedMovieInfo.css';
 import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 import Movie from './Movie';
 
 function ExpandedMovieInfo({ movieObj }) {
 
-    const movie = new Movie(movieObj);
+    const movie = useMemo(() => new Movie(movieObj), [movieObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
+    const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
 
     useEffect(() => {
+        setStreamingData(movie.getStreamingServices());
         setShowInfoModal(true);
-    }, [movieObj])
+    }, [movie])
+
+    const isAvailableOnStreaming = () => {
+        return streamingData.length === 0 ? false : true;
+    }
+
+    const [selectedCountry, setSelectedCountry] = useState('US');
+
+    const getAvailableServicesOnCountry = () => {
+        for (const dataCountry of streamingData) {
+            if (dataCountry.country === selectedCountry) {
+                return dataCountry.services;
+            }
+        }
+        return streamingData[0].services;
+    }
 
     return (
-        <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true}>
+        <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true} centered={true} >
             <Modal.Header closeButton>
                 <Modal.Title>{`${movie.getTitle()} (${movie.getReleaseYear()})`}</Modal.Title>
             </Modal.Header>
@@ -37,6 +55,29 @@ function ExpandedMovieInfo({ movieObj }) {
                         <p><b>Starring: </b>{movie.getCast() + "."}</p>
                         <p><b>Direction: </b>{movie.getDirectors() + "."}</p>
                         <p><b>Production: </b>{movie.getProductionCompanies() + "."}</p>
+                    </div>
+                    <div id="watch" className="d-flex flex-column">
+                        <div className="d-flex justify-content-start">
+                            <p><b>Where To Watch?</b></p>
+                            {isAvailableOnStreaming() &&
+                                <Form.Select id="country-select" size="sm" defaultValue={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
+                                    {streamingData.map((item, i) => (
+                                        <option key={i} value={item.country}>{item.country}</option>
+                                    ))}
+                                </Form.Select>
+                            }
+                        </div>
+                        <div id="streaming-services" className="d-flex justify-content-start">
+                            {!isAvailableOnStreaming() &&
+                                <p>Not available for streaming in any country at the moment.</p>
+                            }
+                            {isAvailableOnStreaming() && getAvailableServicesOnCountry().map((item, i) => (
+                                <img
+                                    key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
+                                    alt="streaming_logo" title={item.provider_name}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </Modal.Body>
