@@ -41,10 +41,15 @@ function List({ list, listData }) {
     };
 
     const handleAdd = (item, list) => {
+        if (isMovieOnList(item, list)) {
+            setAddData([item.title, list, false]);
+            setAddMovieToList(true);
+            return;
+        }
         let newList = Helper.getNormalizedListName(list);
         Requests.addMovie(user.email, newList, item).then(res => {
             context.setUserData(res.data);
-            setAddData([item.title, list]);
+            setAddData([item.title, list, true]);
             setAddMovieToList(true);
         }).catch(err => {
             console.log(err);
@@ -61,6 +66,16 @@ function List({ list, listData }) {
             console.log(err);
         });
     };
+
+    const isMovieOnList = (item, list) => {
+        let listMovies = context.userData.lists[Helper.getNormalizedListName(list)];
+        for (const movie of listMovies) {
+            if (movie.data.id === item.id) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     return (
         <Container id="list-container">
@@ -172,10 +187,12 @@ function List({ list, listData }) {
             {addMovieToList && (
                 <Modal id="icons-modal" show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add To New List</Modal.Title>
+                        <Modal.Title>
+                            {addData[2] ? 'Added To List' : 'Already On List'}
+                        </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {addData ? addData[0] : null} was added to {addData ? addData[1] : null}.
+                        {addData[0]} {addData[2] ? 'was added to' : 'is already on'} {addData[1]}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="success" onClick={() => setAddMovieToList(false)}>
