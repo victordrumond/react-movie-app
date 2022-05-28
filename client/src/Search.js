@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Search.css';
 import { UserContext } from './UserContext';
+import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -72,8 +73,8 @@ function Search() {
                     <ListGroup.Item key={item.id} className="result-item d-flex justify-content-between">
                         <div className="d-flex">
                             <img
-                                src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : null}
-                                alt=""
+                                src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : coverNotFound}
+                                alt="movie_cover"
                                 className="img-fluid"
                             />
                             <div id="results-text" className="d-flex flex-column">

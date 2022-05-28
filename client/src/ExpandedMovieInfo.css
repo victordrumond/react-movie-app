@@ -9,6 +9,7 @@
 }
 
 #modal-info {
+    width: 100%;
     margin: 0 1rem;
 }
 
@@ -63,7 +64,7 @@
         font-size: 20px !important;
     }
 
-    #modal-info p {
+    #modal-info p, #watch p {
         font-size: 14px;
     }
 }
@@ -71,6 +72,10 @@
 @media screen and (max-width: 399px) {
     #modal-body {
         flex-direction: column;
+    }
+
+    #modal-info {
+        margin: 0;
     }
 
     #modal-body img {

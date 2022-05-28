@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import './List.css';
 import { UserContext } from './UserContext';
+import backdropNotFound from './backdrop-not-found.png';
+import coverNotFound from './cover-not-found.png';
 import Helper from "./Helper";
 import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
@@ -95,12 +97,12 @@ function List({ list, listData }) {
                     {window.innerWidth < 400
                         ? <Card.Img
                             variant="top"
-                            src={item.data.poster_path ? "https://image.tmdb.org/t/p/w500" + item.data.poster_path : null}
+                            src={item.data.poster_path ? "https://image.tmdb.org/t/p/w500" + item.data.poster_path : coverNotFound}
                             className="card-img img-fluid"
                         />
                         : <Card.Img
                             variant="top"
-                            src={item.data.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.data.backdrop_path : null}
+                            src={item.data.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.data.backdrop_path : backdropNotFound}
                             className="card-img img-fluid"
                         />
                     }

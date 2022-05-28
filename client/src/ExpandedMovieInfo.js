@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './ExpandedMovieInfo.css';
+import backdropNotFound from './backdrop-not-found.png';
+import coverNotFound from './cover-not-found.png';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Movie from './Movie';
@@ -33,13 +35,15 @@ function ExpandedMovieInfo({ movieObj }) {
     return (
         <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true} centered={true} >
             <Modal.Header closeButton>
-                <Modal.Title>{`${movie.getTitle()} (${movie.getReleaseYear()})`}</Modal.Title>
+                <Modal.Title>
+                    {movie.getReleaseYear() ? `${movie.getTitle()} (${movie.getReleaseYear()})` : movie.getTitle()}
+                </Modal.Title>
             </Modal.Header>
             <Modal.Body id="modal-body" className="d-flex">
                 <div>
                     {window.innerWidth > 399
-                        ? <img className="modal-img" alt="movie_cover" src={movie.getPosterPath()} />
-                        : <img className="modal-img img-fluid" alt="movie_cover" src={movie.getBackdropPath()} />
+                        ? <img className="modal-img" alt="movie_cover" src={movie.getPosterPath() || coverNotFound} />
+                        : <img className="modal-img img-fluid" alt="movie_cover" src={movie.getBackdropPath() || backdropNotFound} />
                     }
                 </div>
                 <div id="modal-info">
@@ -51,14 +55,14 @@ function ExpandedMovieInfo({ movieObj }) {
                     </div>
                     <p id="modal-description">{movie.getOverview()}</p>
                     <div id="modal-notes" className="d-flex flex-column">
-                        <p><b>Genres: </b>{movie.getGenres() + "."}</p>
-                        <p><b>Starring: </b>{movie.getCast() + "."}</p>
-                        <p><b>Direction: </b>{movie.getDirectors() + "."}</p>
-                        <p><b>Production: </b>{movie.getProductionCompanies() + "."}</p>
+                        <p><b>Genres: </b>{movie.getGenres()}</p>
+                        <p><b>Starring: </b>{movie.getCast()}</p>
+                        <p><b>Direction: </b>{movie.getDirectors()}</p>
+                        <p><b>Production: </b>{movie.getProductionCompanies()}</p>
                     </div>
                     <div id="watch" className="d-flex flex-column">
                         <div className="d-flex justify-content-start">
-                            <p><b>Where To Watch?</b></p>
+                            <p><b>Streaming</b></p>
                             {isAvailableOnStreaming() &&
                                 <Form.Select id="country-select" size="sm" defaultValue={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
                                     {streamingData.map((item, i) => (
@@ -69,7 +73,7 @@ function ExpandedMovieInfo({ movieObj }) {
                         </div>
                         <div id="streaming-services" className="d-flex justify-content-start">
                             {!isAvailableOnStreaming() &&
-                                <p>Not available for streaming in any country at the moment.</p>
+                                <p>Not available for streaming in any country at the moment</p>
                             }
                             {isAvailableOnStreaming() && getAvailableServicesOnCountry().map((item, i) => (
                                 <img

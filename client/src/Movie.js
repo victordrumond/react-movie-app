@@ -17,11 +17,17 @@ class Movie {
     }
 
     getPosterPath() {
-        return `https://image.tmdb.org/t/p/w500${this.movie.poster_path}` || null;
+        if (this.movie.poster_path) {
+            return `https://image.tmdb.org/t/p/w500${this.movie.poster_path}`;
+        }
+        return null;
     }
 
     getBackdropPath() {
-        return `https://image.tmdb.org/t/p/w500${this.movie.backdrop_path}` || null;
+        if (this.movie.backdrop_path) {
+            return `https://image.tmdb.org/t/p/w500${this.movie.backdrop_path}`;
+        }
+        return null;
     }
 
     getStatus() {
@@ -29,16 +35,18 @@ class Movie {
     }
 
     getRuntime() {
-        return `${this.movie.runtime} min` || 'Unknown';
+        if (this.movie.runtime) {
+            return `${this.movie.runtime} min`;
+        }
+        return 'Not Available';
     }
 
     getAverageRating() {
         if (this.movie.vote_average) {
             let rating = this.movie.vote_average.toString();
             return rating.length === 1 ? rating + '.0' : rating;
-        } else {
-            return '';
         }
+        return 'Not Available';
     }
 
     getParentalRating() {
@@ -56,19 +64,31 @@ class Movie {
     }
 
     getGenres() {
-        return this.movie.genres.map(item => (' ' + item.name)) || 'Genres not found';
+        if (this.movie.genres.length > 0) {
+            return this.movie.genres.map(item => (' ' + item.name));
+        }
+        return 'not found';
     }
 
     getCast() {
-        return this.movie.credits.cast.filter((item, i) => item.known_for_department === "Acting" && i < 8).map(item => (' ' + item.name)) || 'Cast not found';
+        if (this.movie.credits.cast.length > 0) {
+            return this.movie.credits.cast.filter((item, i) => item.known_for_department === "Acting" && i < 8).map(item => (' ' + item.name));
+        }
+        return 'not found';
     }
 
     getDirectors() {
-        return this.movie.credits.crew.filter(item => item.job === "Director").map(item => (" " + item.name)) || 'Directors not found';
+        if (this.movie.credits.crew.length > 0) {
+            return this.movie.credits.crew.filter(item => item.job === "Director").map(item => (" " + item.name));
+        }
+        return 'not found';
     }
     
     getProductionCompanies() {
-        return this.movie.production_companies.map(item => (" " + item.name)) || 'Production companies not found';
+        if (this.movie.production_companies.length > 0) {
+            return this.movie.production_companies.map(item => (" " + item.name));
+        }
+        return 'not found';
     }
 
     getStreamingServices() {

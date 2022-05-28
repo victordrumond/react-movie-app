@@ -18,6 +18,10 @@
     font-size: 15px;
 }
 
+#content-body {
+    padding: 0 1rem 1rem;
+}
+
 @media screen and (max-width: 767px) {
     #tabs-nav {
         flex-direction: column;

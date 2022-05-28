@@ -19,7 +19,7 @@ function Dashboard() {
         if (location.pathname !== '/home/watchlist' && location.pathname !== '/home/watched') {
             navigate('/home/favorites');
         }
-    }, [navigate]);
+    }, [navigate, location.pathname]);
 
     const { user, logout } = useAuth0();
     const [userData, setUserData] = useState(initUserData);
@@ -62,8 +62,9 @@ function Dashboard() {
             <Routes>
                 <Route path="/home/*" element={<Main />} />
             </Routes>
-            <div id="footer-container" className="d-flex align-items-center justify-content-center">
+            <div id="footer-container" className="d-flex flex-column align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
+                <p>This product uses the <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMBd</a> API but is not endorsed or certified by TMDb.</p>
             </div>
         </Container>
         </UserContext.Provider>

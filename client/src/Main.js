@@ -75,18 +75,12 @@ function Main() {
                     </Nav>
                 </Card.Header>
                 <Card.Body id="content-body">
-
-                    <ListSettings
-                        activeList={activeList}
-                        isListEmpty={isListEmpty()}
-                    />
-
+                    <ListSettings activeList={activeList} isListEmpty={isListEmpty()} />
                     <Routes>
                         <Route path="favorites" element={<List list="Favorites" listData={listData.favorites} />} />
                         <Route path="watchlist" element={<List list="Watch List" listData={listData.watchList} />} />
                         <Route path="watched" element={<List list="Watched" listData={listData.watched} />} />
                     </Routes>
-
                 </Card.Body>
             </Card>
         </Container>
