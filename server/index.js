@@ -76,7 +76,7 @@ app.get("/movie/:movieid", async (req, res) => {
 // GET request: receive data from search
 app.get("/search/:query", async (req, res) => {
   await axios
-    .get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + req.params.query)
+    .get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + encodeURIComponent(req.params.query))
     .then(response => {
       return res.json(response.data);
     });

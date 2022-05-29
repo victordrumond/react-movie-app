@@ -22,15 +22,18 @@ function Search() {
     const resultsRef = useRef(null);
 
     useEffect(() => {
-        if (searchFor) {
-            Requests.searchFor(searchFor).then(res => {
-                if (res.data.results) {
-                    setData(res.data.results);
-                };
-            });
-        } else {
-            setData([]);
-        };
+        const timer = setTimeout(() => {
+            if (searchFor) {
+                Requests.searchFor(searchFor).then(res => {
+                    if (res.data.results) {
+                        setData(res.data.results);
+                    };
+                });
+            } else {
+                setData([]);
+            };
+        }, 200)
+        return () => clearTimeout(timer)
     }, [searchFor]);
 
     useEffect(() => {
