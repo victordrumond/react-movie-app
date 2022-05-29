@@ -5,6 +5,7 @@ import coverNotFound from './cover-not-found.png';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Movie from './Movie';
+import Helper from './Helper';
 
 function ExpandedMovieInfo({ movieObj }) {
 
@@ -55,10 +56,10 @@ function ExpandedMovieInfo({ movieObj }) {
                     </div>
                     <p id="modal-description">{movie.getOverview()}</p>
                     <div id="modal-notes" className="d-flex flex-column">
-                        <p><b>Genres: </b>{movie.getGenres()}</p>
-                        <p><b>Starring: </b>{movie.getCast()}</p>
-                        <p><b>Direction: </b>{movie.getDirectors()}</p>
-                        <p><b>Production: </b>{movie.getProductionCompanies()}</p>
+                        <p><b>Genres: </b>{Helper.separateByComma(movie.getGenres())}</p>
+                        <p><b>Starring: </b>{Helper.separateByComma(movie.getCast())}</p>
+                        <p><b>Direction: </b>{Helper.separateByComma(movie.getDirection())}</p>
+                        <p><b>Production: </b>{Helper.separateByComma(movie.getProductionCompanies())}</p>
                     </div>
                     <div id="watch" className="d-flex flex-column">
                         <div className="d-flex justify-content-start">

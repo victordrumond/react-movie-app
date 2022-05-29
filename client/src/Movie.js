@@ -65,28 +65,28 @@ class Movie {
 
     getGenres() {
         if (this.movie.genres.length > 0) {
-            return this.movie.genres.map(item => (' ' + item.name));
+            return this.movie.genres.map(item => (item.name));
         }
         return 'not found';
     }
 
     getCast() {
         if (this.movie.credits.cast.length > 0) {
-            return this.movie.credits.cast.filter((item, i) => item.known_for_department === "Acting" && i < 8).map(item => (' ' + item.name));
+            return this.movie.credits.cast.filter((item, i) => item.known_for_department === "Acting" && i < 8).map(item => (item.name));
         }
         return 'not found';
     }
 
-    getDirectors() {
+    getDirection() {
         if (this.movie.credits.crew.length > 0) {
-            return this.movie.credits.crew.filter(item => item.job === "Director").map(item => (" " + item.name));
+            return this.movie.credits.crew.filter(item => item.job === "Director").map(item => (item.name));
         }
         return 'not found';
     }
     
     getProductionCompanies() {
         if (this.movie.production_companies.length > 0) {
-            return this.movie.production_companies.map(item => (" " + item.name));
+            return this.movie.production_companies.map(item => (item.name));
         }
         return 'not found';
     }

@@ -1,5 +1,15 @@
 class Helper {
 
+    // Separate strings by comma, except for last one
+    static separateByComma = (data) => {
+        let formattedData = [];
+        for (let i = 0; i < data.length - 1; i++) {
+            formattedData.push(data[i] + ', ')
+        }
+        formattedData.push(data[data.length - 1]);
+        return formattedData;
+    }
+
     // Format movie title on card
     static formatTitle = (title) => {
         if (window.innerWidth > 575) {
