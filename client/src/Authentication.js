@@ -4,15 +4,17 @@ import './Authentication.css';
 import Requests from "./Requests";
 import { useAuth0 } from '@auth0/auth0-react';
 import logo from './logo.png';
+import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import LocalStorage from './LocalStorage';
 
 function Authentication() {
 
     const navigate = useNavigate();
 
     useEffect(() => {
-      navigate('/start');
+        navigate('/start');
     }, [navigate]);
 
     const { loginWithRedirect } = useAuth0();
@@ -21,7 +23,14 @@ function Authentication() {
     const [index, setIndex] = useState(window.innerWidth < 768 ? 10 : 20);
 
     useEffect(() => {
-        Requests.getCovers().then(res => setCovers(res.data));
+        if (LocalStorage.hasUpdatedTrendingCovers()) {
+            setCovers(LocalStorage.getTrendingCovers());
+        } else {
+            Requests.getCovers().then(res => {
+                LocalStorage.setTrendingCovers(res.data);
+                setCovers(res.data);
+            })
+        }
     }, []);
 
     useEffect(() => {
@@ -66,11 +75,11 @@ function Authentication() {
                 </div>
             </div>
             <div id="trending">
-                {activeCovers.length > 0 && activeCovers.map(item => (
+                {activeCovers.length > 0 && activeCovers.map((item, i) => (
                     <img
-                        key={item.poster_path}
-                        src={"https://image.tmdb.org/t/p/w500" + item.poster_path}
-                        alt="popular_movie_covers"
+                        key={i}
+                        src={item ? "https://image.tmdb.org/t/p/w500" + item : coverNotFound}
+                        alt=""
                         className="img-fluid"
                     />
                 ))}

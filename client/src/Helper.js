@@ -38,6 +38,13 @@ class Helper {
         return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
     }
 
+    // Get comparable date
+    static getComparableDate = (timestamp) => {
+        let dateObj = new Date(timestamp);
+        let IsoDateString = dateObj.toISOString();
+        return IsoDateString.substring(10, 0).replaceAll('-', '');
+    }
+
 }
 
 export default Helper;

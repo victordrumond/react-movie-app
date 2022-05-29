@@ -31,6 +31,12 @@
 
 #footer-container p {
     margin: auto 0;
+    text-align: center;
+}
+
+#tmdb-credits {
+    padding-top: 1rem !important;
+    font-size: 15px;
 }
 
 @media screen and (max-width: 767px) {
@@ -71,5 +77,13 @@
         position: absolute;
         top: 100px;
         right: 1rem;
+    }
+
+    #footer-container p {
+        font-size: 14px;
+    }
+    
+    #tmdb-credits {
+        font-size: 13px !important;
     }
 }

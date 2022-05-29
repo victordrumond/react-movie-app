@@ -35,15 +35,15 @@ function List({ list, listData }) {
     const [addData, setAddData] = useState(null);
 
     const getMovieExpandedData = (movieId) => {
-        if (LocalStorage.isMovieInLocalStorage(movieId)) {
-            let movieObj = LocalStorage.getMovieFromLocalStorage(movieId);
+        if (LocalStorage.hasExpandedMovie(movieId)) {
+            let movieObj = LocalStorage.getExpandedMovie(movieId);
             if (movieObj) {
                 setInfoData(movieObj);
                 setShowExpandedInfo(true);    
             }
         } else {
             Requests.getMovieData(movieId).then(res => {
-                LocalStorage.setMovieInLocalStorage(res.data);
+                LocalStorage.setExpandedMovie(res.data);
                 setInfoData(res.data);
                 setShowExpandedInfo(true);
             });

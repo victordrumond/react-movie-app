@@ -64,7 +64,7 @@ function Dashboard() {
             </Routes>
             <div id="footer-container" className="d-flex flex-column align-items-center justify-content-center">
                 <p>&#169; 2022 React Movie App | A project by Victor</p>
-                <p>This product uses the <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMBd</a> API but is not endorsed or certified by TMDb.</p>
+                <p id="tmdb-credits">This product uses the TMDb API but is not endorsed or certified by <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMBd</a>.</p>
             </div>
         </Container>
         </UserContext.Provider>

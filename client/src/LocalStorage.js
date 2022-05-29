@@ -1,11 +1,13 @@
+import Helper from './Helper';
+
 class LocalStorage {
 
-    static isMovieInLocalStorage = (movieId) => {
-        let expandedMoviesFromLS = JSON.parse(localStorage.getItem('expandedMovies'));
-        if (!expandedMoviesFromLS) {
+    static hasExpandedMovie = (movieId) => {
+        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies'));
+        if (!expandedMovies) {
             return false;
         }
-        for (const movie of expandedMoviesFromLS) {
+        for (const movie of expandedMovies) {
             if (movie.id === movieId) {
                 return true;
             }
@@ -13,12 +15,12 @@ class LocalStorage {
         return false;
     }
 
-    static getMovieFromLocalStorage = (movieId) => {
-        let expandedMoviesFromLS = JSON.parse(localStorage.getItem('expandedMovies'));
-        if (!expandedMoviesFromLS) {
+    static getExpandedMovie = (movieId) => {
+        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies'));
+        if (!expandedMovies) {
             return null;
         }
-        for (const movie of expandedMoviesFromLS) {
+        for (const movie of expandedMovies) {
             if (movie.id === movieId) {
                 return movie;
             }
@@ -26,15 +28,47 @@ class LocalStorage {
         return null;
     }
 
-    static setMovieInLocalStorage = (movieObj) => {
-        let expandedMoviesFromLS = JSON.parse(localStorage.getItem('expandedMovies'));
-        if (!expandedMoviesFromLS) {
-            let expandedMovies = [movieObj];
+    static setExpandedMovie = (movie) => {
+        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies'));
+        if (!expandedMovies) {
+            let expandedMovies = [movie];
             localStorage.setItem('expandedMovies', JSON.stringify(expandedMovies));
             return;
         }
-        expandedMoviesFromLS.push(movieObj);
-        localStorage.setItem('expandedMovies', JSON.stringify(expandedMoviesFromLS));
+        expandedMovies.push(movie);
+        localStorage.setItem('expandedMovies', JSON.stringify(expandedMovies));
+    }
+
+    static hasUpdatedTrendingCovers = () => {
+        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers'));
+        if (trendingCovers && trendingCovers.covers.length > 0) {
+            let today = Helper.getComparableDate(Date.now());
+            let lastUpdate = Helper.getComparableDate(trendingCovers.updated);
+            if (today === lastUpdate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static getTrendingCovers = () => {
+        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers'));
+        if (trendingCovers) {
+            return trendingCovers.covers;
+        }
+        return null;
+    }
+
+    static setTrendingCovers = (movies) => {
+        let covers = [];
+        for (const movie of movies) {
+            covers.push(movie.poster_path);
+        }
+        let updatedTrendingCovers = {
+            updated: Date.now(),
+            covers: covers
+        }
+        localStorage.setItem('trendingCovers', JSON.stringify(updatedTrendingCovers));
     }
 
 }
