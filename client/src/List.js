@@ -4,6 +4,7 @@ import { UserContext } from './UserContext';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
 import Helper from "./Helper";
+import LocalStorage from "./LocalStorage";
 import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -34,10 +35,19 @@ function List({ list, listData }) {
     const [addData, setAddData] = useState(null);
 
     const getMovieExpandedData = (movieId) => {
-        Requests.getMovieData(movieId).then(res => {
-            setInfoData(res.data);
-            setShowExpandedInfo(true);
-        });
+        if (LocalStorage.isMovieInLocalStorage(movieId)) {
+            let movieObj = LocalStorage.getMovieFromLocalStorage(movieId);
+            if (movieObj) {
+                setInfoData(movieObj);
+                setShowExpandedInfo(true);    
+            }
+        } else {
+            Requests.getMovieData(movieId).then(res => {
+                LocalStorage.setMovieInLocalStorage(res.data);
+                setInfoData(res.data);
+                setShowExpandedInfo(true);
+            });
+        }
     };
 
     const handleAdd = (item, list) => {
