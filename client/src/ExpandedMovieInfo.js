@@ -56,10 +56,10 @@ function ExpandedMovieInfo({ movieObj }) {
                     </div>
                     <p id="modal-description">{movie.getOverview()}</p>
                     <div id="modal-notes" className="d-flex flex-column">
-                        <p><b>Genres: </b>{Helper.separateByComma(movie.getGenres())}</p>
-                        <p><b>Starring: </b>{Helper.separateByComma(movie.getCast())}</p>
-                        <p><b>Direction: </b>{Helper.separateByComma(movie.getDirection())}</p>
-                        <p><b>Production: </b>{Helper.separateByComma(movie.getProductionCompanies())}</p>
+                        <p><b>Genres: </b>{movie.getGenres().length > 0 ? Helper.separateByComma(movie.getGenres()) : 'not found'}</p>
+                        <p><b>Starring: </b>{movie.getGenres().length > 0 ? Helper.separateByComma(movie.getCast()) : 'not found'}</p>
+                        <p><b>Direction: </b>{movie.getGenres().length > 0 ? Helper.separateByComma(movie.getDirection()) : 'not found'}</p>
+                        <p><b>Production: </b>{movie.getGenres().length > 0 ? Helper.separateByComma(movie.getProductionCompanies()) : 'not found'}</p>
                     </div>
                     <div id="watch" className="d-flex flex-column">
                         <div className="d-flex justify-content-start">

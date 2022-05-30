@@ -133,7 +133,7 @@ function List({ list, listData }) {
                     }
                     <Card.Body>
                         {window.innerWidth > 400 &&
-                            <Card.Title id="movie-title" title={item.data.original_title}>{Helper.formatTitle(item.data.title)}</Card.Title>
+                            <Card.Title id="movie-title" title={item.data.original_title}>{item.data.title}</Card.Title>
                         }
                         {window.innerWidth > 575 &&
                             <div className="d-flex justify-content-between">
@@ -142,7 +142,7 @@ function List({ list, listData }) {
                             </div>
                         }
                         {window.innerWidth > 575 &&
-                            <Card.Text id="movie-description">{Helper.formatDescription(item.data.overview, item.data.original_title)}</Card.Text>
+                            <Card.Text id="movie-description">{item.data.overview}</Card.Text>
                         }
                         {window.innerWidth > 991 &&
                             <div>

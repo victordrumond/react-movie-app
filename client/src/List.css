@@ -29,6 +29,11 @@
 #movie-title {
     font-size: 18px;
     margin: 0.25rem 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 #movie-date, #movie-score {
@@ -39,6 +44,11 @@
 #movie-description {
     font-size: 14px;
     margin: 0.5rem 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 #footer-icons {

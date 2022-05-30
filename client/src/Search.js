@@ -32,7 +32,7 @@ function Search() {
             } else {
                 setData([]);
             };
-        }, 200)
+        }, 300)
         return () => clearTimeout(timer)
     }, [searchFor]);
 
@@ -72,8 +72,8 @@ function Search() {
                 />
             </div>
             <ListGroup id="results" ref={resultsRef}>
-                {data.length !== 0 && searchFor !== "" && data.map(item => (
-                    <ListGroup.Item key={item.id} className="result-item d-flex justify-content-between">
+                {data.length !== 0 && searchFor !== "" && data.map((item, index) => (
+                    <ListGroup.Item key={index} className="result-item d-flex justify-content-between">
                         <div className="d-flex">
                             <img
                                 src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : coverNotFound}
@@ -81,9 +81,8 @@ function Search() {
                                 className="img-fluid"
                             />
                             <div id="results-text" className="d-flex flex-column">
-                                <p>{item.title}</p>
-                                <p className="text-muted">{item.original_title !== item.title ? item.original_title : null}</p>
-                                <p>{item.release_date ? item.release_date.slice(0, 4) : null}</p>
+                                <p title={item.title}>{item.title}{item.original_title !== item.title ? ` (${item.original_title})` : ''}</p>
+                                <p className='text-muted'>{item.release_date ? item.release_date.slice(0, 4) : ''}</p>
                             </div>
                         </div>
                         <div className="d-flex flex-column justify-content-between">

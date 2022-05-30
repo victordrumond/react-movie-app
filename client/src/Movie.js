@@ -52,10 +52,11 @@ class Movie {
     getParentalRating() {
         if (this.movie.release_dates.results) {
             let worldReleases = this.movie.release_dates.results;
-            let unitedStatesPR = worldReleases.filter(item => item.iso_3166_1 === 'US');
-            return unitedStatesPR.length > 0 ? unitedStatesPR[0].release_dates[0].certification : 'Not Rated';
+            let usRelease = worldReleases.filter(item => item.iso_3166_1 === 'US');
+            let usParentalRating = usRelease.length > 0 ? usRelease[0].release_dates[0].certification : 'PG not found';
+            return usParentalRating || 'PG not found';
         } else {
-            return 'Not found';
+            return 'PG not found';
         }
     }
 
@@ -67,28 +68,28 @@ class Movie {
         if (this.movie.genres.length > 0) {
             return this.movie.genres.map(item => (item.name));
         }
-        return 'not found';
+        return [];
     }
 
     getCast() {
         if (this.movie.credits.cast.length > 0) {
             return this.movie.credits.cast.filter((item, i) => item.known_for_department === "Acting" && i < 8).map(item => (item.name));
         }
-        return 'not found';
+        return [];
     }
 
     getDirection() {
         if (this.movie.credits.crew.length > 0) {
             return this.movie.credits.crew.filter(item => item.job === "Director").map(item => (item.name));
         }
-        return 'not found';
+        return [];
     }
     
     getProductionCompanies() {
         if (this.movie.production_companies.length > 0) {
             return this.movie.production_companies.map(item => (item.name));
         }
-        return 'not found';
+        return [];
     }
 
     getStreamingServices() {
