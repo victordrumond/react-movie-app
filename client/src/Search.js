@@ -5,10 +5,12 @@ import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Badge from 'react-bootstrap/Badge';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
+import Helper from './Helper';
 
 function Search() {
 
@@ -83,6 +85,7 @@ function Search() {
                             <div id="results-text" className="d-flex flex-column">
                                 <p title={item.title}>{item.title}{item.original_title !== item.title ? ` (${item.original_title})` : ''}</p>
                                 <p className='text-muted'>{item.release_date ? item.release_date.slice(0, 4) : ''}</p>
+                                <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.vote_average)}>{item.vote_average ? Helper.formatScore(item.vote_average) : 'NR'}</Badge></p>
                             </div>
                         </div>
                         <div className="d-flex flex-column justify-content-between">

@@ -27,8 +27,7 @@ class Helper {
 
     // Format movie score
     static formatScore = (score) => {
-        if (score.toString().length === 1) return score.toString() + ".0";
-        else return score.toString();
+        return score.toString().length === 1 ? score.toString() + ".0" : score.toString();
     }
 
     // Normalize list name

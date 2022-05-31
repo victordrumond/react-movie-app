@@ -34,7 +34,11 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
-  
+
+#search-score {
+    font-weight: 400 !important;
+}
+
 #results img {
     width: 50px;
     height: 75px;
