@@ -27,8 +27,8 @@ function Authentication() {
             setCovers(LocalStorage.getTrendingCovers());
         } else {
             Requests.getCovers().then(res => {
-                LocalStorage.setTrendingCovers(res.data);
                 setCovers(res.data);
+                LocalStorage.setTrendingCovers(res.data);
             })
         }
     }, []);

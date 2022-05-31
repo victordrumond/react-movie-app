@@ -58,7 +58,7 @@ app.get("/authcovers", async (req, res) => {
     await axios
       .get("https://api.themoviedb.org/3/movie/popular?api_key=" + process.env.TMDB_API_KEY + "&page=" + i)
       .then(res => {
-        res.data.results.forEach(item => covers.push(item));
+        res.data.results.forEach(item => covers.push(item.poster_path));
       })
     ;
   }

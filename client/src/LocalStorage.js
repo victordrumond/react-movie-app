@@ -62,7 +62,7 @@ class LocalStorage {
     static setTrendingCovers = (movies) => {
         let covers = [];
         for (const movie of movies) {
-            covers.push(movie.poster_path);
+            covers.push(movie);
         }
         let updatedTrendingCovers = {
             updated: Date.now(),
