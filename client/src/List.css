@@ -28,6 +28,10 @@
 .bg-colorF {
     background-color: #dc3545 !important;
 }
+.bg-colorNR {
+    color: black !important;
+    background-color: #e9ecef !important;
+}
 
 #movie-card {
     height: 325px;

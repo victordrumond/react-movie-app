@@ -46,7 +46,7 @@ class Movie {
             let rating = this.movie.vote_average.toString();
             return rating.length === 1 ? rating + '.0' : rating;
         }
-        return 'Not Available';
+        return 'Not Rated';
     }
 
     getParentalRating() {

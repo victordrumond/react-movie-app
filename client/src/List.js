@@ -139,7 +139,7 @@ function List({ list, listData }) {
                         {window.innerWidth > 575 &&
                             <div className="d-flex justify-content-between align-items-center">
                                 <Card.Text id="movie-date">{Helper.formatDate(item.data.release_date)}</Card.Text>
-                                <ProgressBar id="progress-bar" variant={Helper.getScoreBarColor(item.data.vote_average)} now={item.data.vote_average} min={0} max={10} label={Helper.formatScore(item.data.vote_average)}/>
+                                <ProgressBar id="progress-bar" variant={Helper.getScoreBarColor(item.data.vote_average)} now={item.data.vote_average || 10} min={0} max={10} label={item.data.vote_average ? Helper.formatScore(item.data.vote_average) : 'NR'}/>
                             </div>
                         }
                         {window.innerWidth > 575 &&
