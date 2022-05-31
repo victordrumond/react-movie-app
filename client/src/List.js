@@ -9,6 +9,7 @@ import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import CloseButton from 'react-bootstrap/CloseButton';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
@@ -39,7 +40,7 @@ function List({ list, listData }) {
             let movieObj = LocalStorage.getExpandedMovie(movieId);
             if (movieObj) {
                 setInfoData(movieObj);
-                setShowExpandedInfo(true);    
+                setShowExpandedInfo(true);
             }
         } else {
             Requests.getMovieData(movieId).then(res => {
@@ -136,9 +137,9 @@ function List({ list, listData }) {
                             <Card.Title id="movie-title" title={item.data.original_title}>{item.data.title}</Card.Title>
                         }
                         {window.innerWidth > 575 &&
-                            <div className="d-flex justify-content-between">
+                            <div className="d-flex justify-content-between align-items-center">
                                 <Card.Text id="movie-date">{Helper.formatDate(item.data.release_date)}</Card.Text>
-                                <Card.Text id="movie-score">{Helper.formatScore(item.data.vote_average)}</Card.Text>
+                                <ProgressBar id="progress-bar" variant={Helper.getScoreBarColor(item.data.vote_average)} now={item.data.vote_average} min={0} max={10} label={Helper.formatScore(item.data.vote_average)}/>
                             </div>
                         }
                         {window.innerWidth > 575 &&

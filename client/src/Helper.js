@@ -10,31 +10,18 @@ class Helper {
         return formattedData;
     }
 
-    // Format movie title on card
-    static formatTitle = (title) => {
-        if (window.innerWidth > 575) {
-            if (title.length > 40) return title.substring(0, 40) + "...";
-            else return title;
-        } else {
-            if (title.length > 50) return title.substring(0, 50) + "...";
-            else return title;
-        };
-    }
-
-    // Format movie description on card
-    static formatDescription = (text, title) => {
-        if (title.length > 25) {
-            if (text.length > 50) return text.substring(0, 50) + "...";
-            else return text;
-        } else {
-            if (text.length > 80) return text.substring(0, 80) + "...";
-            else return text;
-        };
-    }
-
     // Format movie release date
     static formatDate = (date) => {
         return date.substring(0, 4);
+    }
+
+    static getScoreBarColor = (score) => {
+        if (score < 4) return 'colorF';
+        if (score < 6) return 'colorE';
+        if (score < 7) return 'colorD';
+        if (score < 8) return 'colorC';
+        if (score < 9) return 'colorB';
+        if (score <= 10) return 'colorA';
     }
 
     // Format movie score
