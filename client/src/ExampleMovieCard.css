@@ -2,11 +2,6 @@
     height: 350px;
 }
 
-#example-card-header {
-    display: flex;
-    background-color: white;
-}
-
 .example-card-img {
     width: 144px;
     height: 81px;
