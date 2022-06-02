@@ -10,10 +10,11 @@ export const initUserData = {
         sub: "sub",
         updated_at: "updated_at"
     },
-    lists: {
+    data: {
         favorites: [],
         watchList: [],
-        watched: []
+        watched: [],
+        ratings: []
     },
     config: {
         lists: {

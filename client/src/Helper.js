@@ -42,6 +42,14 @@ class Helper {
         return IsoDateString.substring(10, 0).replaceAll('-', '');
     }
 
+    static getMovieRating = (id, userRatings) => {
+        let isMovieRated = userRatings.findIndex(item => item.movieId === id);
+        if (isMovieRated < 0) {
+            return 0;
+        }
+        return userRatings[isMovieRated].score;
+    }
+
 }
 
 export default Helper;

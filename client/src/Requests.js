@@ -42,6 +42,11 @@ class Requests {
         return axios.post('/updatefilter', { user: user, list: list, value: filter });
     }
 
+    // Update movie rating
+    static updateMovieRating = (user, movie, score) => {
+        return axios.post('/updaterating', { user: user, movie: movie, score: score })
+    }
+
 }
 
 export default Requests;

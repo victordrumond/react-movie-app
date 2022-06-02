@@ -9,7 +9,7 @@ import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import CloseButton from 'react-bootstrap/CloseButton';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
@@ -17,11 +17,13 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Requests from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
+import Rating from '@mui/material/Rating';
 
 function List({ list, listData }) {
 
     const context = useContext(UserContext);
     const user = context.userData.user;
+    const userRatings = context.userData.data.ratings;
     const listConfig = context.userData.config.lists[Helper.getNormalizedListName(list)];
 
     const [activeCard, setActiveCard] = useState(null);
@@ -78,8 +80,16 @@ function List({ list, listData }) {
         });
     };
 
+    const handleRate = (item, value) => {
+        Requests.updateMovieRating(user.email, item, value).then(res => {
+            context.setUserData(res.data);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
     const isMovieOnList = (item, list) => {
-        let listMovies = context.userData.lists[Helper.getNormalizedListName(list)];
+        let listMovies = context.userData.data[Helper.getNormalizedListName(list)];
         for (const movie of listMovies) {
             if (movie.data.id === item.id) {
                 return true;
@@ -90,9 +100,8 @@ function List({ list, listData }) {
 
     return (
         <Container id="list-container">
-            {listData.length === 0 &&
-                <ExampleMovieCard list={list} />
-            }
+
+            {listData.length === 0 && <ExampleMovieCard list={list} />}
 
             {listData.length !== 0 && ListConfig.sortData(listData, listConfig).map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
@@ -121,25 +130,31 @@ function List({ list, listData }) {
                         </div>
                     }
                     {window.innerWidth < 400
-                        ? <Card.Img
-                            variant="top"
+                        ? <Card.Img variant="top" className="card-img img-fluid"
                             src={item.data.poster_path ? "https://image.tmdb.org/t/p/w500" + item.data.poster_path : coverNotFound}
-                            className="card-img img-fluid"
                         />
                         : <Card.Img
-                            variant="top"
+                            variant="top" className="card-img img-fluid"
                             src={item.data.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.data.backdrop_path : backdropNotFound}
-                            className="card-img img-fluid"
                         />
                     }
-                    <Card.Body>
+                    <Card.Body id="movie-card-body">
                         {window.innerWidth > 400 &&
-                            <Card.Title id="movie-title" title={item.data.original_title}>{item.data.title}</Card.Title>
+                            <div>
+                                <Rating
+                                    id="user-rating"
+                                    value={Helper.getMovieRating(item.data.id, userRatings)}
+                                    onChange={(e, newValue) => {handleRate(item, newValue)}}
+                                />
+                                <Card.Title id="movie-title" title={item.data.original_title}>{item.data.title}</Card.Title>
+                            </div>
                         }
                         {window.innerWidth > 575 &&
                             <div className="d-flex justify-content-between align-items-center">
                                 <Card.Text id="movie-date">{Helper.formatDate(item.data.release_date)}</Card.Text>
-                                <ProgressBar id="progress-bar" variant={Helper.getScoreBarColor(item.data.vote_average)} now={item.data.vote_average || 10} min={0} max={10} label={item.data.vote_average ? Helper.formatScore(item.data.vote_average) : 'NR'}/>
+                                <Badge id="search-score" bg={Helper.getScoreBarColor(item.data.vote_average)}>
+                                    {item.data.vote_average ? Helper.formatScore(item.data.vote_average) : 'NR'}
+                                </Badge>
                             </div>
                         }
                         {window.innerWidth > 575 &&
@@ -229,11 +244,8 @@ function List({ list, listData }) {
                 </Modal>
             )}
 
-            {showExpandedInfo &&
-                <ExpandedMovieInfo
-                    movieObj={infoData}
-                />
-            }
+            {showExpandedInfo && <ExpandedMovieInfo movieObj={infoData} />}
+
         </Container>
     );
 };

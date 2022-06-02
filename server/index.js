@@ -25,10 +25,11 @@ const movieSchema = new mongoose.Schema({
     sub: String,
     updated_at: String
   },
-  lists: {
+  data: {
     favorites: [{ timestamp: Number, data: Object }],
     watchList: [{ timestamp: Number, data: Object }],
-    watched: [{ timestamp: Number, data: Object }]
+    watched: [{ timestamp: Number, data: Object }],
+    ratings: [{ movieId: Number, score: Number }]
   },
   config: {
     lists: {
@@ -88,13 +89,13 @@ app.post('/addmovie', async (req, res) => {
   if (!userData) {
     return res.sendStatus(404);
   } else {
-    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
+    let isMovieOnList = userData.data[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
     if (isMovieOnList < 0) {
       let newMovie = {
         timestamp: Date.now(),
         data: req.body.movie
       }
-      userData.lists[req.body.list].push(newMovie);
+      userData.data[req.body.list].push(newMovie);
       userData = await userData.save();
       console.log(`${req.body.movie.title} added to ${req.body.list}`);
     } else {
@@ -110,11 +111,11 @@ app.post('/deletemovie', async (req, res) => {
   if (!userData) {
     return res.sendStatus(404);
   } else {
-    let isMovieOnList = userData.lists[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
+    let isMovieOnList = userData.data[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
     if (isMovieOnList < 0) {
       console.log(`${req.body.movie.title} is not on ${req.body.list}`);
     } else {
-      userData.lists[req.body.list].splice(isMovieOnList, 1);
+      userData.data[req.body.list].splice(isMovieOnList, 1);
       userData = await userData.save();
       console.log(`${req.body.movie.title} deleted from ${req.body.list}`);
     }
@@ -132,7 +133,7 @@ app.get('/users/:user', async (req, res) => {
 app.post('/newuser', async (req, res) => {
   let newUser = {
     user: req.body.user,
-    lists: { favorites: [], watchList: [], watched: [] },
+    data: { favorites: [], watchList: [], watched: [], ratings: [] },
     config: {
       lists: {
         favorites: { filtering: "last_added" },
@@ -159,6 +160,30 @@ app.post('/updatefilter', async (req, res) => {
       return res.json(userData);
     } else {
       console.log(`Current filter on ${req.body.list} is already ${req.body.value}`);
+    }
+  }
+})
+
+// POST request: update movie rating
+app.post('/updaterating', async (req, res) => {
+  let userData = await movieModel.findOne({ "user.email": req.body.user });
+  if (!userData) {
+    return res.sendStatus(404);
+  } else {
+    let isMovieRated = userData.data.ratings.findIndex(item => item.movieId === req.body.movie.data.id);
+    if (isMovieRated < 0) {
+      const newRating = { movieId: req.body.movie.data.id, score: req.body.score };
+      userData.data.ratings.push(newRating);
+      userData = await userData.save();
+      console.log(`${req.body.movie.data.title} rating set to ${req.body.score}`);
+      return res.json(userData);
+    } else if (userData.data.ratings[isMovieRated].score !== req.body.score) {
+      userData.data.ratings[isMovieRated].score = req.body.score;
+      userData = await userData.save();
+      console.log(`${req.body.movie.data.title} rating updated to ${req.body.score}`);
+      return res.json(userData);
+    } else {
+      console.log(`Current rating of ${req.body.movie.data.title} is already ${req.body.score}`);
     }
   }
 })

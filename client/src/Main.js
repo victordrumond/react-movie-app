@@ -16,7 +16,7 @@ function Main() {
     const context = useContext(UserContext);
     const location = useLocation();
 
-    const listData = context.userData.lists;
+    const listData = context.userData.data;
     const [activeList, setActiveList] = useState("Favorites");
     const [activeListLength, setActiveListLength] = useState(0);
 
