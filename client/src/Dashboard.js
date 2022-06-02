@@ -5,6 +5,7 @@ import Requests from './Requests';
 import { useAuth0 } from '@auth0/auth0-react';
 import { initUserData, UserContext } from './UserContext';
 import logo from './logo.png';
+import Sidebar from './Sidebar';
 import Search from './Search';
 import Main from './Main';
 import Container from 'react-bootstrap/Container';
@@ -24,6 +25,7 @@ function Dashboard() {
     const { user, logout } = useAuth0();
     const [userData, setUserData] = useState(initUserData);
     const context = { userData, setUserData };
+    const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
         Requests.getUser(user.email).then((res) => {
@@ -44,19 +46,20 @@ function Dashboard() {
     return (
         <UserContext.Provider value={context}>
         <Container id="dashboard-container">
-            <div id="header-container" className="d-flex justify-content-between">
+            <div id="header-container" className="d-flex justify-content-between align-items-center">
                 <div id="name-and-logo" className="d-flex">
                     <h2>React Movie App</h2>
                     <div className="d-flex">
                         <img src={logo} alt="app_logo" className="img-fluid" />
                     </div>
                 </div>
-                <div id="logout-wrapper" className="d-flex flex-column">
-                    <p>Welcome back, <b>{userData.user.email}</b>!</p>
-                    <Button id="logout" variant="primary" onClick={() => logout()}>
-                        Logout
-                    </Button>
-                </div>
+                <Button id="sidebar" variant="primary" onClick={() => setShowSidebar(true)}>
+                    Sidebar
+                </Button>
+                <Sidebar show={showSidebar} hide={() => setShowSidebar(false)}
+                    userData={userData}
+                    logout={logout}
+                />
             </div>
             <Search />
             <Routes>

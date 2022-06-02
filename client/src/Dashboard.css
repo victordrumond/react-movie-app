@@ -16,13 +16,9 @@
     height: 50px;
 }
 
-#header-container p {
-    margin: auto 0;
-}
-
-#logout {
+#sidebar {
     width: 80px;
-    margin: 0.5rem 0 0 auto;
+    height: 38px;
 }
 
 #footer-container {
@@ -49,11 +45,7 @@
         height: 45px;
     }
 
-    #header-container p {
-        font-size: 14px;
-    }
-
-    #logout {
+    #sidebar {
         font-size: 14px;
         width: 65px;
     }
@@ -73,7 +65,7 @@
         height: 40px;
     }
 
-    #logout-wrapper {
+    #user-settings-wrapper {
         position: absolute;
         top: 100px;
         right: 1rem;
