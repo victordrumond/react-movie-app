@@ -1,5 +1,5 @@
 #example-movie-card {
-    height: 350px;
+    height: 355px;
 }
 
 .example-card-img {
@@ -11,6 +11,18 @@
 #example-movie-card p {
     text-align: center;
     color: #0000008C;
+}
+
+@media screen and (max-width: 1199px) {
+    #example-movie-card {
+        height: 340px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #example-movie-card {
+        height: 350px;
+    }
 }
 
 @media screen and (max-width: 575px) {

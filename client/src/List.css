@@ -34,11 +34,15 @@
 }
 
 #movie-card {
-    height: 325px;
+    height: 355px;
 }
 
 #movie-card:hover {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+#movie-card-body {
+    padding-top: 0.5rem !important;
 }
 
 #close-card {
@@ -53,10 +57,15 @@
     height: 135px;
 }
 
+#user-rating {
+    padding-top: 0.25rem;
+    margin-left: -0.25rem;
+}
+
 #movie-title {
     font-size: 16px;
     margin: 0;
-    padding: 0.25rem 0;
+    padding: 0 0 0.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -66,7 +75,7 @@
 
 #movie-date, #movie-score {
     font-size: 14px;
-    margin: 0.25rem 0;
+    margin: 0;
 }
 
 #movie-description {
@@ -107,6 +116,10 @@
     #list-container {
         grid-template-columns: repeat(4, 1fr);
     }
+
+    #movie-card {
+        height: 340px;
+    }
 }
 
 @media screen and (max-width: 991px) {
@@ -121,7 +134,7 @@
     }
 
     #movie-card {
-        height: 340px;
+        height: 350px;
     }
 }
 
