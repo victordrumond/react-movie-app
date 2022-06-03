@@ -16,11 +16,6 @@
     height: 50px;
 }
 
-#sidebar {
-    width: 80px;
-    height: 38px;
-}
-
 #footer-container {
     margin: 2rem 0;
 }
@@ -43,11 +38,6 @@
     #header-container img {
         width: 45px;
         height: 45px;
-    }
-
-    #sidebar {
-        font-size: 14px;
-        width: 65px;
     }
 }
 

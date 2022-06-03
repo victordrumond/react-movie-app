@@ -1,0 +1,16 @@
+#settings-container {
+    padding: 0;
+}
+
+#settings-container p {
+    margin: 0;
+}
+
+.settings-section-icon {
+    font-size: 24px;
+    margin-right: 5px;
+}
+
+#user-settings-form {
+    padding: 15px 0 20px;
+}

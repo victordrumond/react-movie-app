@@ -56,7 +56,9 @@ function Dashboard() {
                 <Button id="sidebar" variant="primary" onClick={() => setShowSidebar(true)}>
                     Sidebar
                 </Button>
-                <Sidebar show={showSidebar} hide={() => setShowSidebar(false)}
+                <Sidebar
+                    show={showSidebar}
+                    hide={() => setShowSidebar(false)}
                     userData={userData}
                     logout={logout}
                 />

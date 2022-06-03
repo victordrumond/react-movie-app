@@ -6,9 +6,13 @@
     font-size: 16px;
 }
 
-#logout {
-    width: 80px;
-    margin: 0;
+#sidebar-menu {
+    padding: 20px 0 30px;
+}
+
+.sidebar-tab {
+    font-size: 15px;
+    text-align: center !important;
 }
 
 @media screen and (max-width: 767px) {
