@@ -2,6 +2,15 @@ import axios from 'axios';
 
 class Requests {
 
+    // Edit user profile
+    static editUserProfile = (token, userId, name, nickname) => {
+        const body = { userId: userId, name: name, nickname: nickname };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.patch('/user/edituser', body, config)
+    }
+
     // Get trending movies to display on home page
     static getCovers = () => {
         return axios.get("/authcovers");

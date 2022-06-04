@@ -5,6 +5,8 @@ const axios = require("axios");
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 3001;
 const app = express();
+const { auth, requiredScopes } = require('express-oauth2-jwt-bearer');
+let request = require("request");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -16,15 +18,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Set Mongoose schema & model
 const movieSchema = new mongoose.Schema({
-  user: {
-    email: String,
-    email_verified: Boolean,
-    name: String,
-    nickname: String,
-    picture: String,
-    sub: String,
-    updated_at: String
-  },
+  user: String,
   data: {
     favorites: [{ timestamp: Number, data: Object }],
     watchList: [{ timestamp: Number, data: Object }],
@@ -46,6 +40,51 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.resolve(__dirname, '../client/build')));
+
+const checkJwt = auth({
+  audience: `https://${process.env.AUTH0_API_AUDIENCE}`,
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
+});
+
+// Get Auth0 Management API JWT
+const getManagementApiJwt = () => {
+  return new Promise(function (resolve, reject) {
+    const options = {
+      method: 'POST',
+      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      headers: { 'content-type': 'application/json' },
+      body: `{"client_id":"${process.env.AUTH0_API_CLIENT_ID}", "client_secret":"${process.env.AUTH0_API_CLIENT_SECRET}", "audience":"https://${process.env.AUTH0_DOMAIN}/api/v2/", "grant_type":"client_credentials"}`
+    }
+    request(options, function (error, response, body) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(JSON.parse(body));
+      };
+    })
+  })
+}
+
+// PATCH request: edit user profile
+app.patch("/user/edituser", checkJwt, (req, res) => {
+  getManagementApiJwt().then(data => {
+    const token = data.access_token;
+    const options = {
+      method: 'PATCH',
+      url: 'https://' + process.env.AUTH0_DOMAIN + '/api/v2/users/' + req.body.userId,
+      headers: { 'authorization': 'Bearer ' + token, 'content-type': 'application/json' },
+      body: {
+        "name": req.body.name,
+        "nickname": req.body.nickname
+      },
+      json: true
+    };
+    request(options, function (error, response, body) {
+      if (error) throw new Error(error);
+      res.json(body);
+    });
+  })
+});
 
 // GET request: Hello from server!
 app.get("/api", (req, res) => {
@@ -85,7 +124,7 @@ app.get("/search/:query", async (req, res) => {
 
 // POST request: add movie to database
 app.post('/addmovie', async (req, res) => {
-  let userData = await movieModel.findOne({ "user.email": req.body.user });
+  let userData = await movieModel.findOne({ "user": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {
@@ -107,7 +146,7 @@ app.post('/addmovie', async (req, res) => {
 
 // POST request: delete movie from database
 app.post('/deletemovie', async (req, res) => {
-  let userData = await movieModel.findOne({ "user.email": req.body.user });
+  let userData = await movieModel.findOne({ "user": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {
@@ -125,14 +164,14 @@ app.post('/deletemovie', async (req, res) => {
 
 // GET request: fetch user data from database
 app.get('/users/:user', async (req, res) => {
-  const findUserOnDatabase = await movieModel.findOne({ "user.email": req.params.user });
+  const findUserOnDatabase = await movieModel.findOne({ "user": req.params.user });
   return res.json(findUserOnDatabase);
 })
 
 // POST request: init user data on database
 app.post('/newuser', async (req, res) => {
   let newUser = {
-    user: req.body.user,
+    user: req.body.user.email,
     data: { favorites: [], watchList: [], watched: [], ratings: [] },
     config: {
       lists: {
@@ -148,7 +187,7 @@ app.post('/newuser', async (req, res) => {
 
 // POST request: update list filtering
 app.post('/updatefilter', async (req, res) => {
-  let userData = await movieModel.findOne({ "user.email": req.body.user });
+  let userData = await movieModel.findOne({ "user": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {
@@ -166,7 +205,7 @@ app.post('/updatefilter', async (req, res) => {
 
 // POST request: update movie rating
 app.post('/updaterating', async (req, res) => {
-  let userData = await movieModel.findOne({ "user.email": req.body.user });
+  let userData = await movieModel.findOne({ "user": req.body.user });
   if (!userData) {
     return res.sendStatus(404);
   } else {
