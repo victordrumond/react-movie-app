@@ -60,7 +60,7 @@ function List({ list, listData }) {
             return;
         }
         let newList = Helper.getNormalizedListName(list);
-        Requests.addMovie(user.email, newList, item).then(res => {
+        Requests.addMovie(user, newList, item).then(res => {
             context.setUserData(res.data);
             setAddData([item.title, list, true]);
             setAddMovieToList(true);
@@ -71,7 +71,7 @@ function List({ list, listData }) {
 
     const handleDelete = (item) => {
         let currentList = Helper.getNormalizedListName(list);
-        Requests.deleteMovie(user.email, currentList, item).then(res => {
+        Requests.deleteMovie(user, currentList, item).then(res => {
             context.setUserData(res.data);
             setDeleteMovie(false);
             setDeleteData(null);
@@ -81,7 +81,7 @@ function List({ list, listData }) {
     };
 
     const handleRate = (item, value) => {
-        Requests.updateMovieRating(user.email, item, value).then(res => {
+        Requests.updateMovieRating(user, item, value).then(res => {
             context.setUserData(res.data);
         }).catch(err => {
             console.log(err);

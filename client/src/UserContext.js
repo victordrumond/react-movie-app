@@ -1,15 +1,7 @@
 import { createContext } from 'react';
 
 export const initUserData = {
-    user: {
-        email: "email",
-        email_verified: false,
-        name: "name",
-        nickname: "nickname",
-        picture: "picture",
-        sub: "sub",
-        updated_at: "updated_at"
-    },
+    user: "email",
     data: {
         favorites: [],
         watchList: [],

@@ -12,10 +12,9 @@ import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
 import Helper from './Helper';
 
-function Search() {
+function Search({ user }) {
 
     const context = useContext(UserContext);
-    const user = context.userData.user;
 
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");

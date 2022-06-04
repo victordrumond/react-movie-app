@@ -5,16 +5,15 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Settings from './Settings';
 
-function Sidebar({ show, hide, userData, logout }) {
+function Sidebar({ show, hide, user, logout }) {
 
     const [activeTab, setActiveTab] = useState("Activities");
-
 
     return (
         <Offcanvas show={show} onHide={hide} placement="end">
             <Offcanvas.Header id="sidebar-header" closeButton>
                 <Offcanvas.Title id="sidebar-title">
-                    Welcome back, <b>{userData.user.email}</b>!
+                    Welcome back, <b>{user.name || user.nickname}</b>!
                 </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body className="d-flex flex-column">
@@ -32,9 +31,8 @@ function Sidebar({ show, hide, userData, logout }) {
                 {activeTab === 'Activities' &&
                     <p>Ready to work!</p>
                 }
-
                 {activeTab === 'Settings' &&
-                    <Settings user={userData.user}/>
+                    <Settings user={user}/>
                 }
             </Offcanvas.Body>
         </Offcanvas>

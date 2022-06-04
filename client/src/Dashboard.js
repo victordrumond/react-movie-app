@@ -59,11 +59,11 @@ function Dashboard() {
                 <Sidebar
                     show={showSidebar}
                     hide={() => setShowSidebar(false)}
-                    userData={userData}
+                    user={user}
                     logout={logout}
                 />
             </div>
-            <Search />
+            <Search user={user} />
             <Routes>
                 <Route path="/home/*" element={<Main />} />
             </Routes>
