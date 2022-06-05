@@ -6,8 +6,12 @@
     margin: 0;
 }
 
+#profile-title p {
+    font-size: 15px;
+}
+
 .settings-section-icon {
-    font-size: 24px;
+    font-size: 22px;
     margin-right: 5px;
 }
 
@@ -15,11 +19,18 @@
     padding: 15px 0 20px;
 }
 
+#user-settings-form label, #user-settings-form input {
+    font-size: 15px;
+}
+
 #update-profile-btn {
+    font-size: 15px;
     width: 75px;
+    height: 38px;
 }
 
 #error-msg {
+    font-size: 15px;
     padding-left: 0.5rem;
     color: #dc3545;
 }

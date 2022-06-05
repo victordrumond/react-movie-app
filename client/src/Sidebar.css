@@ -16,11 +16,12 @@
 }
 
 #sidebar-menu {
-    padding: 20px 0 30px;
+    padding: 1rem 0 1.5rem;
 }
 
 .sidebar-tab {
     font-size: 15px;
+    padding: 0.25rem 1rem !important;
     text-align: center !important;
 }
 
