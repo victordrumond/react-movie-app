@@ -75,7 +75,8 @@ app.patch("/user/edituser", checkJwt, (req, res) => {
       headers: { 'authorization': 'Bearer ' + token, 'content-type': 'application/json' },
       body: {
         "name": req.body.name,
-        "nickname": req.body.nickname
+        "nickname": req.body.nickname,
+        user_metadata: { picture: req.body.picture }
       },
       json: true
     };

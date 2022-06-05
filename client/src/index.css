@@ -1,0 +1,12 @@
+.btn:focus {
+    outline: none !important;
+    outline-offset: none !important;
+    box-shadow: none !important;
+}
+
+.form-control:focus {
+    outline: none !important;
+    outline-offset: none !important;
+    box-shadow: none !important;
+    border: 1px solid #0d6efd !important;
+}

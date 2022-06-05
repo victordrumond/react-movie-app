@@ -14,3 +14,12 @@
 #user-settings-form {
     padding: 15px 0 20px;
 }
+
+#update-profile-btn {
+    width: 75px;
+}
+
+#error-msg {
+    padding-left: 0.5rem;
+    color: #dc3545;
+}

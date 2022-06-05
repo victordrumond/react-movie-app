@@ -1,9 +1,18 @@
 #sidebar-header {
-    padding: 2rem 1rem 0;
+    padding: 1rem 1rem 0;
 }
 
 #sidebar-title {
     font-size: 16px;
+}
+
+#sidebar-title img {
+    width: 45px;
+    height: 45px;
+}
+
+#sidebar-title p {
+    margin: auto 10px;
 }
 
 #sidebar-menu {

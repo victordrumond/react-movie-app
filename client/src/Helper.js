@@ -50,6 +50,11 @@ class Helper {
         return userRatings[isMovieRated].score;
     }
 
+    static validateUsername = (username) => {
+        let regex = /^\w+$/;
+        return regex.test(username);
+    }
+
 }
 
 export default Helper;

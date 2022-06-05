@@ -3,6 +3,7 @@ import './Sidebar.css';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Image from 'react-bootstrap/Image'
 import Settings from './Settings';
 
 function Sidebar({ show, hide, user, logout }) {
@@ -12,8 +13,9 @@ function Sidebar({ show, hide, user, logout }) {
     return (
         <Offcanvas show={show} onHide={hide} placement="end">
             <Offcanvas.Header id="sidebar-header" closeButton>
-                <Offcanvas.Title id="sidebar-title">
-                    Welcome back, <b>{user.name || user.nickname}</b>!
+                <Offcanvas.Title id="sidebar-title" className="d-flex">
+                    <Image src={user.picture} className="img-fluid" alt="profile-pic" roundedCircle/>
+                    <p>Welcome back, <b>{user.nickname || user.name}</b>!</p>
                 </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body className="d-flex flex-column">
@@ -31,9 +33,7 @@ function Sidebar({ show, hide, user, logout }) {
                 {activeTab === 'Activities' &&
                     <p>Ready to work!</p>
                 }
-                {activeTab === 'Settings' &&
-                    <Settings user={user}/>
-                }
+                {activeTab === 'Settings' && <Settings />}
             </Offcanvas.Body>
         </Offcanvas>
     );

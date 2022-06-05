@@ -3,8 +3,8 @@ import axios from 'axios';
 class Requests {
 
     // Edit user profile
-    static editUserProfile = (token, userId, name, nickname) => {
-        const body = { userId: userId, name: name, nickname: nickname };
+    static editUserProfile = (token, userId, name, nickname, picture) => {
+        const body = { userId: userId, name: name, nickname: nickname, picture: picture };
         const config = {
             headers: { Authorization: "Bearer " + token }
         };

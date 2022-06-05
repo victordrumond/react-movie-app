@@ -63,7 +63,7 @@ function Search({ user }) {
             <div className="d-flex" ref={searchRef}>
                 <BiSearch id="search-icon" />
                 <Form.Control id="input" type="search"
-                    placeholder={`What's your next story, ${user.given_name ? user.given_name : user.nickname}?`}
+                    placeholder={`What's your next story, ${user.name}?`}
                     value={searchInput}
                     onChange={e => {
                         setSearchInput(e.target.value);
