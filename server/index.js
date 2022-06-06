@@ -31,7 +31,8 @@ const movieSchema = new mongoose.Schema({
       watchList: { filtering: String },
       watched: { filtering: String }
     }
-  }
+  },
+  activities: Array
 });
 const movieModel = mongoose.model("Movie", movieSchema);
 
@@ -131,11 +132,12 @@ app.post('/addmovie', async (req, res) => {
   } else {
     let isMovieOnList = userData.data[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
     if (isMovieOnList < 0) {
-      let newMovie = {
-        timestamp: Date.now(),
-        data: req.body.movie
-      }
-      userData.data[req.body.list].push(newMovie);
+      let newMovie = { timestamp: Date.now(), data: req.body.movie };
+      await userData.data[req.body.list].push(newMovie);
+      let activityData = { image: req.body.movie.poster_path, movie: req.body.movie.title, list: req.body.list };
+      let newActivity = { label: 'movie_added', data: activityData, timestamp: Date.now() };
+      await userData.activities.unshift(newActivity);
+      userData.activities = await resizeActivities(userData.activities);
       userData = await userData.save();
       console.log(`${req.body.movie.title} added to ${req.body.list}`);
     } else {
@@ -155,7 +157,11 @@ app.post('/deletemovie', async (req, res) => {
     if (isMovieOnList < 0) {
       console.log(`${req.body.movie.title} is not on ${req.body.list}`);
     } else {
-      userData.data[req.body.list].splice(isMovieOnList, 1);
+      await userData.data[req.body.list].splice(isMovieOnList, 1);
+      let activityData = { image: req.body.movie.poster_path, movie: req.body.movie.title, list: req.body.list };
+      let newActivity = { label: 'movie_deleted', data: activityData, timestamp: Date.now() };
+      await userData.activities.unshift(newActivity);
+      userData.activities = await resizeActivities(userData.activities);
       userData = await userData.save();
       console.log(`${req.body.movie.title} deleted from ${req.body.list}`);
     }
@@ -180,7 +186,8 @@ app.post('/newuser', async (req, res) => {
         watchList: { filtering: "last_added" },
         watched: { filtering: "last_added" }
       }
-    }
+    },
+    activities: []
   }
   const saveNewUser = await movieModel.create(newUser);
   return res.json(saveNewUser);
@@ -213,12 +220,20 @@ app.post('/updaterating', async (req, res) => {
     let isMovieRated = userData.data.ratings.findIndex(item => item.movieId === req.body.movie.data.id);
     if (isMovieRated < 0) {
       const newRating = { movieId: req.body.movie.data.id, score: req.body.score };
-      userData.data.ratings.push(newRating);
+      await userData.data.ratings.push(newRating);
+      let activityData = { image: req.body.movie.data.poster_path, movie: req.body.movie.data.title, rating: req.body.score };
+      let newActivity = { label: 'movie_rated', data: activityData, timestamp: Date.now() };
+      await userData.activities.unshift(newActivity);
+      userData.activities = await resizeActivities(userData.activities);
       userData = await userData.save();
       console.log(`${req.body.movie.data.title} rating set to ${req.body.score}`);
       return res.json(userData);
     } else if (userData.data.ratings[isMovieRated].score !== req.body.score) {
       userData.data.ratings[isMovieRated].score = req.body.score;
+      let activityData = { image: req.body.movie.data.poster_path, movie: req.body.movie.data.title, rating: req.body.score };
+      let newActivity = { label: 'movie_rated', data: activityData, timestamp: Date.now() };
+      await userData.activities.unshift(newActivity);
+      userData.activities = await resizeActivities(userData.activities);
       userData = await userData.save();
       console.log(`${req.body.movie.data.title} rating updated to ${req.body.score}`);
       return res.json(userData);
@@ -227,6 +242,14 @@ app.post('/updaterating', async (req, res) => {
     }
   }
 })
+
+resizeActivities = (activities) => {
+  if (activities.length > 50) {
+    let elementsToRemove = activities.length - 50;
+    activities.splice(50, elementsToRemove);
+  }
+  return activities;
+}
 
 // Every other GET request not handled before will return the React app
 app.get('*', (req, res) => {

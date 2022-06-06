@@ -20,7 +20,8 @@ export const initUserData = {
                 filtering: "last_added"
             }
         }
-    }
+    },
+    activities: []
 }
 
 export const UserContext = createContext({

@@ -35,6 +35,12 @@ class Helper {
         return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
     }
 
+    static getListName = (normalizedListName) => {
+        if (normalizedListName === 'favorites') return 'Favorites';
+        if (normalizedListName === 'watchList') return 'Watch List';
+        if (normalizedListName === 'watched') return 'Watched';
+    }
+
     // Get comparable date
     static getComparableDate = (timestamp) => {
         let dateObj = new Date(timestamp);

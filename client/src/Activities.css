@@ -1,0 +1,50 @@
+#activities-container {
+    padding: 0;
+}
+
+.activity {
+    padding: 0.5rem !important;
+}
+
+#activities-container img {
+    width: 40px;
+    height: 100%;
+    margin-right: 0.5rem;
+}
+
+.activity-text {
+    width: 100%;
+}
+
+.activity-time {
+    text-align: end;
+    font-size: 13px;
+}
+
+.activity-description {
+    font-size: 14px;
+}
+
+#activities-container p {
+    margin: 0;
+}
+
+.activity-icon {
+    font-size: 20px;
+}
+
+.favorites {
+    color: #DC3545
+}
+
+.watchList {
+    color: #0275D8;
+}
+
+.watched {
+    color: #28A745;
+}
+
+.rating {
+    color: rgba(255, 183, 0, 0.824);
+}

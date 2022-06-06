@@ -4,6 +4,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Image from 'react-bootstrap/Image'
+import Activities from './Activities';
 import Settings from './Settings';
 
 function Sidebar({ show, hide, user, logout }) {
@@ -30,9 +31,7 @@ function Sidebar({ show, hide, user, logout }) {
                         Settings
                     </ListGroup.Item>
                 </ListGroup>
-                {activeTab === 'Activities' &&
-                    <p>Ready to work!</p>
-                }
+                {activeTab === 'Activities' && <Activities />}
                 {activeTab === 'Settings' && <Settings />}
             </Offcanvas.Body>
         </Offcanvas>
