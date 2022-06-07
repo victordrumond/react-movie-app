@@ -28,6 +28,10 @@ class Activity {
         return this.data.hasOwnProperty('list') ? this.data.list : null;
     }
 
+    hasRating() {
+        return this.data.hasOwnProperty('rating');
+    }
+
     getRating() {
         return this.data.hasOwnProperty('rating') ? this.data.rating : null;
     }
@@ -42,6 +46,9 @@ class Activity {
         }
         if (this.label === 'movie_deleted' && this.data.movie && this.data.list) {
             return `${this.data.movie} was deleted from ${Helper.getListName(this.data.list)}`;
+        }
+        if (this.label === 'movie_rated' && this.data.movie && !this.data.rating) {
+            return `${this.data.movie} rating has been reset`;
         }
         if (this.label === 'movie_rated' && this.data.movie && this.data.rating) {
             return `${this.data.movie} was rated with ${this.data.rating} stars`;

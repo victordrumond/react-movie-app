@@ -40,7 +40,7 @@ function Activities() {
                                 <IoMdEye className='activity-icon watchList' />}
                             {activity.getLabel() === 'movie_added' && activity.getList() === 'watched' &&
                                 <MdTaskAlt className='activity-icon watched' />}
-                            {activity.getRating() &&
+                            {activity.hasRating() &&
                                 <AiFillStar className='activity-icon rating' />}
                             <p className="activity-time text-muted">{activity.getTimeString()}</p>
                         </div>
