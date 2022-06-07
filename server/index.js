@@ -8,12 +8,13 @@ const { auth } = require('express-oauth2-jwt-bearer');
 let request = require("request");
 const cors = require("cors");
 require("dotenv").config();
+const Utils = require("./utils");
+const Schema = require("./schema");
 
-const utils = require("./utils");
-const schema = require("./schema");
 
+// Mongoose model
+const model = Schema.movieModel;
 
-const model = schema.movieModel;
 
 // Middlewares
 app.use(express.urlencoded({ extended: false }));
@@ -26,26 +27,28 @@ const checkJwt = auth({
   issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
 });
 
+
 // Get Auth0 Management API JWT
 const getManagementApiJwt = () => {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const options = {
       method: 'POST',
       url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
       headers: { 'content-type': 'application/json' },
       body: `{"client_id":"${process.env.AUTH0_API_CLIENT_ID}", "client_secret":"${process.env.AUTH0_API_CLIENT_SECRET}", "audience":"https://${process.env.AUTH0_DOMAIN}/api/v2/", "grant_type":"client_credentials"}`
     }
-    request(options, function (error, response, body) {
+    request(options, (error, response, body) => {
       if (error) {
         reject(error);
       } else {
         resolve(JSON.parse(body));
-      };
+      }
     })
   })
 }
 
-// PATCH request: edit user profile
+
+// Edit user profile - Auth0
 app.patch("/user/edituser", checkJwt, (req, res) => {
   getManagementApiJwt().then(data => {
     const token = data.access_token;
@@ -53,26 +56,24 @@ app.patch("/user/edituser", checkJwt, (req, res) => {
       method: 'PATCH',
       url: 'https://' + process.env.AUTH0_DOMAIN + '/api/v2/users/' + req.body.userId,
       headers: { 'authorization': 'Bearer ' + token, 'content-type': 'application/json' },
-      body: {
-        "name": req.body.name,
-        "nickname": req.body.nickname,
-        user_metadata: { picture: req.body.picture }
-      },
+      body: { "name": req.body.name, "nickname": req.body.nickname, user_metadata: { picture: req.body.picture } },
       json: true
-    };
-    request(options, function (error, response, body) {
+    }
+    request(options, (error, response, body) => {
       if (error) throw new Error(error);
       res.json(body);
-    });
+    })
   })
 });
 
-// GET request: Hello from server!
+
+// Hello from server!
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-// GET request: fetch trending movies to display on home page
+
+// Get trending movies
 app.get("/authcovers", async (req, res) => {
   let covers = [];
   for (let i = 1; i <= 3; i++) {
@@ -81,12 +82,13 @@ app.get("/authcovers", async (req, res) => {
       .then(res => {
         res.data.results.forEach(item => covers.push(item.poster_path));
       })
-    ;
+      ;
   }
   return res.json(covers);
 })
 
-// GET request: fetch more complete data from specific movie
+
+// Get movie data by id
 app.get("/movie/:movieid", async (req, res) => {
   await axios.get('https://api.themoviedb.org/3/movie/' + req.params.movieid + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
     .then(response => {
@@ -94,7 +96,8 @@ app.get("/movie/:movieid", async (req, res) => {
     });
 })
 
-// GET request: receive data from search
+
+// Get search results
 app.get("/search/:query", async (req, res) => {
   await axios
     .get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + encodeURIComponent(req.params.query))
@@ -103,60 +106,59 @@ app.get("/search/:query", async (req, res) => {
     });
 });
 
-// POST request: add movie to database
+
+// Add movie to list
 app.post('/addmovie', async (req, res) => {
-  let userData = await model.findOne({ "user": req.body.user });
+  const [user, movie, list] = [req.body.user, req.body.movie, req.body.list];
+  let userData = await model.findOne({ "user": user });
   if (!userData) {
     return res.sendStatus(404);
-  } else {
-    let isMovieOnList = userData.data[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
-    if (isMovieOnList < 0) {
-      let newMovie = { timestamp: Date.now(), data: req.body.movie };
-      await userData.data[req.body.list].push(newMovie);
-      let activityData = { image: req.body.movie.poster_path, movie: req.body.movie.title, list: req.body.list };
-      let newActivity = { label: 'movie_added', data: activityData, timestamp: Date.now() };
-      await userData.activities.unshift(newActivity);
-      userData.activities = await utils.resizeActivities(userData.activities);
-      userData = await userData.save();
-      console.log(`${req.body.movie.title} added to ${req.body.list}`);
-    } else {
-      console.log(`${req.body.movie.title} already on ${req.body.list}`);
-    }
   }
-  return res.json(userData);
+  const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
+  if (isMovieOnList < 0) {
+    const newMovie = { timestamp: Date.now(), data: movie };
+    await userData.data[list].push(newMovie);
+    const activityData = { image: movie.poster_path, movie: movie.title, list: list };
+    userData = await Utils.recordActivity(userData, 'movie_added', activityData);
+    userData = await userData.save();
+    console.log(`${movie.title} added to ${list}`);
+    return res.json(userData);
+  }
+  console.log(`${movie.title} already on ${list}`);
 })
 
-// POST request: delete movie from database
+
+// Delete movie from list
 app.post('/deletemovie', async (req, res) => {
-  let userData = await model.findOne({ "user": req.body.user });
+  const [user, movie, list] = [req.body.user, req.body.movie, req.body.list];
+  let userData = await model.findOne({ "user": user });
   if (!userData) {
     return res.sendStatus(404);
-  } else {
-    let isMovieOnList = userData.data[req.body.list].findIndex(mov => mov.data.id === req.body.movie.id);
-    if (isMovieOnList < 0) {
-      console.log(`${req.body.movie.title} is not on ${req.body.list}`);
-    } else {
-      await userData.data[req.body.list].splice(isMovieOnList, 1);
-      let activityData = { image: req.body.movie.poster_path, movie: req.body.movie.title, list: req.body.list };
-      let newActivity = { label: 'movie_deleted', data: activityData, timestamp: Date.now() };
-      await userData.activities.unshift(newActivity);
-      userData.activities = await utils.resizeActivities(userData.activities);
-      userData = await userData.save();
-      console.log(`${req.body.movie.title} deleted from ${req.body.list}`);
-    }
   }
+  const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
+  if (isMovieOnList < 0) {
+    console.log(`${movie.title} is not on ${list}`);
+    return;
+  }
+  await userData.data[list].splice(isMovieOnList, 1);
+  const activityData = { image: movie.poster_path, movie: movie.title, list: list };
+  userData = await Utils.recordActivity(userData, 'movie_deleted', activityData);
+  userData = await userData.save();
+  console.log(`${movie.title} deleted from ${list}`);
   return res.json(userData);
 })
 
-// GET request: fetch user data from database
+
+// Get user data from database
 app.get('/users/:user', async (req, res) => {
   const findUserOnDatabase = await model.findOne({ "user": req.params.user });
   return res.json(findUserOnDatabase);
 })
 
-// POST request: init user data on database
+
+// Init user data on database
 app.post('/newuser', async (req, res) => {
-  let newUser = {
+  const newUser = {
     user: req.body.user.email,
     data: { favorites: [], watchList: [], watched: [], ratings: [] },
     config: {
@@ -172,25 +174,26 @@ app.post('/newuser', async (req, res) => {
   return res.json(saveNewUser);
 })
 
-// POST request: update list filtering
+
+// Update list filtering
 app.post('/updatefilter', async (req, res) => {
-  let userData = await model.findOne({ "user": req.body.user });
+  const [user, filter, list] = [req.body.user, req.body.value, req.body.list];
+  let userData = await model.findOne({ "user": user });
   if (!userData) {
     return res.sendStatus(404);
-  } else {
-    let currentFilter = userData.config.lists[req.body.list].filtering;
-    if (currentFilter !== req.body.value) {
-      userData.config.lists[req.body.list].filtering = req.body.value;
-      userData = await userData.save();
-      console.log(`Filter updated to ${req.body.value} on ${req.body.list}`);
-      return res.json(userData);
-    } else {
-      console.log(`Current filter on ${req.body.list} is already ${req.body.value}`);
-    }
   }
+  const currentFilter = userData.config.lists[list].filtering;
+  if (currentFilter !== filter) {
+    userData.config.lists[list].filtering = filter;
+    userData = await userData.save();
+    console.log(`Filter updated to ${filter} on ${list}`);
+    return res.json(userData);
+  }
+  console.log(`Current filter on ${list} is already ${filter}`);
 })
 
-// POST request: update movie rating
+
+// Update movie rating
 app.post('/updaterating', async (req, res) => {
   const [user, movie, score] = [req.body.user, req.body.movie.data, req.body.score];
   let userData = await model.findOne({ "user": user });
@@ -212,15 +215,17 @@ app.post('/updaterating', async (req, res) => {
     console.log(`${movie.title} rating set to ${score}`);
   }
   const activityData = { image: movie.poster_path, movie: movie.title, rating: score };
-  userData = await utils.recordActivity(userData, 'movie_rated', activityData);
+  userData = await Utils.recordActivity(userData, 'movie_rated', activityData);
   userData = await userData.save();
   return res.json(userData);
 })
+
 
 // Every other GET request not handled before will return the React app
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
 });
+
 
 // Listen connection on port
 app.listen(PORT, () => {
