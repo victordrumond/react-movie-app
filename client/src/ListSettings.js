@@ -16,7 +16,7 @@ function ListSettings({ activeList, isListEmpty }) {
 
     const handleUpdateFilter = (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);
-        Requests.setFilter(user.email, listName, newFilter).then(res => {
+        Requests.setFilter(user, listName, newFilter).then(res => {
             context.setUserData(res.data);
         }).catch(err => {
             console.log(err);

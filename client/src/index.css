@@ -10,3 +10,32 @@
     box-shadow: none !important;
     border: 1px solid #0d6efd !important;
 }
+
+.bg-colorA {
+    background-color: #6f42c1 !important;
+}
+
+.bg-colorB {
+    background-color: #198754 !important;
+}
+
+.bg-colorC {
+    background-color: #28A745 !important;
+}
+
+.bg-colorD {
+    background-color: #ffc107 !important;
+}
+
+.bg-colorE {
+    background-color: #fd7e14 !important;
+}
+
+.bg-colorF {
+    background-color: #dc3545 !important;
+}
+
+.bg-colorNR {
+    color: black !important;
+    background-color: #e9ecef !important;
+}

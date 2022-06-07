@@ -10,29 +10,6 @@
     width: 80px !important;
 }
 
-.bg-colorA {
-    background-color: #6f42c1 !important;
-}
-.bg-colorB {
-    background-color: #198754 !important;
-}
-.bg-colorC {
-    background-color: #28A745 !important;
-}
-.bg-colorD {
-    background-color: #ffc107 !important;
-}
-.bg-colorE {
-    background-color: #fd7e14 !important;
-}
-.bg-colorF {
-    background-color: #dc3545 !important;
-}
-.bg-colorNR {
-    color: black !important;
-    background-color: #e9ecef !important;
-}
-
 #movie-card {
     height: 355px;
 }
@@ -64,8 +41,8 @@
 
 #movie-title {
     font-size: 16px;
-    margin: 0;
-    padding: 0 0 0.5rem;
+    padding: 0;
+    margin: 0 0 0.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
