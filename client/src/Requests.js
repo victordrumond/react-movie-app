@@ -8,7 +8,7 @@ class Requests {
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
-        return axios.patch('/api/users/edituser', body, config)
+        return axios.patch('/api/users/edituser', body, config);
     }
 
     // Get trending movies to display on home page
@@ -17,13 +17,21 @@ class Requests {
     }
 
     // Get user from database
-    static getUser = (userObj) => {
-        return axios.get(`/api/users/${userObj.email}`);
+    static getUser = (token, userObj) => {
+        const body = { user: userObj };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/users/login', body, config);
     }
 
     // Set new user on database
-    static setUser = (userObj) => {
-        return axios.post(`/api/users/newuser`, { user: userObj });
+    static setUser = (token, userObj) => {
+        const body = { user: userObj };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post(`/api/users/newuser`, body, config);
     }
 
     // Get data to fill search results
@@ -32,28 +40,47 @@ class Requests {
     }
 
     // Get detailed data from specific movie
-    static getMovieData = (movieId) => {
-        return axios.get(`/api/movie/${movieId}`);
+    static getMovieData = (token, movieId) => {
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.get(`/api/movie/${movieId}`, config);
     }
 
     // Set movie on database
-    static addMovie = (userObj, list, movie) => {
-        return axios.post('/api/addmovie', { user: userObj, list: list, movie: movie });
+    static addMovie = (token, userObj, list, movie) => {
+        const body = { user: userObj, list: list, movie: movie };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/addmovie', body, config);
     }
 
     // Delete movie from database
-    static deleteMovie = (userObj, list, movie) => {
-        return axios.post('/api/deletemovie', { user: userObj, list: list, movie: movie });
+    static deleteMovie = (token, userObj, list, movie) => {
+        const body = { user: userObj, list: list, movie: movie };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/deletemovie', body, config);
     }
 
     // Set filtering option to list
-    static setFilter = (userObj, list, filter) => {
-        return axios.post('/api/updatefilter', { user: userObj, list: list, value: filter });
+    static setFilter = (token, userObj, list, filter) => {
+        const body = { user: userObj, list: list, value: filter };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/updatefilter', body, config);
     }
 
     // Update movie rating
-    static updateMovieRating = (userObj, movie, score) => {
-        return axios.post('/api/updaterating', { user: userObj, movie: movie, score: score })
+    static updateMovieRating = (token, userObj, movie, score) => {
+        const body = { user: userObj, movie: movie, score: score };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/updaterating', body, config);
     }
 
 }

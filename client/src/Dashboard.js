@@ -22,26 +22,31 @@ function Dashboard() {
         }
     }, [navigate, location.pathname]);
 
-    const { user, logout } = useAuth0();
+    const { user, logout, getAccessTokenSilently } = useAuth0();
     const [userData, setUserData] = useState(initUserData);
     const context = { userData, setUserData };
     const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
-        Requests.getUser(user).then((res) => {
-            if (res.data) {
-                console.log('User data updated');
-                setUserData(res.data);
-            } else {
-                Requests.setUser(user).then((res) => {
-                    if (res.data) {
-                        console.log('User data updated');
-                        setUserData(res.data);
-                    }
-                })
-            }
-        })
+        findUserOnDatabase();
+        // eslint-disable-next-line
     }, [user]);
+
+    const findUserOnDatabase = async () => {
+        await getAccessTokenSilently().then(token => {
+            Requests.getUser(token, user).then((res) => {
+                if (res.data) {
+                    setUserData(res.data);
+                } else if (!res.data) {
+                    Requests.setUser(token, user).then((res) => {
+                        if (res.data) {
+                            setUserData(res.data);
+                        }
+                    })
+                }
+            })
+        })
+    }
 
     return (
         <UserContext.Provider value={context}>
@@ -63,7 +68,7 @@ function Dashboard() {
                     logout={logout}
                 />
             </div>
-            <Search user={user} />
+            <Search />
             <Routes>
                 <Route path="/home/*" element={<Main />} />
             </Routes>

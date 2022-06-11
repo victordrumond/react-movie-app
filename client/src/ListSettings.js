@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import './ListSettings.css';
 import { UserContext } from './UserContext';
+import { useAuth0 } from '@auth0/auth0-react';
 import Helper from "./Helper";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -11,16 +12,18 @@ import Requests from './Requests';
 function ListSettings({ activeList, isListEmpty }) {
 
     const context = useContext(UserContext);
-    const user = context.userData.user;
+    const { user, getAccessTokenSilently } = useAuth0();
     
     const listsConfig = context.userData.config.lists;
 
-    const handleUpdateFilter = (newFilter) => {
+    const handleUpdateFilter = async (newFilter) => {
         let listName = Helper.getNormalizedListName(activeList);
-        Requests.setFilter(user, listName, newFilter).then(res => {
-            context.setUserData(res.data);
-        }).catch(err => {
-            console.log(err);
+        await getAccessTokenSilently().then(token => {
+            Requests.setFilter(token, user, listName, newFilter).then(res => {
+                context.setUserData(res.data);
+            }).catch(err => {
+                console.log(err);
+            })
         });
     };
 

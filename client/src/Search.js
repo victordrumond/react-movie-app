@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Search.css';
 import { UserContext } from './UserContext';
+import { useAuth0 } from '@auth0/auth0-react';
 import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -12,9 +13,10 @@ import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
 import Helper from './Helper';
 
-function Search({ user }) {
+function Search() {
 
     const context = useContext(UserContext);
+    const { user, getAccessTokenSilently } = useAuth0();
 
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
@@ -49,12 +51,14 @@ function Search({ user }) {
         };
     }, [resultsRef]);
 
-    const handleAdd = (item, list) => {
+    const handleAdd = async (item, list) => {
         setSearchFor("");
-        Requests.addMovie(user, list, item).then(res => {
-            context.setUserData(res.data);
-        }).catch(err => {
-            console.log(err);
+        await getAccessTokenSilently().then(token => {
+            Requests.addMovie(token, user, list, item).then(res => {
+                context.setUserData(res.data);
+            }).catch(err => {
+                console.log(err);
+            })
         });
     };
 

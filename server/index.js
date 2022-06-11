@@ -89,7 +89,7 @@ app.get("/api/authcovers", async (req, res) => {
 
 
 // Get movie data by id
-app.get("/api/movie/:movieid", async (req, res) => {
+app.get("/api/movie/:movieid", checkJwt, async (req, res) => {
   await axios.get('https://api.themoviedb.org/3/movie/' + req.params.movieid + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
     .then(response => {
       return res.json(response.data);
@@ -108,11 +108,14 @@ app.get("/api/search/:query", async (req, res) => {
 
 
 // Add movie to list
-app.post('/api/addmovie', async (req, res) => {
-  const [user, movie, list] = [req.body.user.email, req.body.movie, req.body.list];
-  let userData = await model.findOne({ "user.email": user });
+app.post('/api/addmovie', checkJwt, async (req, res) => {
+  const [email, sub, movie, list] = [req.body.user.email, req.body.user.sub, req.body.movie, req.body.list];
+  let userData = await model.findOne({ "user.email": email });
   if (!userData) {
     return res.sendStatus(404);
+  }
+  if (userData.user.email !== email || userData.user.sub !== sub) {
+    return res.sendStatus(401);
   }
   const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
   if (isMovieOnList < 0) {
@@ -129,11 +132,14 @@ app.post('/api/addmovie', async (req, res) => {
 
 
 // Delete movie from list
-app.post('/api/deletemovie', async (req, res) => {
-  const [user, movie, list] = [req.body.user.email, req.body.movie, req.body.list];
-  let userData = await model.findOne({ "user.email": user });
+app.post('/api/deletemovie', checkJwt, async (req, res) => {
+  const [email, sub, movie, list] = [req.body.user.email, req.body.user.sub, req.body.movie, req.body.list];
+  let userData = await model.findOne({ "user.email": email });
   if (!userData) {
     return res.sendStatus(404);
+  }
+  if (userData.user.email !== email || userData.user.sub !== sub) {
+    return res.sendStatus(401);
   }
   const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
   if (isMovieOnList < 0) {
@@ -150,16 +156,28 @@ app.post('/api/deletemovie', async (req, res) => {
 
 
 // Get user data from database
-app.get('/api/users/:user', async (req, res) => {
-  const findUserOnDatabase = await model.findOne({ "user.email": req.params.user });
-  return res.json(findUserOnDatabase);
+app.post('/api/users/login', checkJwt, async (req, res) => {
+  const [email, sub] = [req.body.user.email, req.body.user.sub];
+  const userData = await model.findOne({ "user.email": email });
+  if (!userData) {
+    return res.json(null);
+  }
+  if (userData.user.email === email && userData.user.sub === sub) {
+    return res.json(userData);
+  }
+  return res.sendStatus(401);
 })
 
 
 // Init user data on database
-app.post('/api/users/newuser', async (req, res) => {
+app.post('/api/users/newuser', checkJwt, async (req, res) => {
+  const [email, sub] = [req.body.user.email, req.body.user.sub];
+  const userData = await model.findOne({ "user.email": email });
+  if (userData) {
+    return res.sendStatus(403);
+  }
   const newUser = {
-    user: { email: req.body.user.email, sub: req.body.user.sub },
+    user: { email: email, sub: sub },
     data: { favorites: [], watchList: [], watched: [], ratings: [] },
     config: {
       lists: {
@@ -176,11 +194,14 @@ app.post('/api/users/newuser', async (req, res) => {
 
 
 // Update list filtering
-app.post('/api/updatefilter', async (req, res) => {
-  const [user, filter, list] = [req.body.user.email, req.body.value, req.body.list];
-  let userData = await model.findOne({ "user.email": user });
+app.post('/api/updatefilter', checkJwt, async (req, res) => {
+  const [email, sub, filter, list] = [req.body.user.email, req.body.user.sub, req.body.value, req.body.list];
+  let userData = await model.findOne({ "user.email": email });
   if (!userData) {
     return res.sendStatus(404);
+  }
+  if (userData.user.email !== email || userData.user.sub !== sub) {
+    return res.sendStatus(401);
   }
   const currentFilter = userData.config.lists[list].filtering;
   if (currentFilter !== filter) {
@@ -194,11 +215,14 @@ app.post('/api/updatefilter', async (req, res) => {
 
 
 // Update movie rating
-app.post('/api/updaterating', async (req, res) => {
-  const [user, movie, score] = [req.body.user.email, req.body.movie.data, req.body.score];
-  let userData = await model.findOne({ "user.email": user });
+app.post('/api/updaterating', checkJwt, async (req, res) => {
+  const [email, sub, movie, score] = [req.body.user.email, req.body.user.sub, req.body.movie.data, req.body.score];
+  let userData = await model.findOne({ "user.email": email });
   if (!userData) {
     return res.sendStatus(404);
+  }
+  if (userData.user.email !== email || userData.user.sub !== sub) {
+    return res.sendStatus(401);
   }
   const isMovieRated = userData.data.ratings.findIndex(item => item.movieId === movie.id);
   if (isMovieRated >= 0 && userData.data.ratings[isMovieRated].score === score) {

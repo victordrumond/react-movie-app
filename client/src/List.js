@@ -5,6 +5,7 @@ import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
 import Helper from "./Helper";
 import LocalStorage from "./LocalStorage";
+import { useAuth0 } from '@auth0/auth0-react';
 import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -22,7 +23,7 @@ import Rating from '@mui/material/Rating';
 function List({ list, listData }) {
 
     const context = useContext(UserContext);
-    const user = context.userData.user;
+    const { user, getAccessTokenSilently } = useAuth0();
     
     const userRatings = context.userData.data.ratings;
     const listConfig = context.userData.config.lists[Helper.getNormalizedListName(list)];
@@ -38,7 +39,7 @@ function List({ list, listData }) {
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    const getMovieExpandedData = (movieId) => {
+    const getMovieExpandedData = async (movieId) => {
         if (LocalStorage.hasExpandedMovie(movieId)) {
             let movieObj = LocalStorage.getExpandedMovie(movieId);
             if (movieObj) {
@@ -46,50 +47,58 @@ function List({ list, listData }) {
                 setShowExpandedInfo(true);
             }
         } else {
-            Requests.getMovieData(movieId).then(res => {
-                LocalStorage.setExpandedMovie(res.data);
-                setInfoData(res.data);
-                setShowExpandedInfo(true);
-            });
-        }
+            await getAccessTokenSilently().then(token => {
+                Requests.getMovieData(token, movieId).then(res => {
+                    LocalStorage.setExpandedMovie(res.data);
+                    setInfoData(res.data);
+                    setShowExpandedInfo(true);
+                })
+            })
+        };
     };
 
-    const handleAdd = (item, list) => {
-        if (isMovieOnList(item, list)) {
+    const handleAdd = async (item, list) => {
+        if (await isMovieOnList(item, list)) {
             setAddData([item.title, list, false]);
             setAddMovieToList(true);
             return;
         }
         let newList = Helper.getNormalizedListName(list);
-        Requests.addMovie(user, newList, item).then(res => {
-            context.setUserData(res.data);
-            setAddData([item.title, list, true]);
-            setAddMovieToList(true);
-        }).catch(err => {
-            console.log(err);
+        await getAccessTokenSilently().then(token => {
+            Requests.addMovie(token, user, newList, item).then(res => {
+                context.setUserData(res.data);
+                setAddData([item.title, list, true]);
+                setAddMovieToList(true);
+            }).catch(err => {
+                console.log(err);
+            })
         });
     };
 
-    const handleDelete = (item) => {
+    const handleDelete = async (item) => {
         let currentList = Helper.getNormalizedListName(list);
-        Requests.deleteMovie(user, currentList, item).then(res => {
-            context.setUserData(res.data);
-            setDeleteMovie(false);
-            setDeleteData(null);
-        }).catch(err => {
-            console.log(err);
+        await getAccessTokenSilently().then(token => {
+            Requests.deleteMovie(token, user, currentList, item).then(res => {
+                context.setUserData(res.data);
+                setDeleteMovie(false);
+                setDeleteData(null);
+            }).catch(err => {
+                console.log(err);
+            })
         });
     };
 
-    const handleRate = (item, value) => {
-        Requests.updateMovieRating(user, item, value).then(res => {
-            context.setUserData(res.data);
-        }).catch(err => {
-            console.log(err);
+    const handleRate = async (item, value) => {
+        await getAccessTokenSilently().then(token => {
+            Requests.updateMovieRating(token, user, item, value).then(res => {
+                context.setUserData(res.data);
+            }).catch(err => {
+                console.log(err);
+            })
         });
     }
 
-    const isMovieOnList = (item, list) => {
+    const isMovieOnList = async (item, list) => {
         let listMovies = context.userData.data[Helper.getNormalizedListName(list)];
         for (const movie of listMovies) {
             if (movie.data.id === item.id) {
