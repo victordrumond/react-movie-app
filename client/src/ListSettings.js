@@ -12,6 +12,7 @@ function ListSettings({ activeList, isListEmpty }) {
 
     const context = useContext(UserContext);
     const user = context.userData.user;
+    
     const listsConfig = context.userData.config.lists;
 
     const handleUpdateFilter = (newFilter) => {

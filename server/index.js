@@ -49,7 +49,7 @@ const getManagementApiJwt = () => {
 
 
 // Edit user profile - Auth0
-app.patch("/user/edituser", checkJwt, (req, res) => {
+app.patch("/api/users/edituser", checkJwt, (req, res) => {
   getManagementApiJwt().then(data => {
     const token = data.access_token;
     const options = {
@@ -74,7 +74,7 @@ app.get("/api", (req, res) => {
 
 
 // Get trending movies
-app.get("/authcovers", async (req, res) => {
+app.get("/api/authcovers", async (req, res) => {
   let covers = [];
   for (let i = 1; i <= 3; i++) {
     await axios
@@ -89,7 +89,7 @@ app.get("/authcovers", async (req, res) => {
 
 
 // Get movie data by id
-app.get("/movie/:movieid", async (req, res) => {
+app.get("/api/movie/:movieid", async (req, res) => {
   await axios.get('https://api.themoviedb.org/3/movie/' + req.params.movieid + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
     .then(response => {
       return res.json(response.data);
@@ -98,7 +98,7 @@ app.get("/movie/:movieid", async (req, res) => {
 
 
 // Get search results
-app.get("/search/:query", async (req, res) => {
+app.get("/api/search/:query", async (req, res) => {
   await axios
     .get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + encodeURIComponent(req.params.query))
     .then(response => {
@@ -108,9 +108,9 @@ app.get("/search/:query", async (req, res) => {
 
 
 // Add movie to list
-app.post('/addmovie', async (req, res) => {
-  const [user, movie, list] = [req.body.user, req.body.movie, req.body.list];
-  let userData = await model.findOne({ "user": user });
+app.post('/api/addmovie', async (req, res) => {
+  const [user, movie, list] = [req.body.user.email, req.body.movie, req.body.list];
+  let userData = await model.findOne({ "user.email": user });
   if (!userData) {
     return res.sendStatus(404);
   }
@@ -129,9 +129,9 @@ app.post('/addmovie', async (req, res) => {
 
 
 // Delete movie from list
-app.post('/deletemovie', async (req, res) => {
-  const [user, movie, list] = [req.body.user, req.body.movie, req.body.list];
-  let userData = await model.findOne({ "user": user });
+app.post('/api/deletemovie', async (req, res) => {
+  const [user, movie, list] = [req.body.user.email, req.body.movie, req.body.list];
+  let userData = await model.findOne({ "user.email": user });
   if (!userData) {
     return res.sendStatus(404);
   }
@@ -150,16 +150,16 @@ app.post('/deletemovie', async (req, res) => {
 
 
 // Get user data from database
-app.get('/users/:user', async (req, res) => {
-  const findUserOnDatabase = await model.findOne({ "user": req.params.user });
+app.get('/api/users/:user', async (req, res) => {
+  const findUserOnDatabase = await model.findOne({ "user.email": req.params.user });
   return res.json(findUserOnDatabase);
 })
 
 
 // Init user data on database
-app.post('/newuser', async (req, res) => {
+app.post('/api/users/newuser', async (req, res) => {
   const newUser = {
-    user: req.body.user.email,
+    user: { email: req.body.user.email, sub: req.body.user.sub },
     data: { favorites: [], watchList: [], watched: [], ratings: [] },
     config: {
       lists: {
@@ -176,9 +176,9 @@ app.post('/newuser', async (req, res) => {
 
 
 // Update list filtering
-app.post('/updatefilter', async (req, res) => {
-  const [user, filter, list] = [req.body.user, req.body.value, req.body.list];
-  let userData = await model.findOne({ "user": user });
+app.post('/api/updatefilter', async (req, res) => {
+  const [user, filter, list] = [req.body.user.email, req.body.value, req.body.list];
+  let userData = await model.findOne({ "user.email": user });
   if (!userData) {
     return res.sendStatus(404);
   }
@@ -194,9 +194,9 @@ app.post('/updatefilter', async (req, res) => {
 
 
 // Update movie rating
-app.post('/updaterating', async (req, res) => {
-  const [user, movie, score] = [req.body.user, req.body.movie.data, req.body.score];
-  let userData = await model.findOne({ "user": user });
+app.post('/api/updaterating', async (req, res) => {
+  const [user, movie, score] = [req.body.user.email, req.body.movie.data, req.body.score];
+  let userData = await model.findOne({ "user.email": user });
   if (!userData) {
     return res.sendStatus(404);
   }

@@ -23,6 +23,7 @@ function List({ list, listData }) {
 
     const context = useContext(UserContext);
     const user = context.userData.user;
+    
     const userRatings = context.userData.data.ratings;
     const listConfig = context.userData.config.lists[Helper.getNormalizedListName(list)];
 

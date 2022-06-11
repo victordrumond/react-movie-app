@@ -6,7 +6,10 @@ mongoose.connect(process.env.MONGO_URI, {
 })
 
 const movieSchema = new mongoose.Schema({
-    user: String,
+    user: {
+        email: String,
+        sub: String
+    },
     data: {
         favorites: [{ timestamp: Number, data: Object }],
         watchList: [{ timestamp: Number, data: Object }],

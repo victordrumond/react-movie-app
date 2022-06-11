@@ -28,7 +28,7 @@ function Dashboard() {
     const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
-        Requests.getUser(user.email).then((res) => {
+        Requests.getUser(user).then((res) => {
             if (res.data) {
                 console.log('User data updated');
                 setUserData(res.data);

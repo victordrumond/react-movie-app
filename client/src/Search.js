@@ -51,7 +51,7 @@ function Search({ user }) {
 
     const handleAdd = (item, list) => {
         setSearchFor("");
-        Requests.addMovie(user.email, list, item).then(res => {
+        Requests.addMovie(user, list, item).then(res => {
             context.setUserData(res.data);
         }).catch(err => {
             console.log(err);
