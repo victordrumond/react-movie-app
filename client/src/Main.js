@@ -11,6 +11,7 @@ import List from './List';
 import { IoMdEye } from 'react-icons/io';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Movie from './Movie';
+import TvShow from './TvShow';
 
 function Main() {
 
@@ -39,10 +40,15 @@ function Main() {
         return listData[Helper.getNormalizedListName(activeList)].length === 0 ? true : false;
     }
 
-    const initMovies = (movies) => {
+    const initData = (movies) => {
         let result = [];
         for (const movie of movies) {
-            result.push(new Movie(movie.data));
+            if (movie.data.media_type === 'movie') {
+                result.push(new Movie(movie.data));
+            }
+            if (movie.data.media_type === 'tv') {
+                result.push(new TvShow(movie.data));
+            }
         }
         return result;
     }
@@ -86,9 +92,9 @@ function Main() {
                 <Card.Body id="content-body">
                     <ListSettings activeList={activeList} isListEmpty={isListEmpty()} />
                     <Routes>
-                        <Route path="favorites" element={<List list="Favorites" listData={initMovies(listData.favorites)} />} />
-                        <Route path="watchlist" element={<List list="Watch List" listData={initMovies(listData.watchList)} />} />
-                        <Route path="watched" element={<List list="Watched" listData={initMovies(listData.watched)} />} />
+                        <Route path="favorites" element={<List list="Favorites" listData={initData(listData.favorites)} />} />
+                        <Route path="watchlist" element={<List list="Watch List" listData={initData(listData.watchList)} />} />
+                        <Route path="watched" element={<List list="Watched" listData={initData(listData.watched)} />} />
                     </Routes>
                 </Card.Body>
             </Card>

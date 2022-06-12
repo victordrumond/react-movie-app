@@ -1,7 +1,7 @@
-class Movie {
+class TvShow {
 
-    constructor(movieObj) {
-        this.item = movieObj;
+    constructor(tvShowObj) {
+        this.item = tvShowObj;
     }
 
     getId() {
@@ -9,15 +9,15 @@ class Movie {
     }
 
     getTitle() {
-        return this.item.title || '';
+        return this.item.name || '';
     }
 
     getOriginalTitle() {
-        return this.item.original_title || '';
+        return this.item.original_name || '';
     }
 
     getReleaseDate() {
-        return this.item.release_date || '';
+        return this.item.first_air_date || '';
     }
 
     getReleaseYear() {
@@ -42,13 +42,6 @@ class Movie {
         return this.item.status || 'Unknown';
     }
 
-    getRuntime() {
-        if (this.item.runtime) {
-            return `${this.item.runtime} min`;
-        }
-        return 'Not Available';
-    }
-
     getAverageRating() {
         if (this.item.vote_average) {
             let rating = this.item.vote_average.toString();
@@ -58,13 +51,18 @@ class Movie {
     }
 
     getParentalRating() {
-        if (this.item.release_dates) {
-            let worldReleases = this.item.release_dates.results;
-            let usRelease = worldReleases.filter(item => item.iso_3166_1 === 'US');
-            let usParentalRating = usRelease.length > 0 ? usRelease[0].release_dates[0].certification : 'PG not found';
+        if (this.item.content_ratings) {
+            let worldRatings = this.item.content_ratings.results;
+            let usRating = worldRatings.filter(item => item.iso_3166_1 === 'US');
+            let usParentalRating = usRating.length > 0 ? usRating[0].rating : 'PG not found';
             return usParentalRating || 'PG not found';
         }
         return 'PG not found';
+    }
+
+    getNumberOfSeasons() {
+        let numOfSeasons = this.item.number_of_seasons === 1 ? `${this.item.number_of_seasons} Season` : `${this.item.number_of_seasons} Seasons`;
+        return numOfSeasons || 'Unknown';
     }
 
     getOverview() {
@@ -85,16 +83,23 @@ class Movie {
         return [];
     }
 
-    getDirection() {
-        if (this.item.credits.crew.length > 0) {
-            return this.item.credits.crew.filter(item => item.job === "Director").map(item => (item.name));
+    getCreators() {
+        if (this.item.created_by.length > 0) {
+            return this.item.created_by.map(item => (item.name));
         }
         return [];
     }
     
     getProductionCompanies() {
         if (this.item.production_companies.length > 0) {
-            return this.item.production_companies.map(item => item.name);
+            return this.item.production_companies.map(item => (item.name));
+        }
+        return [];
+    }
+
+    getNetworks() {
+        if (this.item.networks.length > 0) {
+            return this.item.networks.map(item => (item.name));
         }
         return [];
     }
@@ -116,4 +121,4 @@ class Movie {
     }
 }
 
-export default Movie;
+export default TvShow;

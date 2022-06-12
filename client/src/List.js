@@ -18,6 +18,7 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Requests from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
+import ExpandedTvShowInfo from './ExpandedTvShowInfo';
 import Rating from '@mui/material/Rating';
 
 function List({ list, listData }) {
@@ -43,14 +44,14 @@ function List({ list, listData }) {
         if (LocalStorage.hasExpandedMovie(item.id)) {
             let movieObj = LocalStorage.getExpandedMovie(item.id);
             if (movieObj) {
-                setInfoData(movieObj);
+                item.media_type === 'movie' ? setInfoData([movieObj, 'movie']) : setInfoData([movieObj, 'tv']);
                 setShowExpandedInfo(true);
             }
         } else {
             await getAccessTokenSilently().then(token => {
                 Requests.getMovieData(token, item).then(res => {
                     LocalStorage.setExpandedMovie(res.data);
-                    setInfoData(res.data);
+                    item.media_type === 'movie' ? setInfoData([res.data, 'movie']) : setInfoData([res.data, 'tv']);
                     setShowExpandedInfo(true);
                 })
             })
@@ -121,7 +122,7 @@ function List({ list, listData }) {
                                 ? <CloseButton
                                     id="close-card"
                                     onClick={() => {
-                                        setDeleteData(item.movie);
+                                        setDeleteData(item.item);
                                         setDeleteMovie(true);
                                     }}
                                 />
@@ -133,7 +134,7 @@ function List({ list, listData }) {
                             <CloseButton
                                 id="close-card"
                                 onClick={() => {
-                                    setDeleteData(item.movie);
+                                    setDeleteData(item.item);
                                     setDeleteMovie(true);
                                 }}
                             />
@@ -153,7 +154,7 @@ function List({ list, listData }) {
                                 <Rating
                                     id="user-rating"
                                     value={Helper.getMovieRating(item.getId(), userRatings)}
-                                    onChange={(e, newValue) => {handleRate(item.movie, newValue)}}
+                                    onChange={(e, newValue) => {handleRate(item.item, newValue)}}
                                 />
                                 <Card.Title id="movie-title" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
                             </div>
@@ -175,22 +176,22 @@ function List({ list, listData }) {
                                     ? <div id="footer-icons">
                                         {list !== "Favorites" &&
                                             <MdFavorite title="Add to Favorites"
-                                                onClick={() => handleAdd(item.movie, "Favorites")}
+                                                onClick={() => handleAdd(item.item, "Favorites")}
                                                 className="footer-icon fav-icon"
                                             />}
                                         {list !== "Watch List" &&
                                             <IoMdEye title="Add to Watch List"
-                                                onClick={() => handleAdd(item.movie, "Watch List")}
+                                                onClick={() => handleAdd(item.item, "Watch List")}
                                                 className="footer-icon watch-icon"
                                             />}
                                         {list !== "Watched" &&
                                             <MdTaskAlt title="Add to Watched"
-                                                onClick={() => handleAdd(item.movie, "Watched")}
+                                                onClick={() => handleAdd(item.item, "Watched")}
                                                 className="footer-icon watched-icon"
                                             />}
                                     </div>
                                     : null}
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.movie)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -198,21 +199,21 @@ function List({ list, listData }) {
                                 <div id="footer-icons">
                                     {list !== "Favorites" &&
                                         <MdFavorite title="Add to Favorites"
-                                            onClick={() => handleAdd(item.movie, "Favorites")}
+                                            onClick={() => handleAdd(item.item, "Favorites")}
                                             className="footer-icon fav-icon"
                                         />}
                                     {list !== "Watch List" &&
                                         <IoMdEye title="Add to Watch List"
-                                            onClick={() => handleAdd(item.movie, "Watch List")}
+                                            onClick={() => handleAdd(item.item, "Watch List")}
                                             className="footer-icon watch-icon"
                                         />}
                                     {list !== "Watched" &&
                                         <MdTaskAlt title="Add to Watched"
-                                            onClick={() => handleAdd(item.movie, "Watched")}
+                                            onClick={() => handleAdd(item.item, "Watched")}
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.movie)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                             </div>
                         }
                     </Card.Body>
@@ -253,7 +254,8 @@ function List({ list, listData }) {
                 </Modal>
             )}
 
-            {showExpandedInfo && <ExpandedMovieInfo movieObj={infoData} />}
+            {showExpandedInfo && infoData[1] === 'movie' && <ExpandedMovieInfo movieObj={infoData[0]} />}
+            {showExpandedInfo && infoData[1] === 'tv' && <ExpandedTvShowInfo tvShowObj={infoData[0]} />}
 
         </Container>
     );

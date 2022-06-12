@@ -1,0 +1,90 @@
+.modal-img {
+    width: 250px;
+    height: 375px;
+}
+
+#tvshow-modal p {
+    margin: auto 0;
+    font-size: 15px;
+}
+
+#modal-info {
+    width: 100%;
+    margin: 0 1rem;
+}
+
+#modal-stats p {
+    font-weight: bold;
+}
+
+#modal-description {
+    padding: 1rem 0;
+}
+
+#modal-notes p {
+    padding-bottom: 0.25rem;
+}
+
+#watch {
+    padding-top: 0.5rem;
+}
+
+#watch p {
+    padding-bottom: 0.25rem;
+    margin: 0;
+}
+
+#country-select {
+    margin-left: 0.5rem;
+    width: 75px;
+    line-height: 1;
+}
+
+#streaming-services img {
+    width: 36px;
+    height: 36px;
+    margin: 0.5rem 0.25rem 0 0;
+}
+
+@media screen and (max-width: 991px) {
+    #modal-body img {
+        margin-bottom: 1.5rem;
+        width: 150px;
+        height: 225px;
+    }
+
+    #streaming-services img {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .modal-title {
+        font-size: 20px !important;
+    }
+
+    #modal-info p, #watch p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 399px) {
+    #modal-body {
+        flex-direction: column;
+    }
+
+    #modal-info {
+        margin: 0;
+    }
+
+    #modal-body img {
+        width: 100%;
+        height: auto;
+    }
+
+    #streaming-services img {
+        width: 32px;
+        height: 32px;
+    }
+}

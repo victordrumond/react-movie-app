@@ -12,7 +12,7 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
 import Helper from './Helper';
-import Movie from './Movie';
+import SearchResult from './SearchResult';
 
 function Search() {
 
@@ -32,7 +32,7 @@ function Search() {
                     if (res.data.results) {
                         let results = [];
                         for (const result of res.data.results) {
-                            results.push(new Movie(result));
+                            results.push(new SearchResult(result));
                         }
                         setData(results);
                     };
@@ -59,7 +59,7 @@ function Search() {
     const handleAdd = async (item, list) => {
         setSearchFor("");
         await getAccessTokenSilently().then(token => {
-            Requests.addMovie(token, user, list, item.movie).then(res => {
+            Requests.addMovie(token, user, list, item.result).then(res => {
                 context.setUserData(res.data);
             }).catch(err => {
                 console.log(err);

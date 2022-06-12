@@ -96,9 +96,10 @@ app.get("/api/movie/:id", checkJwt, async (req, res) => {
     });
 })
 
+
 // Get tv show data by id
 app.get("/api/tvshow/:id", checkJwt, async (req, res) => {
-  await axios.get('https://api.themoviedb.org/3/tv/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
+  await axios.get('https://api.themoviedb.org/3/tv/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,content_ratings,watch/providers')
     .then(response => {
       return res.json(response.data);
     });
@@ -134,10 +135,10 @@ app.post('/api/addmovie', checkJwt, async (req, res) => {
     const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
     userData = await Utils.recordActivity(userData, 'movie_added', activityData);
     userData = await userData.save();
-    console.log(`${movie.title} added to ${list}`);
+    console.log(`${movie.title || movie.name} added to ${list}`);
     return res.json(userData);
   }
-  console.log(`${movie.title} already on ${list}`);
+  console.log(`${movie.title || movie.name} already on ${list}`);
 })
 
 
@@ -153,14 +154,14 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
   }
   const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
   if (isMovieOnList < 0) {
-    console.log(`${movie.title} is not on ${list}`);
+    console.log(`${movie.title || movie.name} is not on ${list}`);
     return;
   }
   await userData.data[list].splice(isMovieOnList, 1);
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
   userData = await Utils.recordActivity(userData, 'movie_deleted', activityData);
   userData = await userData.save();
-  console.log(`${movie.title} deleted from ${list}`);
+  console.log(`${movie.title || movie.name} deleted from ${list}`);
   return res.json(userData);
 })
 
@@ -236,17 +237,17 @@ app.post('/api/updaterating', checkJwt, async (req, res) => {
   }
   const isMovieRated = userData.data.ratings.findIndex(item => item.movieId === movie.id);
   if (isMovieRated >= 0 && userData.data.ratings[isMovieRated].score === score) {
-    console.log(`Current rating of ${movie.title} is already ${score}`);
+    console.log(`Current rating of ${movie.title || movie.name} is already ${score}`);
     return;
   }
   if (isMovieRated >= 0 && userData.data.ratings[isMovieRated].score !== score) {
     userData.data.ratings[isMovieRated].score = score;
-    console.log(`${movie.title} rating updated to ${score}`);
+    console.log(`${movie.title || movie.name} rating updated to ${score}`);
   }
   if (isMovieRated < 0) {
     const newRating = { movieId: movie.id, score: score };
     await userData.data.ratings.push(newRating);
-    console.log(`${movie.title} rating set to ${score}`);
+    console.log(`${movie.title || movie.name} rating set to ${score}`);
   }
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, rating: score };
   userData = await Utils.recordActivity(userData, 'movie_rated', activityData);
