@@ -24,7 +24,7 @@ function List({ list, listData }) {
 
     const context = useContext(UserContext);
     const { user, getAccessTokenSilently } = useAuth0();
-    
+
     const userRatings = context.userData.data.ratings;
     const listConfig = context.userData.config.lists[Helper.getNormalizedListName(list)];
 
@@ -39,16 +39,16 @@ function List({ list, listData }) {
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    const getMovieExpandedData = async (movieId) => {
-        if (LocalStorage.hasExpandedMovie(movieId)) {
-            let movieObj = LocalStorage.getExpandedMovie(movieId);
+    const getMovieExpandedData = async (item) => {
+        if (LocalStorage.hasExpandedMovie(item.id)) {
+            let movieObj = LocalStorage.getExpandedMovie(item.id);
             if (movieObj) {
                 setInfoData(movieObj);
                 setShowExpandedInfo(true);
             }
         } else {
             await getAccessTokenSilently().then(token => {
-                Requests.getMovieData(token, movieId).then(res => {
+                Requests.getMovieData(token, item).then(res => {
                     LocalStorage.setExpandedMovie(res.data);
                     setInfoData(res.data);
                     setShowExpandedInfo(true);
@@ -67,7 +67,7 @@ function List({ list, listData }) {
         await getAccessTokenSilently().then(token => {
             Requests.addMovie(token, user, newList, item).then(res => {
                 context.setUserData(res.data);
-                setAddData([item.title, list, true]);
+                setAddData([item.title || item.name, list, true]);
                 setAddMovieToList(true);
             }).catch(err => {
                 console.log(err);
@@ -88,9 +88,9 @@ function List({ list, listData }) {
         });
     };
 
-    const handleRate = async (item, value) => {
+    const handleRate = async (movie, value) => {
         await getAccessTokenSilently().then(token => {
-            Requests.updateMovieRating(token, user, item, value).then(res => {
+            Requests.updateMovieRating(token, user, movie, value).then(res => {
                 context.setUserData(res.data);
             }).catch(err => {
                 console.log(err);
@@ -121,7 +121,7 @@ function List({ list, listData }) {
                                 ? <CloseButton
                                     id="close-card"
                                     onClick={() => {
-                                        setDeleteData(item.data);
+                                        setDeleteData(item.movie);
                                         setDeleteMovie(true);
                                     }}
                                 />
@@ -133,7 +133,7 @@ function List({ list, listData }) {
                             <CloseButton
                                 id="close-card"
                                 onClick={() => {
-                                    setDeleteData(item.data);
+                                    setDeleteData(item.movie);
                                     setDeleteMovie(true);
                                 }}
                             />
@@ -141,11 +141,10 @@ function List({ list, listData }) {
                     }
                     {window.innerWidth < 400
                         ? <Card.Img variant="top" className="card-img img-fluid"
-                            src={item.data.poster_path ? "https://image.tmdb.org/t/p/w500" + item.data.poster_path : coverNotFound}
+                            src={item.getPosterPath() || coverNotFound}
                         />
-                        : <Card.Img
-                            variant="top" className="card-img img-fluid"
-                            src={item.data.backdrop_path ? "https://image.tmdb.org/t/p/w500" + item.data.backdrop_path : backdropNotFound}
+                        : <Card.Img variant="top" className="card-img img-fluid"
+                            src={item.getBackdropPath() || backdropNotFound}
                         />
                     }
                     <Card.Body id="movie-card-body">
@@ -153,22 +152,22 @@ function List({ list, listData }) {
                             <div>
                                 <Rating
                                     id="user-rating"
-                                    value={Helper.getMovieRating(item.data.id, userRatings)}
-                                    onChange={(e, newValue) => {handleRate(item, newValue)}}
+                                    value={Helper.getMovieRating(item.getId(), userRatings)}
+                                    onChange={(e, newValue) => {handleRate(item.movie, newValue)}}
                                 />
-                                <Card.Title id="movie-title" title={item.data.original_title}>{item.data.title}</Card.Title>
+                                <Card.Title id="movie-title" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
                             </div>
                         }
                         {window.innerWidth > 575 &&
                             <div className="d-flex justify-content-between align-items-center">
-                                <Card.Text id="movie-date">{Helper.formatDate(item.data.release_date)}</Card.Text>
-                                <Badge id="search-score" bg={Helper.getScoreBarColor(item.data.vote_average)}>
-                                    {item.data.vote_average ? Helper.formatScore(item.data.vote_average) : 'NR'}
+                                <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
+                                <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
+                                    {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
                                 </Badge>
                             </div>
                         }
                         {window.innerWidth > 575 &&
-                            <Card.Text id="movie-description">{item.data.overview}</Card.Text>
+                            <Card.Text id="movie-description">{item.getOverview()}</Card.Text>
                         }
                         {window.innerWidth > 991 &&
                             <div>
@@ -176,22 +175,22 @@ function List({ list, listData }) {
                                     ? <div id="footer-icons">
                                         {list !== "Favorites" &&
                                             <MdFavorite title="Add to Favorites"
-                                                onClick={() => handleAdd(item.data, "Favorites")}
+                                                onClick={() => handleAdd(item.movie, "Favorites")}
                                                 className="footer-icon fav-icon"
                                             />}
                                         {list !== "Watch List" &&
                                             <IoMdEye title="Add to Watch List"
-                                                onClick={() => handleAdd(item.data, "Watch List")}
+                                                onClick={() => handleAdd(item.movie, "Watch List")}
                                                 className="footer-icon watch-icon"
                                             />}
                                         {list !== "Watched" &&
                                             <MdTaskAlt title="Add to Watched"
-                                                onClick={() => handleAdd(item.data, "Watched")}
+                                                onClick={() => handleAdd(item.movie, "Watched")}
                                                 className="footer-icon watched-icon"
                                             />}
                                     </div>
                                     : null}
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.data.id)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.movie)}>Info</Button>
                             </div>
                         }
                         {window.innerWidth < 992 &&
@@ -199,21 +198,21 @@ function List({ list, listData }) {
                                 <div id="footer-icons">
                                     {list !== "Favorites" &&
                                         <MdFavorite title="Add to Favorites"
-                                            onClick={() => handleAdd(item.data, "Favorites")}
+                                            onClick={() => handleAdd(item.movie, "Favorites")}
                                             className="footer-icon fav-icon"
                                         />}
                                     {list !== "Watch List" &&
                                         <IoMdEye title="Add to Watch List"
-                                            onClick={() => handleAdd(item.data, "Watch List")}
+                                            onClick={() => handleAdd(item.movie, "Watch List")}
                                             className="footer-icon watch-icon"
                                         />}
                                     {list !== "Watched" &&
                                         <MdTaskAlt title="Add to Watched"
-                                            onClick={() => handleAdd(item.data, "Watched")}
+                                            onClick={() => handleAdd(item.movie, "Watched")}
                                             className="footer-icon watched-icon"
                                         />}
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.data.id)}>Info</Button>
+                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.movie)}>Info</Button>
                             </div>
                         }
                     </Card.Body>
@@ -244,7 +243,7 @@ function List({ list, listData }) {
                         <Modal.Title>Delete From List</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Are you sure you want to delete {deleteData.title} from {list}?
+                        Are you sure you want to delete {deleteData.title || deleteData.name} from {list}?
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => handleDelete(deleteData)}>

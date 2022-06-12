@@ -16,7 +16,7 @@ class Helper {
     }
 
     static getScoreBarColor = (score) => {
-        if (score === 0) return 'colorNR';
+        if (score === 0 || score === 'Not Rated') return 'colorNR';
         if (score < 4) return 'colorF';
         if (score < 6) return 'colorE';
         if (score < 7) return 'colorD';

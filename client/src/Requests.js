@@ -39,12 +39,12 @@ class Requests {
         return axios.get(`/api/search/${query}`);
     }
 
-    // Get detailed data from specific movie
-    static getMovieData = (token, movieId) => {
+    // Get detailed data from specific movie/tv show
+    static getMovieData = (token, item) => {
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
-        return axios.get(`/api/movie/${movieId}`, config);
+        return item.media_type === 'movie' ? axios.get(`/api/movie/${item.id}`, config) : axios.get(`/api/tvshow/${item.id}`, config);
     }
 
     // Set movie on database

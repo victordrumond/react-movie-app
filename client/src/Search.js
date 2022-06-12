@@ -12,6 +12,7 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
 import Helper from './Helper';
+import Movie from './Movie';
 
 function Search() {
 
@@ -29,7 +30,11 @@ function Search() {
             if (searchFor) {
                 Requests.searchFor(searchFor).then(res => {
                     if (res.data.results) {
-                        setData(res.data.results);
+                        let results = [];
+                        for (const result of res.data.results) {
+                            results.push(new Movie(result));
+                        }
+                        setData(results);
                     };
                 });
             } else {
@@ -54,7 +59,7 @@ function Search() {
     const handleAdd = async (item, list) => {
         setSearchFor("");
         await getAccessTokenSilently().then(token => {
-            Requests.addMovie(token, user, list, item).then(res => {
+            Requests.addMovie(token, user, list, item.movie).then(res => {
                 context.setUserData(res.data);
             }).catch(err => {
                 console.log(err);
@@ -81,14 +86,13 @@ function Search() {
                     <ListGroup.Item key={index} className="result-item d-flex justify-content-between">
                         <div className="d-flex">
                             <img
-                                src={item.poster_path ? "https://image.tmdb.org/t/p/w500" + item.poster_path : coverNotFound}
-                                alt="movie_cover"
-                                className="img-fluid"
+                                src={item.getPosterPath() || coverNotFound}
+                                alt="movie_cover" className="img-fluid"
                             />
                             <div id="results-text" className="d-flex flex-column">
-                                <p title={item.title}>{item.title}{item.original_title !== item.title ? ` (${item.original_title})` : ''}</p>
-                                <p className='text-muted'>{item.release_date ? item.release_date.slice(0, 4) : ''}</p>
-                                <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.vote_average)}>{item.vote_average ? Helper.formatScore(item.vote_average) : 'NR'}</Badge></p>
+                                <p title={item.getTitle()}>{item.getTitle()}{item.getOriginalTitle() !== item.getTitle() ? ` (${item.getOriginalTitle()})` : ''}</p>
+                                <p className='text-muted'>{item.getReleaseYear()}</p>
+                                <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>{item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}</Badge></p>
                             </div>
                         </div>
                         <div className="d-flex flex-column justify-content-between">

@@ -4,16 +4,56 @@ class Movie {
         this.movie = movieObj;
     }
 
+    isMovie() {
+        return this.movie.media_type === 'movie';
+    }
+
+    isTvShow() {
+        return this.movie.media_type === 'tv';
+    }
+
+    getId() {
+        return this.movie.id;
+    }
+
     getTitle() {
-        return this.movie.title || '';
+        if (this.isMovie()) {
+            return this.movie.title || '';
+        }
+        if (this.isTvShow()) {
+            return this.movie.name || '';
+        }
+        return this.movie.title || this.movie.name || '';
+    }
+
+    getOriginalTitle() {
+        if (this.isMovie()) {
+            return this.movie.original_title || '';
+        }
+        if (this.isTvShow()) {
+            return this.movie.original_name || '';
+        }
+        return this.movie.original_title || this.movie.original_name || '';
     }
 
     getReleaseDate() {
-        return this.movie.release_date || '';
+        if (this.isMovie()) {
+            return this.movie.release_date || '';
+        }
+        if (this.isTvShow()) {
+            return this.movie.first_air_date || '';
+        }
+        return this.movie.release_date || this.movie.first_air_date || '';
     }
 
     getReleaseYear() {
-        return this.movie.release_date.substring(0, 4) || '';
+        if (this.isMovie()) {
+            return this.movie.release_date ? this.movie.release_date.substring(0, 4) : '';
+        }
+        if (this.isTvShow()) {
+            return this.movie.first_air_date ? this.movie.first_air_date.substring(0, 4) : '';
+        }
+        return this.getReleaseDate().substring(0, 4);
     }
 
     getPosterPath() {
@@ -50,7 +90,7 @@ class Movie {
     }
 
     getParentalRating() {
-        if (this.movie.release_dates.results) {
+        if (this.movie.release_dates) {
             let worldReleases = this.movie.release_dates.results;
             let usRelease = worldReleases.filter(item => item.iso_3166_1 === 'US');
             let usParentalRating = usRelease.length > 0 ? usRelease[0].release_dates[0].certification : 'PG not found';

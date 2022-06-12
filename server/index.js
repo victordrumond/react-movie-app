@@ -89,8 +89,16 @@ app.get("/api/authcovers", async (req, res) => {
 
 
 // Get movie data by id
-app.get("/api/movie/:movieid", checkJwt, async (req, res) => {
-  await axios.get('https://api.themoviedb.org/3/movie/' + req.params.movieid + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
+app.get("/api/movie/:id", checkJwt, async (req, res) => {
+  await axios.get('https://api.themoviedb.org/3/movie/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
+    .then(response => {
+      return res.json(response.data);
+    });
+})
+
+// Get tv show data by id
+app.get("/api/tvshow/:id", checkJwt, async (req, res) => {
+  await axios.get('https://api.themoviedb.org/3/tv/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,release_dates,watch/providers')
     .then(response => {
       return res.json(response.data);
     });
@@ -100,8 +108,10 @@ app.get("/api/movie/:movieid", checkJwt, async (req, res) => {
 // Get search results
 app.get("/api/search/:query", async (req, res) => {
   await axios
-    .get('https://api.themoviedb.org/3/search/movie?api_key=' + process.env.TMDB_API_KEY + '&query=' + encodeURIComponent(req.params.query))
+    .get('https://api.themoviedb.org/3/search/multi?api_key=' + process.env.TMDB_API_KEY + '&query=' + encodeURIComponent(req.params.query))
     .then(response => {
+      let filteredResults = response.data.results.filter(item => item.media_type !== 'person');
+      response.data.results = filteredResults;
       return res.json(response.data);
     });
 });
@@ -121,7 +131,7 @@ app.post('/api/addmovie', checkJwt, async (req, res) => {
   if (isMovieOnList < 0) {
     const newMovie = { timestamp: Date.now(), data: movie };
     await userData.data[list].push(newMovie);
-    const activityData = { image: movie.poster_path, movie: movie.title, list: list };
+    const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
     userData = await Utils.recordActivity(userData, 'movie_added', activityData);
     userData = await userData.save();
     console.log(`${movie.title} added to ${list}`);
@@ -147,7 +157,7 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
     return;
   }
   await userData.data[list].splice(isMovieOnList, 1);
-  const activityData = { image: movie.poster_path, movie: movie.title, list: list };
+  const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
   userData = await Utils.recordActivity(userData, 'movie_deleted', activityData);
   userData = await userData.save();
   console.log(`${movie.title} deleted from ${list}`);
@@ -216,7 +226,7 @@ app.post('/api/updatefilter', checkJwt, async (req, res) => {
 
 // Update movie rating
 app.post('/api/updaterating', checkJwt, async (req, res) => {
-  const [email, sub, movie, score] = [req.body.user.email, req.body.user.sub, req.body.movie.data, req.body.score];
+  const [email, sub, movie, score] = [req.body.user.email, req.body.user.sub, req.body.movie, req.body.score];
   let userData = await model.findOne({ "user.email": email });
   if (!userData) {
     return res.sendStatus(404);
@@ -238,7 +248,7 @@ app.post('/api/updaterating', checkJwt, async (req, res) => {
     await userData.data.ratings.push(newRating);
     console.log(`${movie.title} rating set to ${score}`);
   }
-  const activityData = { image: movie.poster_path, movie: movie.title, rating: score };
+  const activityData = { image: movie.poster_path, movie: movie.title || movie.name, rating: score };
   userData = await Utils.recordActivity(userData, 'movie_rated', activityData);
   userData = await userData.save();
   return res.json(userData);
