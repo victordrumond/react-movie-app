@@ -16,10 +16,10 @@ function ListSettings({ activeList, isListEmpty }) {
     
     const listsConfig = context.userData.config.lists;
 
-    const handleUpdateFilter = async (newFilter) => {
+    const handleUpdateSorting = async (newSort) => {
         let listName = Helper.getNormalizedListName(activeList);
         await getAccessTokenSilently().then(token => {
-            Requests.setFilter(token, user, listName, newFilter).then(res => {
+            Requests.setSorting(token, user, listName, newSort).then(res => {
                 context.setUserData(res.data);
             }).catch(err => {
                 console.log(err);
@@ -27,8 +27,8 @@ function ListSettings({ activeList, isListEmpty }) {
         });
     };
 
-    const getActiveListFiltering = (activeList) => {
-        return listsConfig[Helper.getNormalizedListName(activeList)].filtering;
+    const getActiveListSorting = (activeList) => {
+        return listsConfig[Helper.getNormalizedListName(activeList)].sorting;
     };
 
     return (
@@ -43,21 +43,21 @@ function ListSettings({ activeList, isListEmpty }) {
                 {!isListEmpty &&
                     <Navbar.Collapse>
                         <Nav>
-                            <NavDropdown id="filter-dropdown" title="Filter">
-                                <NavDropdown.Item className="filter-option" onClick={() => handleUpdateFilter('last_added')}>
-                                    {getActiveListFiltering(activeList) === 'last_added' ? <b>Last added</b> : 'Last added'}
+                            <NavDropdown id="sort-dropdown" title="Sort">
+                                <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('last_added')}>
+                                    {getActiveListSorting(activeList) === 'last_added' ? <b>Last added</b> : 'Last added'}
                                 </NavDropdown.Item>
-                                <NavDropdown.Item className="filter-option" onClick={() => handleUpdateFilter('first_added')}>
-                                    {getActiveListFiltering(activeList) === 'first_added' ? <b>First added</b> : 'First added'}
+                                <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('first_added')}>
+                                    {getActiveListSorting(activeList) === 'first_added' ? <b>First added</b> : 'First added'}
                                 </NavDropdown.Item>
-                                <NavDropdown.Item className="filter-option" onClick={() => handleUpdateFilter('title')}>
-                                    {getActiveListFiltering(activeList) === 'title' ? <b>Title</b> : 'Title'}
+                                <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('title')}>
+                                    {getActiveListSorting(activeList) === 'title' ? <b>Title</b> : 'Title'}
                                 </NavDropdown.Item>
-                                <NavDropdown.Item className="filter-option" onClick={() => handleUpdateFilter('highest_score')}>
-                                    {getActiveListFiltering(activeList) === 'highest_score' ? <b>Highest rated</b> : 'Highest rated'}
+                                <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('highest_score')}>
+                                    {getActiveListSorting(activeList) === 'highest_score' ? <b>Highest rated</b> : 'Highest rated'}
                                 </NavDropdown.Item>
-                                <NavDropdown.Item className="filter-option" onClick={() => handleUpdateFilter('lowest_score')}>
-                                    {getActiveListFiltering(activeList) === 'lowest_score' ? <b>Lowest rated</b> : 'Lowest rated'}
+                                <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('lowest_score')}>
+                                    {getActiveListSorting(activeList) === 'lowest_score' ? <b>Lowest rated</b> : 'Lowest rated'}
                                 </NavDropdown.Item>
                             </NavDropdown>
                         </Nav>

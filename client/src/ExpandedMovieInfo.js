@@ -9,7 +9,7 @@ import Helper from './Helper';
 
 function ExpandedMovieInfo({ movieObj }) {
 
-    const movie = useMemo(() => new Movie(movieObj), [movieObj]);
+    const movie = useMemo(() => new Movie(movieObj, ''), [movieObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
 

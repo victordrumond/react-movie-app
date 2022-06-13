@@ -9,7 +9,7 @@ import Helper from './Helper';
 
 function ExpandedTvShowInfo({ tvShowObj }) {
 
-    const movie = useMemo(() => new TvShow(tvShowObj), [tvShowObj]);
+    const movie = useMemo(() => new TvShow(tvShowObj, ''), [tvShowObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
 

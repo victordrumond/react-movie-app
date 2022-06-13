@@ -65,13 +65,13 @@ class Requests {
         return axios.post('/api/deletemovie', body, config);
     }
 
-    // Set filtering option to list
-    static setFilter = (token, userObj, list, filter) => {
-        const body = { user: userObj, list: list, value: filter };
+    // Set sorting option to list
+    static setSorting = (token, userObj, list, sort) => {
+        const body = { user: userObj, list: list, value: sort };
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
-        return axios.post('/api/updatefilter', body, config);
+        return axios.post('/api/updatesorting', body, config);
     }
 
     // Update movie rating

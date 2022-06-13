@@ -1,7 +1,12 @@
 class Movie {
 
-    constructor(movieObj) {
+    constructor(movieObj, timestamp) {
         this.item = movieObj;
+        this.timestamp = timestamp;
+    }
+
+    getTimestamp() {
+        return this.timestamp;
     }
 
     getId() {

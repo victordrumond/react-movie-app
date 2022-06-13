@@ -14,11 +14,11 @@
 }
 
 @media screen and (max-width: 575px) {
-    #filter-dropdown {
+    #sort-dropdown {
         font-size: 15px;
     }
 
-    .filter-option {
+    .sort-option {
         font-size: 14px !important;
     }
 

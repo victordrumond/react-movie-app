@@ -47,10 +47,10 @@ function Main() {
         let result = [];
         for (const movie of movies) {
             if (movie.data.media_type === 'movie') {
-                result.push(new Movie(movie.data));
+                result.push(new Movie(movie.data, movie.timestamp));
             }
             if (movie.data.media_type === 'tv') {
-                result.push(new TvShow(movie.data));
+                result.push(new TvShow(movie.data, movie.timestamp));
             }
         }
         return result;

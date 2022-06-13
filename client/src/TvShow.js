@@ -1,7 +1,12 @@
 class TvShow {
 
-    constructor(tvShowObj) {
+    constructor(tvShowObj, timestamp) {
         this.item = tvShowObj;
+        this.timestamp = timestamp;
+    }
+
+    getTimestamp() {
+        return this.timestamp;
     }
 
     getId() {
