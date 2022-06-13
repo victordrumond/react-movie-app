@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import { IoMdEye } from 'react-icons/io';
+import { RiFileListLine } from 'react-icons/ri';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
@@ -95,14 +96,18 @@ function Search() {
                                 <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>{item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}</Badge></p>
                             </div>
                         </div>
-                        <div className="d-flex flex-column justify-content-between">
+                        <div className="d-flex justify-content-between align-items-end">
                             <MdFavorite title="Add to Favorites"
                                 onClick={() => handleAdd(item, "favorites")}
                                 className="results-icon fav-icon"
                             />
-                            <IoMdEye title="Add to Watch List"
+                            <RiFileListLine title="Add to Watch List"
                                 onClick={() => handleAdd(item, "watchList")}
                                 className="results-icon watch-icon"
+                            />
+                            <IoMdEye title="Add to Watching"
+                                onClick={() => handleAdd(item, "watching")}
+                                className="results-icon watching-icon"
                             />
                             <MdTaskAlt title="Add to Watched"
                                 onClick={() => handleAdd(item, "watched")}

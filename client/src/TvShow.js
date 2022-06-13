@@ -24,6 +24,12 @@ class TvShow {
         return this.getReleaseDate().substring(0, 4);
     }
 
+    getYears() {
+        let releaseYear = this.getReleaseYear();
+        let lastYear = this.item.in_production ? 'Today' : this.item.last_air_date.substring(0, 4);
+        return `${releaseYear} - ${lastYear}`;
+    }
+
     getPosterPath() {
         if (this.item.poster_path) {
             return `https://image.tmdb.org/t/p/w500${this.item.poster_path}`;

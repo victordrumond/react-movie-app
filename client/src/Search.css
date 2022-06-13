@@ -58,6 +58,10 @@
     color: #0275D8;
 }
 
+.watching-icon:hover {
+    color: #fd7e14;
+}
+
 .watched-icon:hover {
     color: #28A745;
 }

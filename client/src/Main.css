@@ -22,13 +22,22 @@
     padding: 0 1rem 1rem;
 }
 
+@media screen and (max-width: 992px) {
+    .nav-link {
+        padding: 0.5rem !important;
+    }
+
+    #list-stat {
+        font-size: 14px;
+    }
+}
+
 @media screen and (max-width: 767px) {
     #tabs-nav {
         flex-direction: column;
     }
 
     #list-stat {
-        font-size: 14px;
         text-align: end;
         padding: 0.25rem 0 0.5rem;
     }

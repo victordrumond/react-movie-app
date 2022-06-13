@@ -17,7 +17,7 @@ function Dashboard() {
     const location = useLocation();
 
     useEffect(() => {
-        if (location.pathname !== '/home/watchlist' && location.pathname !== '/home/watched') {
+        if (location.pathname !== '/home/watchlist' && location.pathname !== '/home/watching' && location.pathname !== '/home/watched') {
             navigate('/home/favorites');
         }
     }, [navigate, location.pathname]);

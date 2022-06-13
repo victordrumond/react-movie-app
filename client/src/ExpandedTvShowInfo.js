@@ -37,7 +37,7 @@ function ExpandedTvShowInfo({ tvShowObj }) {
         <Modal id="tvshow-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true} centered={true} >
             <Modal.Header closeButton>
                 <Modal.Title>
-                    {movie.getReleaseYear() ? `${movie.getTitle()} (${movie.getReleaseYear()})` : movie.getTitle()}
+                    {movie.getReleaseYear() ? `${movie.getTitle()} (${movie.getYears()})` : movie.getTitle()}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body id="modal-body" className="d-flex">

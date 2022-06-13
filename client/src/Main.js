@@ -9,6 +9,7 @@ import Nav from 'react-bootstrap/Nav';
 import ListSettings from './ListSettings';
 import List from './List';
 import { IoMdEye } from 'react-icons/io';
+import { RiFileListLine } from 'react-icons/ri';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Movie from './Movie';
 import TvShow from './TvShow';
@@ -25,6 +26,8 @@ function Main() {
     useEffect(() => {
         if (location.pathname === '/home/watched') {
             setActiveList("Watched");
+        } else if (location.pathname === '/home/watching') {
+            setActiveList("Watching");
         } else if (location.pathname === '/home/watchlist') {
             setActiveList("Watch List");
         } else if (location.pathname === '/home/favorites') {
@@ -59,33 +62,39 @@ function Main() {
                 <Card.Header>
                     <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" activeKey={activeList} className="d-flex justify-content-between">
                         {window.innerWidth > 575 && window.innerWidth < 768 &&
-                            <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"} on {activeList}</p>
+                            <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " item" : activeListLength + " items"} on {activeList}</p>
                         }
                         <div className="d-flex">
                             <Nav.Item>
-                                <Nav.Link as={Link} to="favorites" eventKey="Favorites" onClick={() => setActiveList("Favorites")} className="d-flex">
+                                <Nav.Link as={Link} to="favorites" eventKey="Favorites" onClick={() => setActiveList("Favorites")} className="nav-link d-flex">
                                     {window.innerWidth > 575 && <p>Favorites</p>}
                                     <MdFavorite className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to="watchlist" eventKey="Watch List" onClick={() => setActiveList("Watch List")} className="d-flex">
+                                <Nav.Link as={Link} to="watchlist" eventKey="Watch List" onClick={() => setActiveList("Watch List")} className="nav-link d-flex">
                                     {window.innerWidth > 575 && <p>Watch List</p>}
+                                    <RiFileListLine className="tabs-icon" />
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={Link} to="watching" eventKey="Watching" onClick={() => setActiveList("Watching")} className="nav-link d-flex">
+                                    {window.innerWidth > 575 && <p>Watching</p>}
                                     <IoMdEye className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={Link} to="watched" eventKey="Watched" onClick={() => setActiveList("Watched")} className="d-flex">
+                                <Nav.Link as={Link} to="watched" eventKey="Watched" onClick={() => setActiveList("Watched")} className="nav-link d-flex">
                                     {window.innerWidth > 575 && <p>Watched</p>}
                                     <MdTaskAlt className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                         </div>
                         {window.innerWidth > 767 &&
-                            <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"} on {activeList}</p>
+                            <p id="list-stat">You have {activeListLength === 1 ? activeListLength + " item" : activeListLength + " items"} on {activeList}</p>
                         }
                         {window.innerWidth < 576 &&
-                            <p id="list-stat">{activeList} - {activeListLength === 1 ? activeListLength + " movie" : activeListLength + " movies"}</p>
+                            <p id="list-stat">{activeListLength === 1 ? activeListLength + " item" : activeListLength + " items"}</p>
                         }
                     </Nav>
                 </Card.Header>
@@ -94,6 +103,7 @@ function Main() {
                     <Routes>
                         <Route path="favorites" element={<List list="Favorites" listData={initData(listData.favorites)} />} />
                         <Route path="watchlist" element={<List list="Watch List" listData={initData(listData.watchList)} />} />
+                        <Route path="watching" element={<List list="Watching" listData={initData(listData.watching)} />} />
                         <Route path="watched" element={<List list="Watched" listData={initData(listData.watched)} />} />
                     </Routes>
                 </Card.Body>

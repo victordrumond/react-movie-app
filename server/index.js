@@ -189,11 +189,12 @@ app.post('/api/users/newuser', checkJwt, async (req, res) => {
   }
   const newUser = {
     user: { email: email, sub: sub },
-    data: { favorites: [], watchList: [], watched: [], ratings: [] },
+    data: { favorites: [], watchList: [], watching: [], watched: [], ratings: [] },
     config: {
       lists: {
         favorites: { filtering: "last_added" },
         watchList: { filtering: "last_added" },
+        watching: { filtering: "last_added" },
         watched: { filtering: "last_added" }
       }
     },

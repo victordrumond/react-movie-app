@@ -8,6 +8,7 @@ export const initUserData = {
     data: {
         favorites: [],
         watchList: [],
+        watching: [],
         watched: [],
         ratings: []
     },
@@ -17,6 +18,9 @@ export const initUserData = {
                 filtering: "last_added"
             },
             watchList: {
+                filtering: "last_added"
+            },
+            watching: {
                 filtering: "last_added"
             },
             watched: {

@@ -13,6 +13,7 @@ const movieSchema = new mongoose.Schema({
     data: {
         favorites: [{ timestamp: Number, data: Object }],
         watchList: [{ timestamp: Number, data: Object }],
+        watching: [{ timestamp: Number, data: Object }],
         watched: [{ timestamp: Number, data: Object }],
         ratings: [{ movieId: Number, score: Number }]
     },
@@ -20,6 +21,7 @@ const movieSchema = new mongoose.Schema({
         lists: {
             favorites: { filtering: String },
             watchList: { filtering: String },
+            watching: { filtering: String },
             watched: { filtering: String }
         }
     },

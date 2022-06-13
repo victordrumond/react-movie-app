@@ -36,7 +36,7 @@ function ListSettings({ activeList, isListEmpty }) {
             <Navbar>
                 {isListEmpty &&
                     <div id="empty-list-config">
-                        <p>Use the search bar to add a movie</p>
+                        <p>Use the search bar to find a movie or TV show</p>
                     </div>
                 }
                 

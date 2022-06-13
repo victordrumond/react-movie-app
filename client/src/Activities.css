@@ -33,12 +33,20 @@
     font-size: 20px;
 }
 
+.trash {
+    color: black;
+}
+
 .favorites {
     color: #DC3545
 }
 
 .watchList {
     color: #0275D8;
+}
+
+.watching {
+    color: #fd7e14;
 }
 
 .watched {

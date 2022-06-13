@@ -10,11 +10,6 @@ class Helper {
         return formattedData;
     }
 
-    // Format movie release date
-    static formatDate = (date) => {
-        return date.substring(0, 4);
-    }
-
     static getScoreBarColor = (score) => {
         if (score === 0 || score === 'Not Rated') return 'colorNR';
         if (score < 4) return 'colorF';
@@ -25,11 +20,6 @@ class Helper {
         if (score <= 10) return 'colorA';
     }
 
-    // Format movie score
-    static formatScore = (score) => {
-        return score.toString().length === 1 ? score.toString() + ".0" : score.toString();
-    }
-
     // Normalize list name
     static getNormalizedListName = (listName) => {
         return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
@@ -38,6 +28,7 @@ class Helper {
     static getListName = (normalizedListName) => {
         if (normalizedListName === 'favorites') return 'Favorites';
         if (normalizedListName === 'watchList') return 'Watch List';
+        if (normalizedListName === 'watching') return 'Watching';
         if (normalizedListName === 'watched') return 'Watched';
     }
 

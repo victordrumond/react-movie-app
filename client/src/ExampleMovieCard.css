@@ -29,4 +29,8 @@
     #example-movie-card {
         height: 100%;
     }
+
+    #example-movie-card p {
+        font-size: 14px;
+    }
 }

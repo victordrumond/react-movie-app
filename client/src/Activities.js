@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Activity from './Activity';
 import { IoMdEye } from 'react-icons/io';
+import { RiFileListLine } from 'react-icons/ri';
 import { AiFillStar } from 'react-icons/ai';
 import { CgTrash } from 'react-icons/cg';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
@@ -37,7 +38,9 @@ function Activities() {
                             {activity.getLabel() === 'movie_added' && activity.getList() === 'favorites' &&
                                 <MdFavorite className='activity-icon favorites' />}
                             {activity.getLabel() === 'movie_added' && activity.getList() === 'watchList' &&
-                                <IoMdEye className='activity-icon watchList' />}
+                                <RiFileListLine className='activity-icon watchList' />}
+                            {activity.getLabel() === 'movie_added' && activity.getList() === 'watching' &&
+                                <IoMdEye className='activity-icon watching' />}
                             {activity.getLabel() === 'movie_added' && activity.getList() === 'watched' &&
                                 <MdTaskAlt className='activity-icon watched' />}
                             {activity.hasRating() &&

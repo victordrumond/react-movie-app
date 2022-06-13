@@ -14,6 +14,7 @@ import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { IoMdEye } from 'react-icons/io';
+import { RiFileListLine } from 'react-icons/ri';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Requests from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
@@ -180,9 +181,14 @@ function List({ list, listData }) {
                                                 className="footer-icon fav-icon"
                                             />}
                                         {list !== "Watch List" &&
-                                            <IoMdEye title="Add to Watch List"
+                                            <RiFileListLine title="Add to Watch List"
                                                 onClick={() => handleAdd(item.item, "Watch List")}
                                                 className="footer-icon watch-icon"
+                                            />}
+                                        {list !== "Watching" &&
+                                            <IoMdEye title="Add to Watching"
+                                                onClick={() => handleAdd(item.item, "Watching")}
+                                                className="footer-icon watching-icon"
                                             />}
                                         {list !== "Watched" &&
                                             <MdTaskAlt title="Add to Watched"
@@ -203,9 +209,14 @@ function List({ list, listData }) {
                                             className="footer-icon fav-icon"
                                         />}
                                     {list !== "Watch List" &&
-                                        <IoMdEye title="Add to Watch List"
+                                        <RiFileListLine title="Add to Watch List"
                                             onClick={() => handleAdd(item.item, "Watch List")}
                                             className="footer-icon watch-icon"
+                                        />}
+                                    {list !== "Watching" &&
+                                        <IoMdEye title="Add to Watching"
+                                            onClick={() => handleAdd(item.item, "Watching")}
+                                            className="footer-icon watching-icon"
                                         />}
                                     {list !== "Watched" &&
                                         <MdTaskAlt title="Add to Watched"
