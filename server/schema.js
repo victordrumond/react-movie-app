@@ -19,10 +19,10 @@ const movieSchema = new mongoose.Schema({
     },
     config: {
         lists: {
-            favorites: { sorting: String },
-            watchList: { sorting: String },
-            watching: { sorting: String },
-            watched: { sorting: String }
+            favorites: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } },
+            watchList: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } },
+            watching: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } },
+            watched: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } }
         }
     },
     activities: Array

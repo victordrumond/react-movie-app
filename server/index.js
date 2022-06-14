@@ -192,10 +192,10 @@ app.post('/api/users/newuser', checkJwt, async (req, res) => {
     data: { favorites: [], watchList: [], watching: [], watched: [], ratings: [] },
     config: {
       lists: {
-        favorites: { sorting: "last_added" },
-        watchList: { sorting: "last_added" },
-        watching: { sorting: "last_added" },
-        watched: { sorting: "last_added" }
+        favorites: { sorting: "last_added", filtering: { movies: true, tvShows: true } },
+        watchList: { sorting: "last_added", filtering: { movies: true, tvShows: true } },
+        watching: { sorting: "last_added", filtering: { movies: true, tvShows: true } },
+        watched: { sorting: "last_added", filtering: { movies: true, tvShows: true } }
       }
     },
     activities: []
@@ -223,6 +223,27 @@ app.post('/api/updatesorting', checkJwt, async (req, res) => {
     return res.json(userData);
   }
   console.log(`Current sorting on ${list} is already ${sort}`);
+})
+
+
+// Update list filtering
+app.post('/api/updatefiltering', checkJwt, async (req, res) => {
+  const [email, sub, filter, value, list] = [req.body.user.email, req.body.user.sub, req.body.filter, req.body.value, req.body.list];
+  let userData = await model.findOne({ "user.email": email });
+  if (!userData) {
+    return res.sendStatus(404);
+  }
+  if (userData.user.email !== email || userData.user.sub !== sub) {
+    return res.sendStatus(401);
+  }
+  const currentFiltering = userData.config.lists[list].filtering[filter];
+  if (currentFiltering !== value) {
+    userData.config.lists[list].filtering[filter] = value;
+    userData = await userData.save();
+    console.log(`Filter ${filter} updated to ${value} on ${list}`);
+    return res.json(userData);
+  }
+  console.log(`Filter ${filter} on ${list} is already ${value}`);
 })
 
 

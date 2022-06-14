@@ -74,6 +74,15 @@ class Requests {
         return axios.post('/api/updatesorting', body, config);
     }
 
+    // Set filtering option to list
+    static setFiltering = (token, userObj, list, filter, value) => {
+        const body = { user: userObj, list: list, filter: filter, value: value };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/updatefiltering', body, config);
+    }
+
     // Update movie rating
     static updateMovieRating = (token, userObj, movie, score) => {
         const body = { user: userObj, movie: movie, score: score };

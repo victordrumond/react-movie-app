@@ -15,16 +15,16 @@ export const initUserData = {
     config: {
         lists: {
             favorites: {
-                sorting: "last_added"
+                sorting: "last_added", filtering: { movies: true, tvShows: true }
             },
             watchList: {
-                sorting: "last_added"
+                sorting: "last_added", filtering: { movies: true, tvShows: true }
             },
             watching: {
-                sorting: "last_added"
+                sorting: "last_added", filtering: { movies: true, tvShows: true }
             },
             watched: {
-                sorting: "last_added"
+                sorting: "last_added", filtering: { movies: true, tvShows: true }
             }
         }
     },
