@@ -46,7 +46,7 @@ class ListConfig {
 
     // Chunk to data
     static chunkData = (data, size) => {
-        if (data.length === 0) return data;
+        if (data.length === 0) return [[]];
         let quotient = Math.floor(data.length / size);
         let remainder = data.length % size;
         let numberOfChunks = (remainder === 0) ? quotient : quotient + 1;

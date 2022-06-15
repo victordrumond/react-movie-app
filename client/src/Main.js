@@ -49,8 +49,16 @@ function Main() {
         return listData[Helper.getNormalizedListName(activeList)].length === 0 ? true : false;
     }
 
+    const getSelectedPage = (list) => {
+        let data = initData(listData[list]);
+        if (data.length >= activePage) {
+            return data[activePage - 1];
+        }
+        return data[0];
+    }
+
     const initData = (movies) => {
-        if (movies.length === 0) return movies;
+        if (movies.length === 0) return [[]];
         let items = [];
         for (const movie of movies) {
             if (movie.data.media_type === 'movie') {
@@ -111,20 +119,20 @@ function Main() {
                 <Card.Body id="content-body">
                     <ListSettings activeList={activeList} isListEmpty={isListEmpty()} />
                     <Routes>
-                        <Route path="favorites" element={<List list="Favorites" listData={initData(listData.favorites)} />} />
-                        <Route path="watchlist" element={<List list="Watch List" listData={initData(listData.watchList)} />} />
-                        <Route path="watching" element={<List list="Watching" listData={initData(listData.watching)} />} />
-                        <Route path="watched" element={<List list="Watched" listData={initData(listData.watched)} />} />
+                        <Route path="favorites" element={<List list="Favorites" listData={getSelectedPage('favorites')} />} />
+                        <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPage('watchList')} />} />
+                        <Route path="watching" element={<List list="Watching" listData={getSelectedPage('watching')} />} />
+                        <Route path="watched" element={<List list="Watched" listData={getSelectedPage('watched')} />} />
                     </Routes>
                 </Card.Body>
                 <Card.Footer id="pagination-container">
                     <Pagination className="d-flex justify-content-end mb-0">
                         {/* <Pagination.First />
                         <Pagination.Prev /> */}
-                        {initData(listData[Helper.getNormalizedListName(activeList)]).length > 0 && initData(listData[Helper.getNormalizedListName(activeList)]).map((item, index) => (
+                        {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === index + 1} onClick={() => setActivePage(index + 1)}>{index + 1}</Pagination.Item>
                         ))}
-                        {initData(listData[Helper.getNormalizedListName(activeList)]).length === 0 &&
+                        {isListEmpty() &&
                             <Pagination.Item disabled>1</Pagination.Item>
                         }
                         {/* <Pagination.Ellipsis />

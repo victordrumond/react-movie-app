@@ -114,7 +114,7 @@ function List({ list, listData }) {
 
             {listData.length === 0 && <ExampleMovieCard list={list} isReallyEmpty={moviesOnList.length === 0} />}
 
-            {listData.length > 0 && listData[0].map((item, index) => (
+            {listData.length > 0 && listData.map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
                     {window.innerWidth > 991 &&
                         <div>
