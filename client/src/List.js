@@ -6,7 +6,6 @@ import coverNotFound from './cover-not-found.png';
 import Helper from "./Helper";
 import LocalStorage from "./LocalStorage";
 import { useAuth0 } from '@auth0/auth0-react';
-import ListConfig from "./ListConfig";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import CloseButton from 'react-bootstrap/CloseButton';
@@ -28,7 +27,7 @@ function List({ list, listData }) {
     const { user, getAccessTokenSilently } = useAuth0();
 
     const userRatings = context.userData.data.ratings;
-    const listConfig = context.userData.config.lists[Helper.getNormalizedListName(list)];
+    const moviesOnList = context.userData.data[Helper.getNormalizedListName(list)];
 
     const [activeCard, setActiveCard] = useState(null);
 
@@ -110,17 +109,12 @@ function List({ list, listData }) {
         return false;
     }
 
-    const prepareListData = (listData) => {
-        let filteredData = ListConfig.filterData(listData, listConfig);
-        return ListConfig.sortData(filteredData, listConfig);
-    }
-
     return (
         <Container id="list-container">
 
-            {listData.length === 0 && <ExampleMovieCard list={list} />}
+            {listData.length === 0 && <ExampleMovieCard list={list} isReallyEmpty={moviesOnList.length === 0} />}
 
-            {listData.length > 0 && prepareListData(listData).map((item, index) => (
+            {listData.length > 0 && listData[0].map((item, index) => (
                 <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
                     {window.innerWidth > 991 &&
                         <div>

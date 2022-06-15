@@ -22,6 +22,10 @@
     padding: 0 1rem 1rem;
 }
 
+#pagination-container {
+    padding: 1rem !important;
+}
+
 @media screen and (max-width: 992px) {
     .nav-link {
         padding: 0.5rem !important;

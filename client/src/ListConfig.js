@@ -5,6 +5,7 @@ class ListConfig {
 
     // Apply sorting to data
     static sortData = (data, config) => {
+        if (data.length === 0) return data;
         if (config.sorting === 'title') {
             return data.sort((a, b) => {
                 let aTitle = a.item.title || a.item.name;
@@ -28,6 +29,7 @@ class ListConfig {
 
     // Apply filtering to data
     static filterData = (data, config) => {
+        if (data.length === 0) return data;
         if (config.filtering.movies && config.filtering.tvShows) {
             return data;
         }
@@ -41,7 +43,21 @@ class ListConfig {
             return [];
         }
     }
-    
+
+    // Chunk to data
+    static chunkData = (data, size) => {
+        if (data.length === 0) return data;
+        let quotient = Math.floor(data.length / size);
+        let remainder = data.length % size;
+        let numberOfChunks = (remainder === 0) ? quotient : quotient + 1;
+        let result = [];
+        for (let i = 0; i < numberOfChunks; i++) {
+            let chunk = data.slice(size * i, size * (i + 1));
+            result.push(chunk);
+        }
+        return result;
+    }
+
 }
 
 export default ListConfig;
