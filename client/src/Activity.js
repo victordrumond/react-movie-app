@@ -1,5 +1,5 @@
 import Helper from './Helper';
-import { Constants } from './Constants';
+import { TIME } from './Constants';
 
 class Activity {
 
@@ -58,17 +58,17 @@ class Activity {
 
     getTimeString() {
         let timeDifference = Date.now() - this.timestamp;
-        if (timeDifference < Constants.minute) return `Seconds ago`;
-        if (timeDifference < (2 * Constants.minute)) return `1 minute ago`;
-        if (timeDifference < Constants.hour) return `${Math.floor(timeDifference/Constants.minute)} minutes ago`;
-        if (timeDifference < (2 * Constants.hour)) return `1 hour ago`;
-        if (timeDifference < Constants.day) return `${Math.floor(timeDifference/Constants.hour)} hours ago`;
-        if (timeDifference < (2 * Constants.day)) return `1 day ago`;
-        if (timeDifference < Constants.month) return `${Math.floor(timeDifference/Constants.day)} days ago`;
-        if (timeDifference < (2 * Constants.month)) return `1 month ago`;
-        if (timeDifference < Constants.year) return `${Math.floor(timeDifference/Constants.month)} months ago`;
-        if (timeDifference < (2 * Constants.year)) return `1 year ago`;
-        return `${Math.floor(timeDifference/Constants.year)} years ago`;
+        if (timeDifference < TIME.minute) return `Seconds ago`;
+        if (timeDifference < (2 * TIME.minute)) return `1 minute ago`;
+        if (timeDifference < TIME.hour) return `${Math.floor(timeDifference/TIME.minute)} minutes ago`;
+        if (timeDifference < (2 * TIME.hour)) return `1 hour ago`;
+        if (timeDifference < TIME.day) return `${Math.floor(timeDifference/TIME.hour)} hours ago`;
+        if (timeDifference < (2 * TIME.day)) return `1 day ago`;
+        if (timeDifference < TIME.month) return `${Math.floor(timeDifference/TIME.day)} days ago`;
+        if (timeDifference < (2 * TIME.month)) return `1 month ago`;
+        if (timeDifference < TIME.year) return `${Math.floor(timeDifference/TIME.month)} months ago`;
+        if (timeDifference < (2 * TIME.year)) return `1 year ago`;
+        return `${Math.floor(timeDifference/TIME.year)} years ago`;
     }
     
 }

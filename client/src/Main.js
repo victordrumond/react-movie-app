@@ -15,6 +15,7 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Movie from './Movie';
 import TvShow from './TvShow';
 import ListConfig from './ListConfig';
+import { ITEMS_PER_PAGE, MAX_VISIBLE_PAGES } from './Constants';
 
 function Main() {
 
@@ -45,6 +46,13 @@ function Main() {
         setActivePage(1);
     }, [activeList])
 
+    useEffect(() => {
+        if (activePage > getNumberOfPages()) {
+            setActivePage(getNumberOfPages());
+        }
+        // eslint-disable-next-line
+    }, [listData, activePage])
+
     const isListEmpty = () => {
         return listData[Helper.getNormalizedListName(activeList)].length === 0 ? true : false;
     }
@@ -61,6 +69,16 @@ function Main() {
         return initData(listData[Helper.getNormalizedListName(activeList)]).length;
     }
 
+    const getPaginationIndex = (pageIndex) => {
+        if (getNumberOfPages() > MAX_VISIBLE_PAGES && activePage === getNumberOfPages()) {
+            return pageIndex + activePage - MAX_VISIBLE_PAGES;
+        }
+        if (getNumberOfPages() > MAX_VISIBLE_PAGES && activePage >= MAX_VISIBLE_PAGES) {
+            return pageIndex + activePage - MAX_VISIBLE_PAGES + 1;
+        }
+        return pageIndex;
+    }
+
     const initData = (movies) => {
         if (movies.length === 0) return [[]];
         let items = [];
@@ -74,7 +92,7 @@ function Main() {
         }
         let filteredData = ListConfig.filterData(items, listConfig);
         let sortedData = ListConfig.sortData(filteredData, listConfig);
-        let chunkedData = ListConfig.chunkData(sortedData, 4);
+        let chunkedData = ListConfig.chunkData(sortedData, ITEMS_PER_PAGE);
         return chunkedData;
     }
 
@@ -84,7 +102,7 @@ function Main() {
                 <Card.Header>
                     <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" activeKey={activeList} className="d-flex justify-content-between">
                         {window.innerWidth > 575 && window.innerWidth < 768 &&
-                            <p id="list-stat">You have {numOfItemsOnList === 1 ? numOfItemsOnList + " item" : numOfItemsOnList + " items"} on {activeList}</p>
+                            <p id="list-stat">Showing {getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
                         }
                         <div className="d-flex">
                             <Nav.Item>
@@ -113,10 +131,10 @@ function Main() {
                             </Nav.Item>
                         </div>
                         {window.innerWidth > 767 &&
-                            <p id="list-stat">You have {numOfItemsOnList === 1 ? numOfItemsOnList + " item" : numOfItemsOnList + " items"} on {activeList}</p>
+                            <p id="list-stat">Showing {getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"} </p>
                         }
                         {window.innerWidth < 576 &&
-                            <p id="list-stat">{numOfItemsOnList === 1 ? numOfItemsOnList + " item" : numOfItemsOnList + " items"}</p>
+                            <p id="list-stat">{getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
                         }
                     </Nav>
                 </Card.Header>
@@ -141,14 +159,18 @@ function Main() {
                                 }
                             }} />
                         }
-                        {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).map((item, index) => (
-                            <Pagination.Item key={index} active={activePage === index + 1} onClick={() => setActivePage(index + 1)}>{index + 1}</Pagination.Item>
+                        {activePage >= MAX_VISIBLE_PAGES && getNumberOfPages() > MAX_VISIBLE_PAGES &&
+                            <Pagination.Ellipsis />
+                        }
+                        {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).slice(0, MAX_VISIBLE_PAGES).map((item, index) => (
+                            <Pagination.Item key={index} active={activePage === getPaginationIndex(index + 1)} onClick={() => setActivePage(getPaginationIndex(index + 1))}>{getPaginationIndex(index + 1)}</Pagination.Item>
                         ))}
                         {isListEmpty() &&
                             <Pagination.Item disabled>1</Pagination.Item>
                         }
-                        {/* <Pagination.Ellipsis />
-                        <Pagination.Item active={activePage === 20}>{20}</Pagination.Item> */}
+                        {getNumberOfPages() > MAX_VISIBLE_PAGES && activePage < getNumberOfPages() - 1 &&
+                            <Pagination.Ellipsis />
+                        }
                         {getNumberOfPages() > 1 &&
                             <Pagination.Next onClick={() => {
                                 if (activePage < getNumberOfPages()) {
