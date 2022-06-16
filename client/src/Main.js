@@ -49,12 +49,16 @@ function Main() {
         return listData[Helper.getNormalizedListName(activeList)].length === 0 ? true : false;
     }
 
-    const getSelectedPage = (list) => {
+    const getSelectedPageData = (list) => {
         let data = initData(listData[list]);
         if (data.length >= activePage) {
             return data[activePage - 1];
         }
         return data[0];
+    }
+
+    const getNumberOfPages = () => {
+        return initData(listData[Helper.getNormalizedListName(activeList)]).length;
     }
 
     const initData = (movies) => {
@@ -119,16 +123,24 @@ function Main() {
                 <Card.Body id="content-body">
                     <ListSettings activeList={activeList} isListEmpty={isListEmpty()} />
                     <Routes>
-                        <Route path="favorites" element={<List list="Favorites" listData={getSelectedPage('favorites')} />} />
-                        <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPage('watchList')} />} />
-                        <Route path="watching" element={<List list="Watching" listData={getSelectedPage('watching')} />} />
-                        <Route path="watched" element={<List list="Watched" listData={getSelectedPage('watched')} />} />
+                        <Route path="favorites" element={<List list="Favorites" listData={getSelectedPageData('favorites')} />} />
+                        <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPageData('watchList')} />} />
+                        <Route path="watching" element={<List list="Watching" listData={getSelectedPageData('watching')} />} />
+                        <Route path="watched" element={<List list="Watched" listData={getSelectedPageData('watched')} />} />
                     </Routes>
                 </Card.Body>
                 <Card.Footer id="pagination-container">
                     <Pagination className="d-flex justify-content-end mb-0">
-                        {/* <Pagination.First />
-                        <Pagination.Prev /> */}
+                        {getNumberOfPages() > 1 &&
+                            <Pagination.First onClick={() => setActivePage(1)} />
+                        }
+                        {getNumberOfPages() > 1 &&
+                            <Pagination.Prev onClick={() => {
+                                if (activePage > 1) {
+                                    setActivePage(activePage - 1);
+                                }
+                            }} />
+                        }
                         {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === index + 1} onClick={() => setActivePage(index + 1)}>{index + 1}</Pagination.Item>
                         ))}
@@ -137,8 +149,16 @@ function Main() {
                         }
                         {/* <Pagination.Ellipsis />
                         <Pagination.Item active={activePage === 20}>{20}</Pagination.Item> */}
-                        {/* <Pagination.Next />
-                        <Pagination.Last /> */}
+                        {getNumberOfPages() > 1 &&
+                            <Pagination.Next onClick={() => {
+                                if (activePage < getNumberOfPages()) {
+                                    setActivePage(activePage + 1);
+                                }
+                            }} />
+                        }
+                        {getNumberOfPages() > 1 &&
+                            <Pagination.Last onClick={() => setActivePage(getNumberOfPages())} />
+                        }
                     </Pagination>
                 </Card.Footer>
             </Card>
