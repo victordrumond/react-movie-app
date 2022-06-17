@@ -5,6 +5,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import { IoMdEye } from 'react-icons/io';
@@ -25,6 +27,9 @@ function Search() {
     const [data, setData] = useState([]);
     const searchRef = useRef(null);
     const resultsRef = useRef(null);
+
+    const [addMovieToList, setAddMovieToList] = useState(false);
+    const [addData, setAddData] = useState(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -59,14 +64,31 @@ function Search() {
 
     const handleAdd = async (item, list) => {
         setSearchFor("");
+        if (await isMovieOnList(item.result, list)) {
+            setAddData([item.result.title || item.result.name, list, false]);
+            setAddMovieToList(true);
+            return;
+        }
         await getAccessTokenSilently().then(token => {
             Requests.addMovie(token, user, list, item.result).then(res => {
                 context.setUserData(res.data);
+                setAddData([item.result.title || item.result.name, list, true]);
+                setAddMovieToList(true);
             }).catch(err => {
                 console.log(err);
             })
         });
     };
+
+    const isMovieOnList = async (item, list) => {
+        let listMovies = context.userData.data[list];
+        for (const movie of listMovies) {
+            if (movie.data.id === item.id) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     return (
         <Container id="search-container">
@@ -117,6 +139,21 @@ function Search() {
                     </ListGroup.Item>
                 ))}
             </ListGroup>
+
+            {addMovieToList && !addData[2] && (
+                <Modal id="icons-modal" show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Already On List</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>{addData[0]} is already on {Helper.getListName(addData[1])}</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="success" onClick={() => setAddMovieToList(false)}>
+                            Continue
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
+
         </Container>
     );
 };

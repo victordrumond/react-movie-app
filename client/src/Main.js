@@ -228,7 +228,7 @@ function Main() {
             {showActivities > 0 &&
                 <ToastContainer className="position-fixed p-3" position="bottom-end">
                     {newActivities.map((activity, index) => (
-                        <Toast id="activity-toast" key={activity.timestampv} show={true} onClose={() => handleCloseToast(activity)} delay={5000} autohide>
+                        <Toast id="activity-toast" key={activity.timestamp} show={true} onClose={() => handleCloseToast(activity)} delay={5000} autohide>
                             <Toast.Header>
                                 {activity.getLabel() === 'movie_deleted' &&
                                     <CgTrash className='toast-icon trash' />}
