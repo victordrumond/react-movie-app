@@ -7,15 +7,20 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
 import Pagination from 'react-bootstrap/Pagination';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import Toast from 'react-bootstrap/Toast';
 import ListSettings from './ListSettings';
 import List from './List';
 import { IoMdEye } from 'react-icons/io';
 import { RiFileListLine } from 'react-icons/ri';
+import { AiFillStar } from 'react-icons/ai';
+import { CgTrash } from 'react-icons/cg';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import Movie from './Movie';
 import TvShow from './TvShow';
+import Activity from './Activity';
 import ListConfig from './ListConfig';
-import { ITEMS_PER_PAGE, MAX_VISIBLE_PAGES } from './Constants';
+import { MAX_VISIBLE_PAGES } from './Constants';
 
 function Main() {
 
@@ -30,6 +35,9 @@ function Main() {
 
     const listConfig = context.userData.config.lists[Helper.getNormalizedListName(activeList)];
 
+    const [newActivities, setNewActivities] = useState([]);
+    const [showActivities, setShowActivities] = useState(0);
+
     useEffect(() => {
         if (location.pathname === '/home/watched') {
             setActiveList("Watched");
@@ -41,6 +49,19 @@ function Main() {
             setActiveList("Favorites");
         };
     }, [location.pathname]);
+
+    useEffect(() => {
+        let activities = [];
+        for (const activity of context.userData.activities) {
+            let item = new Activity(activity.label, activity.data, activity.timestamp);
+            if (Date.now() - item.timestamp < 5000) {
+                activities.push(item);
+            }
+        }
+        setNewActivities(activities);
+        setShowActivities(showActivities + 1);
+        // eslint-disable-next-line
+    }, [context.userData.activities]);
 
     useEffect(() => {
         setActivePage(1);
@@ -79,6 +100,13 @@ function Main() {
         return pageIndex;
     }
 
+    const getItemsPerPage = () => {
+        if (window.innerWidth > 1199) return 10;
+        if (window.innerWidth > 991) return 12;
+        if (window.innerWidth > 767) return 12;
+        return 10;
+    }
+
     const initData = (movies) => {
         if (movies.length === 0) return [[]];
         let items = [];
@@ -92,12 +120,24 @@ function Main() {
         }
         let filteredData = ListConfig.filterData(items, listConfig);
         let sortedData = ListConfig.sortData(filteredData, listConfig);
-        let chunkedData = ListConfig.chunkData(sortedData, ITEMS_PER_PAGE);
+        let chunkedData = ListConfig.chunkData(sortedData, getItemsPerPage());
         return chunkedData;
+    }
+
+    const handleCloseToast = (activity) => {
+        let current = newActivities;
+        const findActivity = current.findIndex(item => item.timestamp === activity.timestamp);
+        if (findActivity < 0) {
+            return;
+        }
+        current.splice(findActivity, 1);
+        setNewActivities(current);
+        setShowActivities(showActivities + 1);
     }
 
     return (
         <Container id="main-container">
+
             <Card className="d-flex flex-column">
                 <Card.Header>
                     <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" activeKey={activeList} className="d-flex justify-content-between">
@@ -184,6 +224,33 @@ function Main() {
                     </Pagination>
                 </Card.Footer>
             </Card>
+
+            {showActivities > 0 &&
+                <ToastContainer className="position-fixed p-3" position="bottom-end">
+                    {newActivities.map((activity, index) => (
+                        <Toast id="activity-toast" key={activity.timestampv} show={true} onClose={() => handleCloseToast(activity)} delay={5000} autohide>
+                            <Toast.Header>
+                                {activity.getLabel() === 'movie_deleted' &&
+                                    <CgTrash className='toast-icon trash' />}
+                                {activity.getLabel() === 'movie_added' && activity.getList() === 'favorites' &&
+                                    <MdFavorite className='toast-icon favorites' />}
+                                {activity.getLabel() === 'movie_added' && activity.getList() === 'watchList' &&
+                                    <RiFileListLine className='toast-icon watchList' />}
+                                {activity.getLabel() === 'movie_added' && activity.getList() === 'watching' &&
+                                    <IoMdEye className='toast-icon watching' />}
+                                {activity.getLabel() === 'movie_added' && activity.getList() === 'watched' &&
+                                    <MdTaskAlt className='toast-icon watched' />}
+                                {activity.hasRating() &&
+                                    <AiFillStar className='toast-icon rating' />}
+                                <strong className="me-auto">New activity</strong>
+                                <small>{activity.getTimeString()}</small>
+                            </Toast.Header>
+                            <Toast.Body>{activity.getDescription()}</Toast.Body>
+                        </Toast>
+                    ))}
+                </ToastContainer>
+            }
+
         </Container>
     );
 };

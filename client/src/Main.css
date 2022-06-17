@@ -26,6 +26,43 @@
     padding: 1rem !important;
 }
 
+.page-item.active {
+    z-index: 0 !important;
+}
+
+.toast-icon {
+    font-size: 20px;
+    margin-right: 0.5rem;
+}
+
+.toast-body {
+    background-color: white !important;
+}
+
+.trash {
+    color: black;
+}
+
+.favorites {
+    color: #DC3545
+}
+
+.watchList {
+    color: #0275D8;
+}
+
+.watching {
+    color: #fd7e14;
+}
+
+.watched {
+    color: #28A745;
+}
+
+.rating {
+    color: rgba(255, 183, 0, 0.824);
+}
+
 @media screen and (max-width: 992px) {
     .nav-link {
         padding: 0.5rem !important;
@@ -60,5 +97,4 @@
     .nav-link {
         padding: 0.5rem 0.75rem !important;
     }
-    
 }

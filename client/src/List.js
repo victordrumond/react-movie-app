@@ -60,7 +60,7 @@ function List({ list, listData }) {
 
     const handleAdd = async (item, list) => {
         if (await isMovieOnList(item, list)) {
-            setAddData([item.title, list, false]);
+            setAddData([item.title || item.name, list, false]);
             setAddMovieToList(true);
             return;
         }
@@ -230,16 +230,12 @@ function List({ list, listData }) {
                 </Card>
             ))}
 
-            {addMovieToList && (
+            {addMovieToList && !addData[2] && (
                 <Modal id="icons-modal" show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
                     <Modal.Header closeButton>
-                        <Modal.Title>
-                            {addData[2] ? 'Added To List' : 'Already On List'}
-                        </Modal.Title>
+                        <Modal.Title>Already On List</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                        {addData[0]} {addData[2] ? 'was added to' : 'is already on'} {addData[1]}
-                    </Modal.Body>
+                    <Modal.Body>{addData[0]} is already on {addData[1]}</Modal.Body>
                     <Modal.Footer>
                         <Button variant="success" onClick={() => setAddMovieToList(false)}>
                             Continue
