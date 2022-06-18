@@ -45,12 +45,12 @@ function Settings() {
     }, [userProfileUpdated, getAccessTokenSilently]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!loading) {
+        if (!loading) {
+            const timer = setTimeout(() => {
                 setLoading(null);
-            };
-        }, 5000)
-        return () => clearTimeout(timer)
+            }, 5000)
+            return () => clearTimeout(timer)
+        }
     }, [loading]);
 
     const handleSubmitCountry = async (countryCode) => {
@@ -113,7 +113,7 @@ function Settings() {
             </div>
             <Form id="general-settings-form" >
                 <Form.Label>Country:</Form.Label>
-                <Form.Select id="country-select" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
+                <Form.Select id="default-country" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
                     {countries.map((item, i) => (
                         <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
                     ))}

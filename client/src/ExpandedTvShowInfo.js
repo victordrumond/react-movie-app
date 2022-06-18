@@ -7,11 +7,16 @@ import Form from 'react-bootstrap/Form';
 import TvShow from './TvShow';
 import Helper from './Helper';
 
-function ExpandedTvShowInfo({ tvShowObj }) {
+function ExpandedTvShowInfo({ tvShowObj, country }) {
 
     const movie = useMemo(() => new TvShow(tvShowObj, ''), [tvShowObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
+    const [selectedCountry, setSelectedCountry] = useState(country);
+
+    useEffect(() => {
+        setSelectedCountry(country);
+    }, [country])
 
     useEffect(() => {
         setStreamingData(movie.getStreamingServices());
@@ -22,11 +27,14 @@ function ExpandedTvShowInfo({ tvShowObj }) {
         return streamingData.length === 0 ? false : true;
     }
 
-    const [selectedCountry, setSelectedCountry] = useState('US');
-
     const getAvailableServicesOnCountry = () => {
         for (const dataCountry of streamingData) {
             if (dataCountry.country === selectedCountry) {
+                return dataCountry.services;
+            }
+        }
+        for (const dataCountry of streamingData) {
+            if (dataCountry.country === 'US') {
                 return dataCountry.services;
             }
         }
@@ -51,7 +59,7 @@ function ExpandedTvShowInfo({ tvShowObj }) {
                     <div id="modal-stats" className="d-flex justify-content-between">
                         <p>{`Status: ${movie.getStatus()}`}</p>
                         <p>{movie.getNumberOfSeasons()}</p>
-                        <p>{movie.getParentalRating()}</p>
+                        <p>{movie.getParentalRating(selectedCountry)}</p>
                         <p>{movie.getAverageRating()}</p>
                     </div>
                     <p id="modal-description">{movie.getOverview()}</p>
@@ -63,7 +71,7 @@ function ExpandedTvShowInfo({ tvShowObj }) {
                     </div>
                     <div id="watch" className="d-flex flex-column">
                         <div className="d-flex justify-content-start">
-                            <p><b>Streaming</b></p>
+                            <p><b>Streaming:</b></p>
                             {isAvailableOnStreaming() &&
                                 <Form.Select id="country-select" size="sm" defaultValue={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
                                     {streamingData.map((item, i) => (

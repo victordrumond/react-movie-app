@@ -62,12 +62,14 @@ class Movie {
         return 'Not Rated';
     }
 
-    getParentalRating() {
+    getParentalRating(countryCode) {
         if (this.item.release_dates) {
-            let worldReleases = this.item.release_dates.results;
-            let usRelease = worldReleases.filter(item => item.iso_3166_1 === 'US');
-            let usParentalRating = usRelease.length > 0 ? usRelease[0].release_dates[0].certification : 'PG not found';
-            return usParentalRating || 'PG not found';
+            const worldReleases = this.item.release_dates.results;
+            let localRelease = worldReleases.filter(item => item.iso_3166_1 === countryCode);
+            if (localRelease.length > 0) {
+                let rating = localRelease[0].release_dates[0].certification;
+                return rating || 'PG not found';
+            }
         }
         return 'PG not found';
     }

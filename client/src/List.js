@@ -260,8 +260,8 @@ function List({ list, listData }) {
                 </Modal>
             )}
 
-            {showExpandedInfo && infoData[1] === 'movie' && <ExpandedMovieInfo movieObj={infoData[0]} />}
-            {showExpandedInfo && infoData[1] === 'tv' && <ExpandedTvShowInfo tvShowObj={infoData[0]} />}
+            {showExpandedInfo && infoData[1] === 'movie' && <ExpandedMovieInfo movieObj={infoData[0]} country={context.userData.config.general.country}/>}
+            {showExpandedInfo && infoData[1] === 'tv' && <ExpandedTvShowInfo tvShowObj={infoData[0]} country={context.userData.config.general.country}/>}
 
         </Container>
     );

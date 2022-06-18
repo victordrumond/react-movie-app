@@ -61,12 +61,13 @@ class TvShow {
         return 'Not Rated';
     }
 
-    getParentalRating() {
+    getParentalRating(countryCode) {
         if (this.item.content_ratings) {
-            let worldRatings = this.item.content_ratings.results;
-            let usRating = worldRatings.filter(item => item.iso_3166_1 === 'US');
-            let usParentalRating = usRating.length > 0 ? usRating[0].rating : 'PG not found';
-            return usParentalRating || 'PG not found';
+            const worldRatings = this.item.content_ratings.results;
+            let localRating = worldRatings.filter(item => item.iso_3166_1 === countryCode);
+            if (localRating.length > 0) {
+                return localRating[0].rating || 'PG not found';
+            }
         }
         return 'PG not found';
     }
