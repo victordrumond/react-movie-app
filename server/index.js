@@ -78,9 +78,10 @@ app.get("/api/authcovers", async (req, res) => {
   let covers = [];
   for (let i = 1; i <= 3; i++) {
     await axios
-      .get("https://api.themoviedb.org/3/movie/popular?api_key=" + process.env.TMDB_API_KEY + "&page=" + i)
-      .then(res => {
-        res.data.results.forEach(item => covers.push(item.poster_path));
+      .get("https://api.themoviedb.org/3/trending/all/day?api_key=" + process.env.TMDB_API_KEY + "&page=" + i)
+      .then(response => {
+        let filteredResults = response.data.results.filter(item => item.media_type !== 'person');
+        filteredResults.forEach(item => covers.push(item.poster_path));
       })
     ;
   }
