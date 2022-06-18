@@ -4,7 +4,7 @@
     box-shadow: none !important;
 }
 
-.form-control:focus {
+.form-control:focus, .form-select:focus {
     outline: none !important;
     outline-offset: none !important;
     box-shadow: none !important;

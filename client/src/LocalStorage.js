@@ -71,6 +71,34 @@ class LocalStorage {
         localStorage.setItem('trendingCovers', JSON.stringify(updatedTrendingCovers));
     }
 
+    static hasUpdatedCountryList = () => {
+        let countryList = JSON.parse(localStorage.getItem('countryList'));
+        if (countryList && countryList.data.length > 0) {
+            let today = Helper.getComparableDate(Date.now());
+            let lastUpdate = Helper.getComparableDate(countryList.updated);
+            if (today === lastUpdate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static getCountryList = () => {
+        let countryList = JSON.parse(localStorage.getItem('countryList'));
+        if (countryList) {
+            return countryList.data;
+        }
+        return null;
+    }
+
+    static setCountryList = (countries) => {
+        let updatedCountryList = {
+            updated: Date.now(),
+            data: countries
+        }
+        localStorage.setItem('countryList', JSON.stringify(updatedCountryList));
+    }
+
 }
 
 export default LocalStorage;

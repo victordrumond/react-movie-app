@@ -82,9 +82,20 @@ app.get("/api/authcovers", async (req, res) => {
       .then(res => {
         res.data.results.forEach(item => covers.push(item.poster_path));
       })
-      ;
+    ;
   }
   return res.json(covers);
+})
+
+
+// Get countries
+app.get("/api/config/countries", async (req, res) => {
+  await axios
+    .get("https://api.themoviedb.org/3/configuration/countries?api_key=" + process.env.TMDB_API_KEY)
+    .then(response => {
+      return res.json(response.data);
+    })
+  ;
 })
 
 
@@ -196,6 +207,9 @@ app.post('/api/users/newuser', checkJwt, async (req, res) => {
         watchList: { sorting: "last_added", filtering: { movies: true, tvShows: true } },
         watching: { sorting: "last_added", filtering: { movies: true, tvShows: true } },
         watched: { sorting: "last_added", filtering: { movies: true, tvShows: true } }
+      },
+      general: {
+        country: "US"
       }
     },
     activities: []
@@ -273,6 +287,28 @@ app.post('/api/updaterating', checkJwt, async (req, res) => {
   }
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, rating: score };
   userData = await Utils.recordActivity(userData, 'movie_rated', activityData);
+  userData = await userData.save();
+  return res.json(userData);
+})
+
+
+// Update country
+app.post('/api/updatecountry', checkJwt, async (req, res) => {
+  const [email, sub, country] = [req.body.user.email, req.body.user.sub, req.body.country];
+  let userData = await model.findOne({ "user.email": email });
+  if (!userData) {
+    return res.sendStatus(404);
+  }
+  if (userData.user.email !== email || userData.user.sub !== sub) {
+    return res.sendStatus(401);
+  }
+  const currentCountry = userData.config.general.country;
+  if (country === currentCountry) {
+    console.log(`Current country is already ${country}`);
+    return;
+  }
+  userData.config.general.country = country;
+  console.log(`Country updated to ${country}`);
   userData = await userData.save();
   return res.json(userData);
 })

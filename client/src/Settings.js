@@ -1,20 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Settings.css';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { CgProfile } from 'react-icons/cg';
+import { BsCheck, BsFillGearFill } from 'react-icons/bs';
 import { useAuth0 } from '@auth0/auth0-react';
 import Requests from './Requests';
 import Helper from './Helper';
+import LocalStorage from './LocalStorage';
+import { UserContext } from './UserContext';
 
 function Settings() {
 
+    const getCountries = () => {
+        if (LocalStorage.hasUpdatedCountryList()) {
+            return LocalStorage.getCountryList();
+        } else {
+            Requests.getCountryList().then(res => {
+                LocalStorage.setCountryList(res.data);
+                return res.data;
+            })
+        }
+    }
+
+    const countries = getCountries();
+
     const { user, getAccessTokenSilently } = useAuth0();
+    const context = useContext(UserContext);
+
     const [userProfileUpdated, setUserProfileUpdated] = useState(false);
     const [loading, setLoading] = useState(null);
     const [error, setError] = useState(null);
+
+    const [currentCountry, setCurrentCountry] = useState(context.userData.config.general.country);
 
     useEffect(() => {
         if (userProfileUpdated) {
@@ -33,7 +53,18 @@ function Settings() {
         return () => clearTimeout(timer)
     }, [loading]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmitCountry = async (countryCode) => {
+        await getAccessTokenSilently().then(token => {
+            Requests.updateCountry(token, user, countryCode).then(res => {
+                context.setUserData(res.data);
+                setCurrentCountry(res.data.config.general.country);
+            }).catch(err => {
+                console.log(err);
+            })
+        })
+    }
+
+    const handleSubmitProfile = async (e) => {
         e.preventDefault();
         const [name, nickname, picture] = [e.target[1].value, e.target[2].value, e.target[3].value.replace(/ /g, '')];
         if (!Helper.validateUsername(nickname)) {
@@ -76,15 +107,31 @@ function Settings() {
 
     return (
         <Container id="settings-container">
+            <div id="general-title" className="d-flex justify-content-start">
+                <BsFillGearFill className="settings-section-icon" />
+                <p>General Settings</p>
+            </div>
+            <Form id="general-settings-form" >
+                <Form.Label>Country:</Form.Label>
+                <Form.Select id="country-select" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
+                    {countries.map((item, i) => (
+                        <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
+                    ))}
+                </Form.Select>
+                <Form.Text>Used to show regional information such as parental rating and availability of streaming services</Form.Text>
+            </Form>
             <div id="profile-title" className="d-flex justify-content-start">
                 <CgProfile className="settings-section-icon" />
                 <p>Profile Settings</p>
             </div>
-            <Form id="user-settings-form" onSubmit={(e) => handleSubmit(e)}>
+            <Form id="user-settings-form" onSubmit={(e) => handleSubmitProfile(e)}>
                 <Form.Group className="mb-2" controlId="formEmail">
                     <Form.Label>Email:</Form.Label>
                     <Form.Control type="email" defaultValue={user.email} disabled />
-                    <Form.Text>{user.email_verified ? 'This is a verified email address' : 'This email has not been verified'}</Form.Text>
+                    <div>
+                        {user.email_verified ? <BsCheck className="text-success email-status-icon" /> : ""}
+                        <Form.Text>{user.email_verified ? 'This is a verified email address' : 'This email has not been verified yet'}</Form.Text>
+                    </div>
                 </Form.Group>
                 <Form.Group className="mb-2" controlId="formName">
                     <Form.Label>Name:</Form.Label>

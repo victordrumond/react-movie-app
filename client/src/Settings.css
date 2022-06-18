@@ -6,8 +6,16 @@
     margin: 0;
 }
 
-#profile-title p {
+#profile-title p, #general-title p {
     font-size: 15px;
+}
+
+#country-select {
+    margin: 0 !important;
+    width: 100% !important;
+    height: 36.5px;
+    font-size: 15px;
+    line-height: 1.5 !important;
 }
 
 .settings-section-icon {
@@ -15,18 +23,23 @@
     margin-right: 5px;
 }
 
-#user-settings-form {
-    padding: 15px 0 20px;
+#user-settings-form, #general-settings-form {
+    padding: 15px 0 25px;
 }
 
-#user-settings-form label, #user-settings-form input {
+.email-status-icon {
+    font-size: 22px;
+}
+
+#user-settings-form label, #user-settings-form input,
+#general-settings-form label {
     font-size: 15px;
 }
 
-#update-profile-btn {
+#update-profile-btn, #update-general-btn {
     font-size: 15px;
-    width: 75px;
-    height: 38px;
+    width: 72px;
+    height: 36px;
 }
 
 #error-msg {

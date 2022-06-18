@@ -16,6 +16,11 @@ class Requests {
         return axios.get("/api/authcovers");
     }
 
+    // Get TBDb country list
+    static getCountryList = () => {
+        return axios.get("/api/config/countries");
+    }
+
     // Get user from database
     static getUser = (token, userObj) => {
         const body = { user: userObj };
@@ -90,6 +95,15 @@ class Requests {
             headers: { Authorization: "Bearer " + token }
         };
         return axios.post('/api/updaterating', body, config);
+    }
+
+    // Update country
+    static updateCountry = (token, userObj, countryCode) => {
+        const body = { user: userObj, country: countryCode };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/updatecountry', body, config);
     }
 
 }

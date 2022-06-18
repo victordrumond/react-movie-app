@@ -26,6 +26,9 @@ export const initUserData = {
             watched: {
                 sorting: "last_added", filtering: { movies: true, tvShows: true }
             }
+        },
+        general: {
+            country: "US"
         }
     },
     activities: []

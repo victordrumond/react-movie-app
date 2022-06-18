@@ -23,6 +23,9 @@ const movieSchema = new mongoose.Schema({
             watchList: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } },
             watching: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } },
             watched: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } }
+        },
+        general: {
+            country: String
         }
     },
     activities: Array
