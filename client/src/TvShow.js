@@ -21,23 +21,36 @@ class TvShow {
         return this.item.original_name || '';
     }
 
-    getReleaseDate() {
-        return this.item.first_air_date || '';
+    getReleaseDate(seasonNumber) {
+        if (!seasonNumber || seasonNumber === '0') {
+            return this.item.first_air_date || '';
+        }
+        if (this.getSeasons()[seasonNumber - 1]) {
+            return this.getSeasons()[seasonNumber - 1].air_date || '';
+        }
+        return '';
     }
 
-    getReleaseYear() {
-        return this.getReleaseDate().substring(0, 4);
+    getReleaseYear(seasonNumber) {
+        return this.getReleaseDate(seasonNumber).substring(0, 4);
     }
 
-    getYears() {
-        let releaseYear = this.getReleaseYear();
-        let lastYear = this.item.in_production ? 'Today' : this.item.last_air_date.substring(0, 4);
-        return `${releaseYear} - ${lastYear}`;
+    getYears(seasonNumber) {
+        if (seasonNumber === '0') {
+            let releaseYear = this.getReleaseYear(seasonNumber);
+            let lastYear = this.item.in_production ? 'Today' : this.item.last_air_date.substring(0, 4);
+            return `${releaseYear} - ${lastYear}`;
+        }
+        return '';
     }
 
-    getPosterPath() {
-        if (this.item.poster_path) {
+    getPosterPath(seasonNumber) {
+        if ((!seasonNumber || seasonNumber === '0') && this.item.poster_path) {
             return `https://image.tmdb.org/t/p/w500${this.item.poster_path}`;
+        }
+        if (this.getSeasons()[seasonNumber - 1]) {
+            let posterPath = this.getSeasons()[seasonNumber - 1].poster_path;
+            return posterPath ? `https://image.tmdb.org/t/p/w500${this.getSeasons()[seasonNumber - 1].poster_path}` : '';
         }
         return null;
     }
@@ -77,8 +90,14 @@ class TvShow {
         return numOfSeasons || 'Unknown';
     }
 
-    getOverview() {
-        return this.item.overview || 'Overview not found';
+    getOverview(seasonNumber) {
+        if (!seasonNumber || seasonNumber === '0') {
+            return this.item.overview || 'Overview not found';
+        }
+        if (this.getSeasons()[seasonNumber - 1]) {
+            return this.getSeasons()[seasonNumber - 1].overview || 'Overview not found';
+        }
+        return 'Overview not found';
     }
 
     getGenres() {
@@ -130,6 +149,30 @@ class TvShow {
             };
         };
         return streamingServices;
+    }
+
+    getSeasons() {
+        if (this.item.seasons.length > 0) {
+            let seasons = [];
+            for (const season of this.item.seasons) {
+                if (season.season_number === 0) {
+                    continue;
+                }
+                seasons.push(season);
+            }
+            return seasons;
+        }
+        return [];
+    }
+
+    getNumberOfEpisodes(seasonNumber) {
+        if (!seasonNumber || seasonNumber === '0') {
+            return '';
+        }
+        if (this.getSeasons()[seasonNumber - 1]) {
+            return this.getSeasons()[seasonNumber - 1].episode_count || '';
+        }
+        return '';
     }
 }
 

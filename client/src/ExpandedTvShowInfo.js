@@ -13,6 +13,7 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
     const [selectedCountry, setSelectedCountry] = useState(country);
+    const [viewSeason, setViewSeason] = useState("0");
 
     useEffect(() => {
         setSelectedCountry(country);
@@ -44,25 +45,39 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
     return (
         <Modal id="tvshow-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true} centered={true} >
             <Modal.Header closeButton>
-                <Modal.Title>
-                    {movie.getReleaseYear() ? `${movie.getTitle()} (${movie.getYears()})` : movie.getTitle()}
-                </Modal.Title>
+                {viewSeason === "0" &&
+                    <Modal.Title>
+                        {movie.getReleaseYear(viewSeason) ? `${movie.getTitle()} (${movie.getYears(viewSeason)})` : movie.getTitle()}
+                    </Modal.Title>
+                }
+                {viewSeason > 0 &&
+                    <Modal.Title>
+                        {movie.getReleaseYear(viewSeason) ? `${movie.getTitle()} - Season ${viewSeason} (${movie.getReleaseYear(viewSeason)})` : movie.getTitle()}
+                    </Modal.Title>
+                }
             </Modal.Header>
             <Modal.Body id="modal-body" className="d-flex">
                 <div>
                     {window.innerWidth > 399
-                        ? <img className="modal-img" alt="tvshow_cover" src={movie.getPosterPath() || coverNotFound} />
+                        ? <img className="modal-img" alt="tvshow_cover" src={movie.getPosterPath(viewSeason) || coverNotFound} />
                         : <img className="modal-img img-fluid" alt="tvshow_cover" src={movie.getBackdropPath() || backdropNotFound} />
                     }
                 </div>
                 <div id="modal-info">
-                    <div id="modal-stats" className="d-flex justify-content-between">
-                        <p>{`Status: ${movie.getStatus()}`}</p>
-                        <p>{movie.getNumberOfSeasons()}</p>
-                        <p>{movie.getParentalRating(selectedCountry)}</p>
-                        <p>{movie.getAverageRating()}</p>
-                    </div>
-                    <p id="modal-description">{movie.getOverview()}</p>
+                    {viewSeason === '0' &&
+                        <div id="modal-stats" className="d-flex justify-content-between">
+                            <p>{`Status: ${movie.getStatus()}`}</p>
+                            <p>{movie.getNumberOfSeasons()}</p>
+                            <p>{movie.getParentalRating(selectedCountry)}</p>
+                            <p>{movie.getAverageRating()}</p>
+                        </div>
+                    }
+                    {viewSeason > 0 &&
+                        <div id="modal-stats" className="d-flex justify-content-between">
+                            <p>{`Episodes: ${movie.getNumberOfEpisodes(viewSeason)}`}</p>
+                        </div>
+                    }
+                    <p id="modal-description">{movie.getOverview(viewSeason)}</p>
                     <div id="modal-notes" className="d-flex flex-column">
                         <p><b>Genres: </b>{movie.getGenres().length > 0 ? Helper.separateByComma(movie.getGenres()) : 'not found'}</p>
                         <p><b>Starring: </b>{movie.getCast().length > 0 ? Helper.separateByComma(movie.getCast()) : 'not found'}</p>
@@ -94,6 +109,15 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
                     </div>
                 </div>
             </Modal.Body>
+            <Modal.Footer>
+                <p><b>Season:</b></p>
+                <Form.Select id="season-select" size="sm" defaultValue={viewSeason} onChange={(e) => setViewSeason(e.target.value)}>
+                    <option key={0} value={0}>Overview</option>
+                    {movie.getSeasons().map((item, i) => (
+                        <option key={item.season_number} value={item.season_number}>Season {item.season_number}</option>
+                    ))}
+                </Form.Select>
+            </Modal.Footer>
         </Modal>
     )
 }
