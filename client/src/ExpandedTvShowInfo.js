@@ -20,6 +20,10 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
     }, [country])
 
     useEffect(() => {
+        setViewSeason("0");
+    }, [tvShowObj])
+
+    useEffect(() => {
         setStreamingData(movie.getStreamingServices());
         setShowInfoModal(true);
     }, [movie])

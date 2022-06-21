@@ -1,4 +1,9 @@
 #list-container {
+    margin: 0;
+    padding: 0;
+}
+
+#list-container-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     margin: 0;
@@ -12,6 +17,16 @@
 
 #movie-card {
     height: 355px;
+}
+
+#movie-card-list {
+    width: 100%;
+    padding: 0.5rem;
+}
+
+#movie-card-list img {
+    height: 91px;
+    padding-right: 1rem;
 }
 
 #movie-card:hover {
@@ -29,6 +44,12 @@
     top: 4px;
 }
 
+#close-card-list {
+    font-size: 14px;
+    margin-top: 0.25rem;
+    background-color: lightgrey;
+}
+
 .card-img {
     width: 240px;
     height: 135px;
@@ -39,7 +60,12 @@
     margin-left: -0.25rem;
 }
 
-#movie-title {
+#user-rating-list {
+    padding-top: 0.5rem;
+    margin-left: -0.25rem;
+}
+
+#movie-title, #movie-title-list {
     font-size: 16px;
     line-height: 1.5;
     padding: 0;
@@ -48,6 +74,20 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+#description-container {
+    padding: 0 2rem;
+}
+
+#description-container p {
+    font-size: 14px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
@@ -78,7 +118,13 @@
     cursor: pointer;
 }
 
-.footer-icon:hover {
+.footer-icon-list {
+    font-size: 22px;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.footer-icon:hover, .footer-icon-list:hover {
     transform: scale(1.2);
     transition: all 0.3s;
 }
@@ -90,8 +136,13 @@
     font-size: 14px;
 }
 
+#card-button-list {
+    font-size: 15px;
+    padding: 0;
+}
+
 @media screen and (max-width: 1199px) {
-    #list-container {
+    #list-container-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 
@@ -101,13 +152,17 @@
 }
 
 @media screen and (max-width: 991px) {
-    #list-container {
+    #list-container-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    #description-container {
+        padding: 0 1.5rem;
     }
 }
 
 @media screen and (max-width: 767px) {
-    #list-container {
+    #list-container-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -117,7 +172,7 @@
 }
 
 @media screen and (max-width: 575px) {
-    #list-container {
+    #list-container-grid {
         grid-template-columns: repeat(2, 1fr);
         grid-gap: 0.5rem;
     }
@@ -129,10 +184,19 @@
     #movie-card {
         height: 100%;
     }
+    
+    #movie-card-list img {
+        padding-right: 1rem;
+    }
 
     #movie-title {
-        font-size: 14px;
+        font-size: 15px;
         margin-bottom: 2rem;
+    }
+
+    #movie-title-list {
+        font-size: 15px;
+        margin-bottom: 0.5rem;
     }
 
     #footer-icons {
@@ -151,5 +215,9 @@
 @media screen and (max-width: 399px) {
     .card-img {
         padding-bottom: 1.75rem !important;
+    }
+
+    #movie-card-list img {
+        padding-right: 0.75rem;
     }
 }

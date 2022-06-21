@@ -13,8 +13,15 @@
     padding: 0;
 }
 
+.list-layout-icon {
+    font-size: 22px;
+    margin-right: 0.5rem;
+    color: #0000008C;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 575px) {
-    #sort-dropdown {
+    #filter-dropdown, #sort-dropdown {
         font-size: 15px;
     }
 

@@ -12,6 +12,7 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import ListGroup from 'react-bootstrap/ListGroup';
 import { IoMdEye } from 'react-icons/io';
 import { RiFileListLine } from 'react-icons/ri';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
@@ -21,7 +22,7 @@ import ExpandedMovieInfo from './ExpandedMovieInfo';
 import ExpandedTvShowInfo from './ExpandedTvShowInfo';
 import Rating from '@mui/material/Rating';
 
-function List({ list, listData }) {
+function List({ list, listData, layout }) {
 
     const context = useContext(UserContext);
     const { user, getAccessTokenSilently } = useAuth0();
@@ -110,70 +111,165 @@ function List({ list, listData }) {
     }
 
     return (
-        <Container id="list-container">
+        <Container className='m-0 p-0'>
 
             {listData.length === 0 && <ExampleMovieCard list={list} isReallyEmpty={moviesOnList.length === 0} />}
 
-            {listData.length > 0 && listData.map((item, index) => (
-                <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
-                    {window.innerWidth > 991 &&
-                        <div>
-                            {activeCard === index
-                                ? <CloseButton
+            <div id="list-container">
+                <ListGroup variant="flush">
+                    {layout === 'list' && listData.length > 0 && listData.map((item, index) => (
+                        <ListGroup.Item id="movie-card-list" key={index} className="d-flex">
+                            <img className="img-fluid" src={item.getPosterPath() || coverNotFound} alt="cover-img" />
+                            <div className="d-flex flex-column w-100">
+                                <Card.Title id="movie-title-list" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
+                                <div className='d-flex justify-content-start'>
+                                    <div id="date-ratings-container">
+                                        <div className="d-flex justify-content-between">
+                                            <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
+                                            <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
+                                                {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
+                                            </Badge>
+                                        </div>
+                                        <Rating
+                                            id="user-rating-list"
+                                            value={Helper.getMovieRating(item.getId(), userRatings)}
+                                            onChange={(e, newValue) => { handleRate(item.item, newValue) }}
+                                        />
+                                    </div>
+                                    {window.innerWidth > 575 &&
+                                        <div id="description-container" className='d-flex align-items-end'>
+                                            <Card.Text >{item.getOverview()}</Card.Text>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div id="buttons-container" className='d-flex flex-column justify-content-between'>
+                                <div className='d-flex justify-content-end'>
+                                    <CloseButton id="close-card-list"
+                                        onClick={() => {
+                                            setDeleteData(item.item);
+                                            setDeleteMovie(true);
+                                        }}
+                                    />
+                                </div>
+                                <div className='d-flex justify-content-end'>
+                                    <Button id="card-button-list" variant="link" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                </div>
+                                <div className='d-flex align-items-end'>
+                                    {list !== "Favorites" &&
+                                        <MdFavorite title="Add to Favorites"
+                                            onClick={() => handleAdd(item.item, "Favorites")}
+                                            className="footer-icon-list fav-icon"
+                                        />}
+                                    {list !== "Watch List" &&
+                                        <RiFileListLine title="Add to Watch List"
+                                            onClick={() => handleAdd(item.item, "Watch List")}
+                                            className="footer-icon-list watch-icon"
+                                        />}
+                                    {list !== "Watching" &&
+                                        <IoMdEye title="Add to Watching"
+                                            onClick={() => handleAdd(item.item, "Watching")}
+                                            className="footer-icon-list watching-icon"
+                                        />}
+                                    {list !== "Watched" &&
+                                        <MdTaskAlt title="Add to Watched"
+                                            onClick={() => handleAdd(item.item, "Watched")}
+                                            className="footer-icon-list watched-icon"
+                                        />}
+                                </div>
+                            </div>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+            </div>
+
+            <div id="list-container-grid">
+                {layout === 'grid' && listData.length > 0 && listData.map((item, index) => (
+                    <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
+                        {window.innerWidth > 991 &&
+                            <div>
+                                {activeCard === index &&
+                                    <CloseButton
+                                        id="close-card"
+                                        onClick={() => {
+                                            setDeleteData(item.item);
+                                            setDeleteMovie(true);
+                                        }}
+                                    />}
+                            </div>
+                        }
+                        {window.innerWidth < 992 &&
+                            <div>
+                                <CloseButton
                                     id="close-card"
                                     onClick={() => {
                                         setDeleteData(item.item);
                                         setDeleteMovie(true);
                                     }}
                                 />
-                                : null}
-                        </div>
-                    }
-                    {window.innerWidth < 992 &&
-                        <div>
-                            <CloseButton
-                                id="close-card"
-                                onClick={() => {
-                                    setDeleteData(item.item);
-                                    setDeleteMovie(true);
-                                }}
+                            </div>
+                        }
+                        {window.innerWidth < 400
+                            ? <Card.Img variant="top" className="card-img img-fluid"
+                                src={item.getPosterPath() || coverNotFound}
                             />
-                        </div>
-                    }
-                    {window.innerWidth < 400
-                        ? <Card.Img variant="top" className="card-img img-fluid"
-                            src={item.getPosterPath() || coverNotFound}
-                        />
-                        : <Card.Img variant="top" className="card-img img-fluid"
-                            src={item.getBackdropPath() || backdropNotFound}
-                        />
-                    }
-                    <Card.Body id="movie-card-body">
-                        {window.innerWidth > 400 &&
-                            <div>
-                                <Rating
-                                    id="user-rating"
-                                    value={Helper.getMovieRating(item.getId(), userRatings)}
-                                    onChange={(e, newValue) => {handleRate(item.item, newValue)}}
-                                />
-                                <Card.Title id="movie-title" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
-                            </div>
+                            : <Card.Img variant="top" className="card-img img-fluid"
+                                src={item.getBackdropPath() || backdropNotFound}
+                            />
                         }
-                        {window.innerWidth > 575 &&
-                            <div className="d-flex justify-content-between align-items-center">
-                                <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
-                                <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
-                                    {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
-                                </Badge>
-                            </div>
-                        }
-                        {window.innerWidth > 575 &&
-                            <Card.Text id="movie-description">{item.getOverview()}</Card.Text>
-                        }
-                        {window.innerWidth > 991 &&
-                            <div>
-                                {activeCard === index
-                                    ? <div id="footer-icons">
+                        <Card.Body id="movie-card-body">
+                            {window.innerWidth > 400 &&
+                                <div>
+                                    <Rating
+                                        id="user-rating"
+                                        value={Helper.getMovieRating(item.getId(), userRatings)}
+                                        onChange={(e, newValue) => { handleRate(item.item, newValue) }}
+                                    />
+                                    <Card.Title id="movie-title" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
+                                </div>
+                            }
+                            {window.innerWidth > 575 &&
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
+                                    <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
+                                        {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
+                                    </Badge>
+                                </div>
+                            }
+                            {window.innerWidth > 575 &&
+                                <Card.Text id="movie-description">{item.getOverview()}</Card.Text>
+                            }
+                            {window.innerWidth > 991 &&
+                                <div>
+                                    {activeCard === index &&
+                                        <div id="footer-icons">
+                                            {list !== "Favorites" &&
+                                                <MdFavorite title="Add to Favorites"
+                                                    onClick={() => handleAdd(item.item, "Favorites")}
+                                                    className="footer-icon fav-icon"
+                                                />}
+                                            {list !== "Watch List" &&
+                                                <RiFileListLine title="Add to Watch List"
+                                                    onClick={() => handleAdd(item.item, "Watch List")}
+                                                    className="footer-icon watch-icon"
+                                                />}
+                                            {list !== "Watching" &&
+                                                <IoMdEye title="Add to Watching"
+                                                    onClick={() => handleAdd(item.item, "Watching")}
+                                                    className="footer-icon watching-icon"
+                                                />}
+                                            {list !== "Watched" &&
+                                                <MdTaskAlt title="Add to Watched"
+                                                    onClick={() => handleAdd(item.item, "Watched")}
+                                                    className="footer-icon watched-icon"
+                                                />}
+                                        </div>}
+                                    <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                </div>
+                            }
+                            {window.innerWidth < 992 &&
+                                <div>
+                                    <div id="footer-icons">
                                         {list !== "Favorites" &&
                                             <MdFavorite title="Add to Favorites"
                                                 onClick={() => handleAdd(item.item, "Favorites")}
@@ -195,40 +291,13 @@ function List({ list, listData }) {
                                                 className="footer-icon watched-icon"
                                             />}
                                     </div>
-                                    : null}
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
-                            </div>
-                        }
-                        {window.innerWidth < 992 &&
-                            <div>
-                                <div id="footer-icons">
-                                    {list !== "Favorites" &&
-                                        <MdFavorite title="Add to Favorites"
-                                            onClick={() => handleAdd(item.item, "Favorites")}
-                                            className="footer-icon fav-icon"
-                                        />}
-                                    {list !== "Watch List" &&
-                                        <RiFileListLine title="Add to Watch List"
-                                            onClick={() => handleAdd(item.item, "Watch List")}
-                                            className="footer-icon watch-icon"
-                                        />}
-                                    {list !== "Watching" &&
-                                        <IoMdEye title="Add to Watching"
-                                            onClick={() => handleAdd(item.item, "Watching")}
-                                            className="footer-icon watching-icon"
-                                        />}
-                                    {list !== "Watched" &&
-                                        <MdTaskAlt title="Add to Watched"
-                                            onClick={() => handleAdd(item.item, "Watched")}
-                                            className="footer-icon watched-icon"
-                                        />}
+                                    <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
-                                <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
-                            </div>
-                        }
-                    </Card.Body>
-                </Card>
-            ))}
+                            }
+                        </Card.Body>
+                    </Card>
+                ))}
+            </div>
 
             {addMovieToList && !addData[2] && (
                 <Modal id="icons-modal" show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
@@ -260,8 +329,8 @@ function List({ list, listData }) {
                 </Modal>
             )}
 
-            {showExpandedInfo && infoData[1] === 'movie' && <ExpandedMovieInfo movieObj={infoData[0]} country={context.userData.config.general.country}/>}
-            {showExpandedInfo && infoData[1] === 'tv' && <ExpandedTvShowInfo tvShowObj={infoData[0]} country={context.userData.config.general.country}/>}
+            {showExpandedInfo && infoData[1] === 'movie' && <ExpandedMovieInfo movieObj={infoData[0]} country={context.userData.config.general.country} />}
+            {showExpandedInfo && infoData[1] === 'tv' && <ExpandedTvShowInfo tvShowObj={infoData[0]} country={context.userData.config.general.country} />}
 
         </Container>
     );

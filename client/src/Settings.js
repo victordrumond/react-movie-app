@@ -23,6 +23,7 @@ function Settings() {
                 return res.data;
             })
         }
+        return [];
     }
 
     const countries = getCountries();
@@ -114,7 +115,7 @@ function Settings() {
             <Form id="general-settings-form" >
                 <Form.Label>Country:</Form.Label>
                 <Form.Select id="default-country" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
-                    {countries.map((item, i) => (
+                    {countries.length > 0 && countries.map((item, i) => (
                         <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
                     ))}
                 </Form.Select>

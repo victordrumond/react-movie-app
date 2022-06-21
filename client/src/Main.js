@@ -34,6 +34,7 @@ function Main() {
     const numOfItemsOnList = context.userData.data[Helper.getNormalizedListName(activeList)].length;
 
     const listConfig = context.userData.config.lists[Helper.getNormalizedListName(activeList)];
+    const [layout, setLayout] = useState("grid");
 
     const [newActivities, setNewActivities] = useState([]);
     const [showActivities, setShowActivities] = useState(0);
@@ -101,6 +102,7 @@ function Main() {
     }
 
     const getItemsPerPage = () => {
+        if (layout === 'list') return 10;
         if (window.innerWidth > 1199) return 10;
         if (window.innerWidth > 991) return 12;
         if (window.innerWidth > 767) return 12;
@@ -179,12 +181,12 @@ function Main() {
                     </Nav>
                 </Card.Header>
                 <Card.Body id="content-body">
-                    <ListSettings activeList={activeList} isListEmpty={isListEmpty()} />
+                    <ListSettings activeList={activeList} isListEmpty={isListEmpty()} layout={(value) => setLayout(value)}/>
                     <Routes>
-                        <Route path="favorites" element={<List list="Favorites" listData={getSelectedPageData('favorites')} />} />
-                        <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPageData('watchList')} />} />
-                        <Route path="watching" element={<List list="Watching" listData={getSelectedPageData('watching')} />} />
-                        <Route path="watched" element={<List list="Watched" listData={getSelectedPageData('watched')} />} />
+                        <Route path="favorites" element={<List list="Favorites" listData={getSelectedPageData('favorites')} layout={layout}/>} />
+                        <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPageData('watchList')} layout={layout}/>} />
+                        <Route path="watching" element={<List list="Watching" listData={getSelectedPageData('watching')} layout={layout}/>} />
+                        <Route path="watched" element={<List list="Watched" listData={getSelectedPageData('watched')} layout={layout}/>} />
                     </Routes>
                 </Card.Body>
                 <Card.Footer id="pagination-container">
