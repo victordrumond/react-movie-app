@@ -42,6 +42,19 @@ namespace TMDb {
         "watch/providers"?: WatchProviders;
     }
 
+    export interface SearchObject {
+        backdrop_path?: string | null;
+        first_air_date?: string;
+        media_type?: string;
+        name?: string;
+        original_name?: string;
+        original_title?: string;
+        poster_path?: string | null;
+        release_date?: string;
+        title?: string;
+        vote_average?: number;
+    }
+
     interface Genre {
         name?: string;
     }

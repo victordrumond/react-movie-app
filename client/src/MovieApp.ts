@@ -13,4 +13,16 @@ namespace MovieApp {
         overview?: string;
     }
 
+    export interface UserRatings {
+        movieId: number;
+        score: number;
+    }
+
+    export interface ActivityData {
+        image?: string;
+        movie?: string;
+        list?: string;
+        rating?: number;
+    }
+
 }
