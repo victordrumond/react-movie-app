@@ -78,7 +78,7 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
                     }
                     {viewSeason > 0 &&
                         <div id="modal-stats" className="d-flex justify-content-between">
-                            <p>{`Episodes: ${movie.getNumberOfEpisodes(viewSeason)}`}</p>
+                            <p>{`${movie.getNumberOfEpisodes(viewSeason)}`}</p>
                         </div>
                     }
                     <p id="modal-description">{movie.getOverview(viewSeason)}</p>
