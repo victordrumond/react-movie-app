@@ -3,6 +3,7 @@ import './ExpandedMovieInfo.css';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
 import Modal from 'react-bootstrap/Modal';
+import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import Movie from './Movie';
 import Helper from './Helper';
@@ -60,7 +61,9 @@ function ExpandedMovieInfo({ movieObj, country }) {
                         <p>{`Status: ${movie.getStatus()}`}</p>
                         <p>{movie.getRuntime()}</p>
                         <p>{movie.getParentalRating(selectedCountry)}</p>
-                        <p>{movie.getAverageRating()}</p>
+                        <Badge bg={Helper.getScoreBarColor(movie.getAverageRating())}>
+                            {movie.getAverageRating() === 'Not Rated' ? 'NR' : movie.getAverageRating()}
+                        </Badge>
                     </div>
                     <p id="modal-description">{movie.getOverview()}</p>
                     <div id="modal-notes" className="d-flex flex-column">

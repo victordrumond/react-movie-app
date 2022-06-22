@@ -3,6 +3,7 @@ import './ExpandedTvShowInfo.css';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
 import Modal from 'react-bootstrap/Modal';
+import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import TvShow from './TvShow';
 import Helper from './Helper';
@@ -73,12 +74,15 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
                             <p>{`Status: ${movie.getStatus()}`}</p>
                             <p>{movie.getNumberOfSeasons()}</p>
                             <p>{movie.getParentalRating(selectedCountry)}</p>
-                            <p>{movie.getAverageRating()}</p>
+                            <Badge bg={Helper.getScoreBarColor(movie.getAverageRating())}>
+                                {movie.getAverageRating() === 'Not Rated' ? 'NR' : movie.getAverageRating()}
+                            </Badge>
                         </div>
                     }
                     {viewSeason > 0 &&
                         <div id="modal-stats" className="d-flex justify-content-between">
                             <p>{`${movie.getNumberOfEpisodes(viewSeason)}`}</p>
+                            <p>{`${Helper.getDateString(movie.getReleaseDate(viewSeason))}`}</p>
                         </div>
                     }
                     <p id="modal-description">{movie.getOverview(viewSeason)}</p>
