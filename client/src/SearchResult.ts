@@ -1,4 +1,4 @@
-class SearchResult {
+export class SearchResult {
 
     result: TMDb.SearchObject;
 
@@ -69,6 +69,5 @@ class SearchResult {
         }
         return 'Not Rated';
     }
+    
 }
-
-export default SearchResult;

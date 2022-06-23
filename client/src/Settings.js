@@ -8,7 +8,7 @@ import { CgProfile } from 'react-icons/cg';
 import { BsCheck, BsFillGearFill } from 'react-icons/bs';
 import { useAuth0 } from '@auth0/auth0-react';
 import Requests from './Requests';
-import Helper from './Helper';
+import { Helper } from './Helper';
 import LocalStorage from './LocalStorage';
 import { UserContext } from './UserContext';
 

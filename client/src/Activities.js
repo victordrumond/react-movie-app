@@ -3,7 +3,7 @@ import './Activities.css';
 import { UserContext } from './UserContext';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import Activity from './Activity';
+import { Activity } from './Activity';
 import { IoMdEye } from 'react-icons/io';
 import { RiFileListLine } from 'react-icons/ri';
 import { AiFillStar } from 'react-icons/ai';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import './Main.css';
 import { UserContext } from './UserContext';
-import Helper from "./Helper";
+import { Helper } from "./Helper";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
@@ -16,11 +16,11 @@ import { RiFileListLine } from 'react-icons/ri';
 import { AiFillStar } from 'react-icons/ai';
 import { CgTrash } from 'react-icons/cg';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
-import Movie from './Movie';
-import TvShow from './TvShow';
-import Activity from './Activity';
-import ListConfig from './ListConfig';
-import { MAX_VISIBLE_PAGES } from './Constants';
+import { Movie } from './Movie';
+import { TvShow } from './TvShow';
+import { Activity } from './Activity';
+import { ListConfig } from './ListConfig';
+import { Constants } from './Constants';
 
 function Main() {
 
@@ -92,6 +92,7 @@ function Main() {
     }
 
     const getPaginationIndex = (pageIndex) => {
+        const MAX_VISIBLE_PAGES = Constants.MAX_VISIBLE_PAGES;
         if (getNumberOfPages() > MAX_VISIBLE_PAGES && activePage === getNumberOfPages()) {
             return pageIndex + activePage - MAX_VISIBLE_PAGES;
         }
@@ -201,16 +202,16 @@ function Main() {
                                 }
                             }} />
                         }
-                        {activePage >= MAX_VISIBLE_PAGES && getNumberOfPages() > MAX_VISIBLE_PAGES &&
+                        {activePage >= Constants.MAX_VISIBLE_PAGES && getNumberOfPages() > Constants.MAX_VISIBLE_PAGES &&
                             <Pagination.Ellipsis />
                         }
-                        {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).slice(0, MAX_VISIBLE_PAGES).map((item, index) => (
+                        {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === getPaginationIndex(index + 1)} onClick={() => setActivePage(getPaginationIndex(index + 1))}>{getPaginationIndex(index + 1)}</Pagination.Item>
                         ))}
                         {isListEmpty() &&
                             <Pagination.Item disabled>1</Pagination.Item>
                         }
-                        {getNumberOfPages() > MAX_VISIBLE_PAGES && activePage < getNumberOfPages() - 1 &&
+                        {getNumberOfPages() > Constants.MAX_VISIBLE_PAGES && activePage < getNumberOfPages() - 1 &&
                             <Pagination.Ellipsis />
                         }
                         {getNumberOfPages() > 1 &&

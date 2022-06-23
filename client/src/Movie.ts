@@ -1,4 +1,4 @@
-class Movie {
+export class Movie {
 
     item: TMDb.MovieObject;
     timestamp: number;
@@ -115,7 +115,7 @@ class Movie {
         }
         return crew;
     }
-    
+
     getProductionCompanies(): string[] {
         let companies: string[] = [];
         if (this.item.production_companies) {
@@ -146,5 +146,3 @@ class Movie {
     }
     
 }
-
-export default Movie;

@@ -25,4 +25,28 @@ namespace MovieApp {
         rating?: number;
     }
 
+    export type Config = {
+        general: GeneralConfig,
+        lists: ListsConfig
+    }
+
+    export type GeneralConfig = {
+        country: string
+    }
+
+    export type ListsConfig = {
+        favorites: ListConfig,
+        watchList: ListConfig,
+        watching: ListConfig,
+        watched: ListConfig
+    }
+
+    export type ListConfig = {
+        sorting: string,
+        filtering: {
+            movies: boolean,
+            tvShows: boolean
+        }
+    }
+
 }

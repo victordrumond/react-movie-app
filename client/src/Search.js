@@ -14,8 +14,8 @@ import { RiFileListLine } from 'react-icons/ri';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import Requests from './Requests';
-import Helper from './Helper';
-import SearchResult from './SearchResult';
+import { Helper } from './Helper';
+import { SearchResult } from './SearchResult';
 
 function Search() {
 

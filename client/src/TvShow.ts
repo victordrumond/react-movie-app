@@ -1,4 +1,4 @@
-class TvShow {
+export class TvShow {
 
     item: TMDb.TvShowObject;
     timestamp: number;
@@ -210,5 +210,3 @@ class TvShow {
     }
 
 }
-
-export default TvShow;

@@ -3,7 +3,7 @@ import './List.css';
 import { UserContext } from './UserContext';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
-import Helper from "./Helper";
+import { Helper } from "./Helper";
 import LocalStorage from "./LocalStorage";
 import { useAuth0 } from '@auth0/auth0-react';
 import Container from 'react-bootstrap/Container';

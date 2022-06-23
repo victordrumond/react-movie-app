@@ -1,23 +1,32 @@
-import Movie from "./Movie";
-import TvShow from "./TvShow";
+import { Movie } from './Movie';
+import { TvShow } from './TvShow';
 
-class ListConfig {
+export module ListConfig {
 
-    // Apply sorting to data
-    static sortData = (data, config) => {
+    export function sortData(data: (Movie | TvShow)[], config: MovieApp.ListConfig): (Movie | TvShow)[] {
         if (data.length === 0) return data;
         if (config.sorting === 'title') {
             return data.sort((a, b) => {
-                let aTitle = a.item.title || a.item.name;
-                let bTitle = b.item.title || b.item.name;
-                return aTitle.localeCompare(bTitle)
-            });
+                let aTitle = (a instanceof Movie) ? a.item.title : a.item.name;
+                if (!aTitle) aTitle = '';
+                let bTitle = (b instanceof Movie) ? b.item.title : b.item.name;
+                if (!bTitle) bTitle = '';
+                return aTitle.localeCompare(bTitle);
+            })
         }
         if (config.sorting === 'highest_score') {
-            return data.sort((a, b) => b.item.vote_average - a.item.vote_average);
+            return data.sort((a, b) => {
+                let aVote = a.item.vote_average || 0;
+                let bVote = b.item.vote_average || 0;
+                return bVote - aVote;
+            })
         }
         if (config.sorting === 'lowest_score') {
-            return data.sort((a, b) => a.item.vote_average - b.item.vote_average);
+            return data.sort((a, b) => {
+                let aVote = a.item.vote_average || 0;
+                let bVote = b.item.vote_average || 0;
+                return aVote - bVote;
+            })
         }
         if (config.sorting === 'last_added') {
             return data.sort((a, b) => b.timestamp - a.timestamp);
@@ -25,10 +34,10 @@ class ListConfig {
         if (config.sorting === 'first_added') {
             return data.sort((a, b) => a.timestamp - b.timestamp);
         }
+        return data;
     }
 
-    // Apply filtering to data
-    static filterData = (data, config) => {
+    export function filterData(data: (Movie | TvShow)[], config: MovieApp.ListConfig): (Movie | TvShow)[] {
         if (data.length === 0) return data;
         if (config.filtering.movies && config.filtering.tvShows) {
             return data;
@@ -42,15 +51,15 @@ class ListConfig {
         if (!config.filtering.movies && !config.filtering.tvShows) {
             return [];
         }
+        return data;
     }
 
-    // Chunk to data
-    static chunkData = (data, size) => {
+    export function chunkData(data: (Movie | TvShow)[], size: number): (Movie | TvShow)[][] {
         if (data.length === 0) return [[]];
-        let quotient = Math.floor(data.length / size);
-        let remainder = data.length % size;
+        const quotient = Math.floor(data.length / size);
+        const remainder = data.length % size;
         let numberOfChunks = (remainder === 0) ? quotient : quotient + 1;
-        let result = [];
+        let result: (Movie | TvShow)[][] = [];
         for (let i = 0; i < numberOfChunks; i++) {
             let chunk = data.slice(size * i, size * (i + 1));
             result.push(chunk);
@@ -59,5 +68,3 @@ class ListConfig {
     }
 
 }
-
-export default ListConfig;

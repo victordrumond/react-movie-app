@@ -5,8 +5,8 @@ import coverNotFound from './cover-not-found.png';
 import Modal from 'react-bootstrap/Modal';
 import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
-import TvShow from './TvShow';
-import Helper from './Helper';
+import { TvShow } from './TvShow';
+import { Helper } from './Helper';
 
 function ExpandedTvShowInfo({ tvShowObj, country }) {
 

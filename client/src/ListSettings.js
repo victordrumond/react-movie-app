@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import './ListSettings.css';
 import { UserContext } from './UserContext';
 import { useAuth0 } from '@auth0/auth0-react';
-import Helper from "./Helper";
+import { Helper } from "./Helper";
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import Navbar from 'react-bootstrap/Navbar';

@@ -1,7 +1,7 @@
-import Helper from './Helper';
-import { TIME } from './Constants';
+import { Constants } from './Constants';
+import { Helper } from './Helper';
 
-class Activity {
+export class Activity {
 
     label: string;
     data: MovieApp.ActivityData;
@@ -61,7 +61,8 @@ class Activity {
     }
 
     getTimeString(): string {
-        let timeDifference = Date.now() - this.timestamp;
+        const TIME = Constants.TIME;
+        const timeDifference = Date.now() - this.timestamp;
         if (timeDifference < TIME.minute) return `Seconds ago`;
         if (timeDifference < (2 * TIME.minute)) return `1 minute ago`;
         if (timeDifference < TIME.hour) return `${Math.floor(timeDifference / TIME.minute)} minutes ago`;
@@ -76,5 +77,3 @@ class Activity {
     }
 
 }
-
-export default Activity;
