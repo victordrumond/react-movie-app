@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosPromise } from 'axios';
 
-class Requests {
+export module Requests {
 
     // Edit user profile
-    static editUserProfile = (token, userId, name, nickname, picture) => {
+    export function editUserProfile(token: string, userId: string, name: string, nickname: string, picture: string): AxiosPromise {
         const body = { userId: userId, name: name, nickname: nickname, picture: picture };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -12,17 +12,17 @@ class Requests {
     }
 
     // Get trending movies to display on home page
-    static getCovers = () => {
+    export function getCovers(): AxiosPromise {
         return axios.get("/api/authcovers");
     }
 
     // Get TBDb country list
-    static getCountryList = () => {
+    export function getCountryList(): AxiosPromise {
         return axios.get("/api/config/countries");
     }
 
     // Get user from database
-    static getUser = (token, userObj) => {
+    export function getUser(token: string, userObj: Auth0.User): AxiosPromise {
         const body = { user: userObj };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -31,7 +31,7 @@ class Requests {
     }
 
     // Set new user on database
-    static setUser = (token, userObj) => {
+    export function setUser(token: string, userObj: Auth0.User): AxiosPromise {
         const body = { user: userObj };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -40,12 +40,12 @@ class Requests {
     }
 
     // Get data to fill search results
-    static searchFor = (query) => {
+    export function searchFor(query: string): AxiosPromise {
         return axios.get(`/api/search/${query}`);
     }
 
     // Get detailed data from specific movie/tv show
-    static getMovieData = (token, item) => {
+    export function getMovieData(token: string, item: TMDb.SearchObject): AxiosPromise {
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
@@ -53,7 +53,7 @@ class Requests {
     }
 
     // Set movie on database
-    static addMovie = (token, userObj, list, movie) => {
+    export function addMovie(token: string, userObj: Auth0.User, list: string, movie: TMDb.SearchObject): AxiosPromise {
         const body = { user: userObj, list: list, movie: movie };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -62,7 +62,7 @@ class Requests {
     }
 
     // Delete movie from database
-    static deleteMovie = (token, userObj, list, movie) => {
+    export function deleteMovie(token: string, userObj: Auth0.User, list: string, movie: TMDb.SearchObject): AxiosPromise {
         const body = { user: userObj, list: list, movie: movie };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -71,7 +71,7 @@ class Requests {
     }
 
     // Set sorting option to list
-    static setSorting = (token, userObj, list, sort) => {
+    export function setSorting(token: string, userObj: Auth0.User, list: string, sort: string): AxiosPromise {
         const body = { user: userObj, list: list, value: sort };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -80,7 +80,7 @@ class Requests {
     }
 
     // Set filtering option to list
-    static setFiltering = (token, userObj, list, filter, value) => {
+    export function setFiltering(token: string, userObj: Auth0.User, list: string, filter: string, value: boolean): AxiosPromise {
         const body = { user: userObj, list: list, filter: filter, value: value };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -89,7 +89,7 @@ class Requests {
     }
 
     // Update movie rating
-    static updateMovieRating = (token, userObj, movie, score) => {
+    export function updateMovieRating(token: string, userObj: Auth0.User, movie: TMDb.SearchObject, score: number | null): AxiosPromise {
         const body = { user: userObj, movie: movie, score: score };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -98,7 +98,7 @@ class Requests {
     }
 
     // Update country
-    static updateCountry = (token, userObj, countryCode) => {
+    export function updateCountry(token: string, userObj: Auth0.User, countryCode: string): AxiosPromise {
         const body = { user: userObj, country: countryCode };
         const config = {
             headers: { Authorization: "Bearer " + token }
@@ -107,5 +107,3 @@ class Requests {
     }
 
 }
-
-export default Requests;

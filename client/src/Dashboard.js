@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './Dashboard.css';
-import Requests from './Requests';
+import { Requests } from './Requests';
 import { useAuth0 } from '@auth0/auth0-react';
 import { initUserData, UserContext } from './UserContext';
 import logo from './logo.png';

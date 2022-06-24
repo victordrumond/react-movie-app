@@ -45,6 +45,7 @@ namespace TMDb {
     export interface SearchObject {
         backdrop_path?: string | null;
         first_air_date?: string;
+        id?: number;
         media_type?: string;
         name?: string;
         original_name?: string;

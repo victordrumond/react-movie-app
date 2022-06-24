@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import './Authentication.css';
-import Requests from "./Requests";
+import { Requests } from "./Requests";
 import { useAuth0 } from '@auth0/auth0-react';
 import logo from './logo.png';
 import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import LocalStorage from './LocalStorage';
+import { LocalStorage } from './LocalStorage';
 
 function Authentication() {
 

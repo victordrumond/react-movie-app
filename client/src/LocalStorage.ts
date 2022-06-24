@@ -1,9 +1,9 @@
 import { Helper } from './Helper';
 
-class LocalStorage {
+export module LocalStorage {
 
-    static hasExpandedMovie = (movieId) => {
-        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies'));
+    export function hasExpandedMovie(movieId: number): boolean {
+        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies')!);
         if (!expandedMovies) {
             return false;
         }
@@ -15,8 +15,8 @@ class LocalStorage {
         return false;
     }
 
-    static getExpandedMovie = (movieId) => {
-        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies'));
+    export function getExpandedMovie(movieId: number): boolean | null {
+        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies')!);
         if (!expandedMovies) {
             return null;
         }
@@ -28,8 +28,8 @@ class LocalStorage {
         return null;
     }
 
-    static setExpandedMovie = (movie) => {
-        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies'));
+    export function setExpandedMovie(movie: TMDb.SearchObject): void {
+        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies')!);
         if (!expandedMovies) {
             let expandedMovies = [movie];
             localStorage.setItem('expandedMovies', JSON.stringify(expandedMovies));
@@ -39,8 +39,8 @@ class LocalStorage {
         localStorage.setItem('expandedMovies', JSON.stringify(expandedMovies));
     }
 
-    static hasUpdatedTrendingCovers = () => {
-        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers'));
+    export function hasUpdatedTrendingCovers(): boolean {
+        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers')!);
         if (trendingCovers && trendingCovers.covers.length > 0) {
             let today = Helper.getComparableDate(Date.now());
             let lastUpdate = Helper.getComparableDate(trendingCovers.updated);
@@ -51,15 +51,15 @@ class LocalStorage {
         return false;
     }
 
-    static getTrendingCovers = () => {
-        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers'));
+    export function getTrendingCovers(): string[] | null {
+        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers')!);
         if (trendingCovers) {
             return trendingCovers.covers;
         }
         return null;
     }
 
-    static setTrendingCovers = (movies) => {
+    export function setTrendingCovers(movies: string[]): void {
         let covers = [];
         for (const movie of movies) {
             covers.push(movie);
@@ -71,27 +71,27 @@ class LocalStorage {
         localStorage.setItem('trendingCovers', JSON.stringify(updatedTrendingCovers));
     }
 
-    static hasUpdatedCountryList = () => {
-        let countryList = JSON.parse(localStorage.getItem('countryList'));
+    export function hasUpdatedCountryList(): boolean {
+        let countryList = JSON.parse(localStorage.getItem('countryList')!);
         if (countryList && countryList.data.length > 0) {
             let today = Helper.getComparableDate(Date.now());
             let lastUpdate = Helper.getComparableDate(countryList.updated);
-            if (today === lastUpdate) {
+            if (today - lastUpdate < 30) {
                 return true;
             }
         }
         return false;
     }
 
-    static getCountryList = () => {
-        let countryList = JSON.parse(localStorage.getItem('countryList'));
+    export function getCountryList(): any[] | null {
+        let countryList = JSON.parse(localStorage.getItem('countryList')!);
         if (countryList) {
             return countryList.data;
         }
         return null;
     }
 
-    static setCountryList = (countries) => {
+    export function setCountryList(countries: any[]): void {
         let updatedCountryList = {
             updated: Date.now(),
             data: countries
@@ -100,5 +100,3 @@ class LocalStorage {
     }
 
 }
-
-export default LocalStorage;

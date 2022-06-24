@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
-import Requests from './Requests';
+import { Requests } from './Requests';
 import { BsFillGridFill } from 'react-icons/bs';
 import { FaListUl } from 'react-icons/fa';
 

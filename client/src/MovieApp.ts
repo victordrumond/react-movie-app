@@ -1,11 +1,31 @@
 namespace MovieApp {
 
-    export interface StreamingServices {
+    export type UserData = {
+        user: User;
+        data: Data;
+        config: Config;
+        activities: Activity[];
+    }
+
+    export type User = {
+        email: string,
+        sub: string
+    }
+
+    export type Data = {
+        favorites: Production[],
+        watchList: Production[],
+        watching: Production[],
+        watched: Production[],
+        ratings: UserRatings[]
+    }
+
+    export type StreamingServices = {
         country?: string;
         services?: any[];
     }
 
-    export interface Season {
+    export type Season = {
         air_date?: string;
         episode_count?: number;
         poster_path?: string;
@@ -13,12 +33,23 @@ namespace MovieApp {
         overview?: string;
     }
 
-    export interface UserRatings {
+    export type Production = {
+        timestamp: number;
+        data: TMDb.MovieObject | TMDb.TvShowObject;
+    }
+
+    export type UserRatings = {
         movieId: number;
         score: number;
     }
 
-    export interface ActivityData {
+    export type Activity = {
+        label: string,
+        data: ActivityData,
+        timestamp: number
+    }
+
+    export type ActivityData = {
         image?: string;
         movie?: string;
         list?: string;
