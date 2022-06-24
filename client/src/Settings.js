@@ -7,35 +7,26 @@ import Spinner from 'react-bootstrap/Spinner';
 import { CgProfile } from 'react-icons/cg';
 import { BsCheck, BsFillGearFill } from 'react-icons/bs';
 import { useAuth0 } from '@auth0/auth0-react';
-import Requests from './Requests';
+import { Requests } from './Requests';
 import { Helper } from './Helper';
-import LocalStorage from './LocalStorage';
+import { LocalStorage } from './LocalStorage';
 import { UserContext } from './UserContext';
 
 function Settings() {
 
-    const getCountries = () => {
-        if (LocalStorage.hasUpdatedCountryList()) {
-            return LocalStorage.getCountryList();
-        } else {
-            Requests.getCountryList().then(res => {
-                LocalStorage.setCountryList(res.data);
-                return res.data;
-            })
-        }
-        return [];
-    }
-
-    const countries = getCountries();
-
     const { user, getAccessTokenSilently } = useAuth0();
     const context = useContext(UserContext);
-
+    
     const [userProfileUpdated, setUserProfileUpdated] = useState(false);
     const [loading, setLoading] = useState(null);
+    const [countries, setCountries] = useState([]);
     const [error, setError] = useState(null);
 
     const [currentCountry, setCurrentCountry] = useState(context.userData.config.general.country);
+
+    useEffect(() => {
+        getCountries();
+    }, []);
 
     useEffect(() => {
         if (userProfileUpdated) {
@@ -53,6 +44,17 @@ function Settings() {
             return () => clearTimeout(timer)
         }
     }, [loading]);
+
+    const getCountries = () => {
+        if (LocalStorage.hasUpdatedCountryList()) {
+            setCountries(LocalStorage.getCountryList());
+        } else {
+            Requests.getCountryList().then(res => {
+                LocalStorage.setCountryList(res.data);
+                setCountries(res.data);
+            })
+        }
+    }
 
     const handleSubmitCountry = async (countryCode) => {
         await getAccessTokenSilently().then(token => {
@@ -83,8 +85,8 @@ function Settings() {
                 .then(res => {
                     setUserProfileUpdated(true);
                 })
-                .catch(error => {
-                    console.log(error);
+                .catch(err => {
+                    console.log(err);
                 })
             ;
         })
@@ -106,63 +108,68 @@ function Settings() {
         if (!loading) return 'Done!'
     }
 
-    return (
-        <Container id="settings-container">
-            <div id="general-title" className="d-flex justify-content-start">
-                <BsFillGearFill className="settings-section-icon" />
-                <p>General Settings</p>
-            </div>
-            <Form id="general-settings-form" >
-                <Form.Label>Country:</Form.Label>
-                <Form.Select id="default-country" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
-                    {countries.length > 0 && countries.map((item, i) => (
-                        <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
-                    ))}
-                </Form.Select>
-                <Form.Text>Used to show regional information such as parental rating and availability of streaming services</Form.Text>
-            </Form>
-            <div id="profile-title" className="d-flex justify-content-start">
-                <CgProfile className="settings-section-icon" />
-                <p>Profile Settings</p>
-            </div>
-            <Form id="user-settings-form" onSubmit={(e) => handleSubmitProfile(e)}>
-                <Form.Group className="mb-2" controlId="formEmail">
-                    <Form.Label>Email:</Form.Label>
-                    <Form.Control type="email" defaultValue={user.email} disabled />
-                    <div>
-                        {user.email_verified ? <BsCheck className="text-success email-status-icon" /> : ""}
-                        <Form.Text>{user.email_verified ? 'This is a verified email address' : 'This email has not been verified yet'}</Form.Text>
-                    </div>
-                </Form.Group>
-                <Form.Group className="mb-2" controlId="formName">
-                    <Form.Label>Name:</Form.Label>
-                    <Form.Control type="text" defaultValue={user.name} />
-                </Form.Group>
-                <Form.Group className="mb-2" controlId="formNickname">
-                    <Form.Label>Username:</Form.Label>
-                    <Form.Control type="text" defaultValue={user.nickname} />
-                </Form.Group>
-                <Form.Group className="mb-2 d-flex flex-column" controlId="formPicture">
-                    <Form.Label>Picture URL:</Form.Label>
-                    <Form.Control type="url" defaultValue={user.picture} />
-                </Form.Group>
-                <div className="pt-2 d-flex justify-content-start align-items-center">
-                    <Button id="update-profile-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant()} type="submit" >
-                        {getButtonInnerHTML()}
-                        {loading &&
-                            <Spinner
-                                as="span"
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                            />}
-                    </Button>
-                    {error && <p id="error-msg">{error}</p>}
+    if (countries.length === 0) {
+        return <p>Loading...</p>
+    } else {
+        return (
+            <Container id="settings-container">
+                <div id="general-title" className="d-flex justify-content-start">
+                    <BsFillGearFill className="settings-section-icon" />
+                    <p>General Settings</p>
                 </div>
-            </Form>
-        </Container>
-    );
+                <Form id="general-settings-form" >
+                    <Form.Label>Country:</Form.Label>
+                    <Form.Select id="default-country" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
+                        {countries.length > 0 && countries.map((item, i) => (
+                            <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
+                        ))}
+                    </Form.Select>
+                    <Form.Text>Used to show regional information such as parental rating and availability of streaming services</Form.Text>
+                </Form>
+                <div id="profile-title" className="d-flex justify-content-start">
+                    <CgProfile className="settings-section-icon" />
+                    <p>Profile Settings</p>
+                </div>
+                <Form id="user-settings-form" onSubmit={(e) => handleSubmitProfile(e)}>
+                    <Form.Group className="mb-2" controlId="formEmail">
+                        <Form.Label>Email:</Form.Label>
+                        <Form.Control type="email" defaultValue={user.email} disabled />
+                        <div>
+                            {user.email_verified ? <BsCheck className="text-success email-status-icon" /> : ""}
+                            <Form.Text>{user.email_verified ? 'This is a verified email address' : 'This email has not been verified yet'}</Form.Text>
+                        </div>
+                    </Form.Group>
+                    <Form.Group className="mb-2" controlId="formName">
+                        <Form.Label>Name:</Form.Label>
+                        <Form.Control type="text" defaultValue={user.name} />
+                    </Form.Group>
+                    <Form.Group className="mb-2" controlId="formNickname">
+                        <Form.Label>Username:</Form.Label>
+                        <Form.Control type="text" defaultValue={user.nickname} />
+                    </Form.Group>
+                    <Form.Group className="mb-2 d-flex flex-column" controlId="formPicture">
+                        <Form.Label>Picture URL:</Form.Label>
+                        <Form.Control type="url" defaultValue={user.picture} />
+                    </Form.Group>
+                    <div className="pt-2 d-flex justify-content-start align-items-center">
+                        <Button id="update-profile-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant()} type="submit" >
+                            {getButtonInnerHTML()}
+                            {loading &&
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />}
+                        </Button>
+                        {error && <p id="error-msg">{error}</p>}
+                    </div>
+                </Form>
+            </Container>
+        )
+    };
+
 };
 
 export default Settings;
