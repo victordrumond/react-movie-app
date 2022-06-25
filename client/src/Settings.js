@@ -124,7 +124,7 @@ function Settings() {
                             <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
                         ))}
                     </Form.Select>
-                    <Form.Text>Used to show regional information such as parental rating and availability of streaming services</Form.Text>
+                    <Form.Text>Used to show regional information such as parental rating and watch availability</Form.Text>
                 </Form>
                 <div id="profile-title" className="d-flex justify-content-start">
                     <CgProfile className="settings-section-icon" />

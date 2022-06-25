@@ -40,7 +40,7 @@
     line-height: 1;
 }
 
-#streaming-services img {
+#watch-services img {
     width: 36px;
     height: 36px;
     margin: 0.5rem 0.25rem 0 0;
@@ -58,7 +58,7 @@
         height: 225px;
     }
 
-    #streaming-services img {
+    #watch-services img {
         width: 34px;
         height: 34px;
     }
@@ -88,7 +88,7 @@
         height: auto;
     }
 
-    #streaming-services img {
+    #watch-services img {
         width: 32px;
         height: 32px;
     }

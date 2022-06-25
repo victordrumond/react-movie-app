@@ -128,21 +128,26 @@ export class Movie {
         return companies;
     }
 
-    getStreamingServices(): MovieApp.StreamingServices[] {
-        let streamingServices: MovieApp.StreamingServices[] = [];
+    getWatchServices(): MovieApp.CountryWatchServices[] {
+        let watchServices: MovieApp.CountryWatchServices[] = [];
         if (this.item["watch/providers"] && this.item["watch/providers"].results) {
             let providers = Object.entries(this.item["watch/providers"].results);
             for (const provider of providers) {
+                let services: MovieApp.WatchServices = { flatrate: [], buy: [], rent: [] };
                 let [code, data] = [provider[0], provider[1]];
-                if (data.hasOwnProperty('flatrate')) {
-                    streamingServices.push({
-                        country: code,
-                        services: data.flatrate
-                    })
+                if (data.hasOwnProperty('buy')) {
+                    services.buy = data['buy'];
                 }
+                if (data.hasOwnProperty('flatrate')) {
+                    services.flatrate = data['flatrate'];
+                }
+                if (data.hasOwnProperty('rent')) {
+                    services.rent = data['rent'];
+                }
+                watchServices.push({ country: code, services: services });
             }
         }
-        return streamingServices;
+        return watchServices;
     }
-    
+
 }

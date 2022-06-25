@@ -20,9 +20,15 @@ namespace MovieApp {
         ratings: UserRatings[]
     }
 
-    export type StreamingServices = {
-        country?: string;
-        services?: any[];
+    export type CountryWatchServices = {
+        country: string;
+        services: WatchServices;
+    }
+
+    export type WatchServices = {
+        buy: object[];
+        flatrate: object[];
+        rent: object[];
     }
 
     export type Season = {

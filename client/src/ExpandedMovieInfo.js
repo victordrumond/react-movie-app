@@ -13,9 +13,9 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
 
     const movie = useMemo(() => new Movie(movieObj, ''), [movieObj]);
     const width = useWindowSize().width;
-    
+
     const [showInfoModal, setShowInfoModal] = useState(false);
-    const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
+    const [watchData, setWatchData] = useState(movie.getWatchServices());
     const [selectedCountry, setSelectedCountry] = useState(country);
     
     useEffect(() => {
@@ -23,26 +23,30 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
     }, [country])
 
     useEffect(() => {
-        setStreamingData(movie.getStreamingServices());
+        setWatchData(movie.getWatchServices());
         setShowInfoModal(true);
     }, [movie])
 
-    const isAvailableOnStreaming = () => {
-        return streamingData.length === 0 ? false : true;
+    const isAvailable = () => {
+        return !(watchData.length === 0);
     }
 
     const getAvailableServicesOnCountry = () => {
-        for (const dataCountry of streamingData) {
-            if (dataCountry.country === selectedCountry) {
-                return dataCountry.services;
+        for (const watchService of watchData) {
+            if (watchService.country === selectedCountry && watchService.services['flatrate'].length > 0) {
+                return watchService.services['flatrate'];
             }
         }
-        for (const dataCountry of streamingData) {
-            if (dataCountry.country === 'US') {
-                return dataCountry.services;
+        for (const watchService of watchData) {
+            if (watchService.country === 'US' && watchService.services['flatrate'].length > 0) {
+                return watchService.services['flatrate'];
             }
         }
-        return streamingData[0].services;
+        for (const watchService of watchData) {
+            if (watchService.services['flatrate'].length > 0) {
+                return watchService.services['flatrate'];
+            }
+        }
     }
 
     const handleHide = () => {
@@ -83,22 +87,22 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
                     <div id="watch" className="d-flex flex-column">
                         <div className="d-flex justify-content-start">
                             <p><b>Streaming:</b></p>
-                            {isAvailableOnStreaming() &&
+                            {isAvailable() &&
                                 <Form.Select id="country-select" size="sm" defaultValue={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
-                                    {streamingData.map((item, i) => (
+                                    {watchData.map((item, i) => (
                                         <option key={i} value={item.country}>{item.country}</option>
                                     ))}
                                 </Form.Select>
                             }
                         </div>
-                        <div id="streaming-services" className="d-flex justify-content-start">
-                            {!isAvailableOnStreaming() &&
+                        <div id="watch-services" className="d-flex justify-content-start">
+                            {!isAvailable() &&
                                 <p>Not available for streaming in any country at the moment</p>
                             }
-                            {isAvailableOnStreaming() && getAvailableServicesOnCountry().map((item, i) => (
+                            {isAvailable() && getAvailableServicesOnCountry().map((item, i) => (
                                 <img
                                     key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
-                                    alt="streaming_logo" title={item.provider_name}
+                                    alt="provider_logo" title={item.provider_name}
                                 />
                             ))}
                         </div>
