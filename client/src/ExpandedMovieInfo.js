@@ -7,10 +7,13 @@ import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import { Movie } from './Movie';
 import { Helper } from './Helper';
+import useWindowSize from './useWindowSize';
 
 function ExpandedMovieInfo({ movieObj, country, hide }) {
 
     const movie = useMemo(() => new Movie(movieObj, ''), [movieObj]);
+    const width = useWindowSize().width;
+    
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [streamingData, setStreamingData] = useState(movie.getStreamingServices());
     const [selectedCountry, setSelectedCountry] = useState(country);
@@ -56,7 +59,7 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
             </Modal.Header>
             <Modal.Body id="modal-body" className="d-flex">
                 <div>
-                    {window.innerWidth > 399
+                    {width > 399
                         ? <img className="modal-img" alt="movie_cover" src={movie.getPosterPath() || coverNotFound} />
                         : <img className="modal-img img-fluid" alt="movie_cover" src={movie.getBackdropPath() || backdropNotFound} />
                     }

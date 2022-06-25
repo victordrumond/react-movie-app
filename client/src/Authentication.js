@@ -8,10 +8,12 @@ import coverNotFound from './cover-not-found.png';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { LocalStorage } from './LocalStorage';
+import useWindowSize from './useWindowSize';
 
 function Authentication() {
 
     const navigate = useNavigate();
+    const width = useWindowSize().width;
 
     useEffect(() => {
         navigate('/start');
@@ -20,7 +22,7 @@ function Authentication() {
     const { loginWithRedirect } = useAuth0();
     const [covers, setCovers] = useState([]);
     const [activeCovers, setActiveCovers] = useState([]);
-    const [index, setIndex] = useState(window.innerWidth < 768 ? 10 : 20);
+    const [index, setIndex] = useState(width < 768 ? 10 : 20);
 
     useEffect(() => {
         if (LocalStorage.hasUpdatedTrendingCovers()) {
@@ -34,13 +36,13 @@ function Authentication() {
     }, []);
 
     useEffect(() => {
-        let n = window.innerWidth < 768 ? 10 : 20;
+        let n = width < 768 ? 10 : 20;
         let active = covers.filter((item, i) => i >= 0 && i < n);
         setActiveCovers(active);
-    }, [covers]);
+    }, [covers, width]);
 
     useEffect(() => {
-        let n = window.innerWidth < 768 ? 10 : 20;
+        let n = width < 768 ? 10 : 20;
         const interval = setInterval(() => {
             if (index !== 60 - n) {
                 setIndex(index + n);

@@ -21,11 +21,13 @@ import { TvShow } from './TvShow';
 import { Activity } from './Activity';
 import { ListConfig } from './ListConfig';
 import { Constants } from './Constants';
+import useWindowSize from './useWindowSize';
 
 function Main() {
 
     const context = useContext(UserContext);
     const location = useLocation();
+    const width = useWindowSize().width;
 
     const listData = context.userData.data;
     const [activeList, setActiveList] = useState("Favorites");
@@ -104,9 +106,9 @@ function Main() {
 
     const getItemsPerPage = () => {
         if (layout === 'list') return 10;
-        if (window.innerWidth > 1199) return 10;
-        if (window.innerWidth > 991) return 12;
-        if (window.innerWidth > 767) return 12;
+        if (width > 1199) return 10;
+        if (width > 991) return 12;
+        if (width > 767) return 12;
         return 10;
     }
 
@@ -144,39 +146,39 @@ function Main() {
             <Card className="d-flex flex-column">
                 <Card.Header>
                     <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" activeKey={activeList} className="d-flex justify-content-between">
-                        {window.innerWidth > 575 && window.innerWidth < 768 &&
+                        {width > 575 && width < 768 &&
                             <p id="list-stat">Showing {getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
                         }
                         <div className="d-flex">
                             <Nav.Item>
                                 <Nav.Link as={Link} to="favorites" eventKey="Favorites" onClick={() => setActiveList("Favorites")} className="nav-link d-flex">
-                                    {window.innerWidth > 575 && <p>Favorites</p>}
+                                    {width > 575 && <p>Favorites</p>}
                                     <MdFavorite className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={Link} to="watchlist" eventKey="Watch List" onClick={() => setActiveList("Watch List")} className="nav-link d-flex">
-                                    {window.innerWidth > 575 && <p>Watch List</p>}
+                                    {width > 575 && <p>Watch List</p>}
                                     <RiFileListLine className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={Link} to="watching" eventKey="Watching" onClick={() => setActiveList("Watching")} className="nav-link d-flex">
-                                    {window.innerWidth > 575 && <p>Watching</p>}
+                                    {width > 575 && <p>Watching</p>}
                                     <IoMdEye className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={Link} to="watched" eventKey="Watched" onClick={() => setActiveList("Watched")} className="nav-link d-flex">
-                                    {window.innerWidth > 575 && <p>Watched</p>}
+                                    {width > 575 && <p>Watched</p>}
                                     <MdTaskAlt className="tabs-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                         </div>
-                        {window.innerWidth > 767 &&
+                        {width > 767 &&
                             <p id="list-stat">Showing {getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"} </p>
                         }
-                        {window.innerWidth < 576 &&
+                        {width < 576 &&
                             <p id="list-stat">{getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
                         }
                     </Nav>

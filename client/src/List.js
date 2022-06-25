@@ -21,11 +21,13 @@ import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
 import ExpandedTvShowInfo from './ExpandedTvShowInfo';
 import Rating from '@mui/material/Rating';
+import useWindowSize from './useWindowSize';
 
 function List({ list, listData, layout }) {
 
     const context = useContext(UserContext);
     const { user, getAccessTokenSilently } = useAuth0();
+    const width = useWindowSize().width;
 
     const userRatings = context.userData.data.ratings;
     const moviesOnList = context.userData.data[Helper.getNormalizedListName(list)];
@@ -136,7 +138,7 @@ function List({ list, listData, layout }) {
                                             onChange={(e, newValue) => { handleRate(item.item, newValue) }}
                                         />
                                     </div>
-                                    {window.innerWidth > 575 &&
+                                    {width > 575 &&
                                         <div id="description-container" className='d-flex align-items-end'>
                                             <Card.Text >{item.getOverview()}</Card.Text>
                                         </div>
@@ -186,7 +188,7 @@ function List({ list, listData, layout }) {
             <div id="list-container-grid">
                 {layout === 'grid' && listData.length > 0 && listData.map((item, index) => (
                     <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
-                        {window.innerWidth > 991 &&
+                        {width > 991 &&
                             <div>
                                 {activeCard === index &&
                                     <CloseButton
@@ -198,7 +200,7 @@ function List({ list, listData, layout }) {
                                     />}
                             </div>
                         }
-                        {window.innerWidth < 992 &&
+                        {width < 992 &&
                             <div>
                                 <CloseButton
                                     id="close-card"
@@ -209,7 +211,7 @@ function List({ list, listData, layout }) {
                                 />
                             </div>
                         }
-                        {window.innerWidth < 400
+                        {width < 400
                             ? <Card.Img variant="top" className="card-img img-fluid"
                                 src={item.getPosterPath() || coverNotFound}
                             />
@@ -218,7 +220,7 @@ function List({ list, listData, layout }) {
                             />
                         }
                         <Card.Body id="movie-card-body">
-                            {window.innerWidth > 400 &&
+                            {width > 400 &&
                                 <div>
                                     <Rating
                                         id="user-rating"
@@ -228,7 +230,7 @@ function List({ list, listData, layout }) {
                                     <Card.Title id="movie-title" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
                                 </div>
                             }
-                            {window.innerWidth > 575 &&
+                            {width > 575 &&
                                 <div className="d-flex justify-content-between align-items-center">
                                     <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
                                     <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
@@ -236,10 +238,10 @@ function List({ list, listData, layout }) {
                                     </Badge>
                                 </div>
                             }
-                            {window.innerWidth > 575 &&
+                            {width > 575 &&
                                 <Card.Text id="movie-description">{item.getOverview()}</Card.Text>
                             }
-                            {window.innerWidth > 991 &&
+                            {width > 991 &&
                                 <div>
                                     {activeCard === index &&
                                         <div id="footer-icons">
@@ -267,7 +269,7 @@ function List({ list, listData, layout }) {
                                     <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
                             }
-                            {window.innerWidth < 992 &&
+                            {width < 992 &&
                                 <div>
                                     <div id="footer-icons">
                                         {list !== "Favorites" &&
