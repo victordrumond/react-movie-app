@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import { TvShow } from './TvShow';
 import { Helper } from './Helper';
 
-function ExpandedTvShowInfo({ tvShowObj, country }) {
+function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
 
     const movie = useMemo(() => new TvShow(tvShowObj, ''), [tvShowObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
@@ -47,8 +47,13 @@ function ExpandedTvShowInfo({ tvShowObj, country }) {
         return streamingData[0].services;
     }
 
+    const handleHide = () => {
+        setShowInfoModal(false);
+        hide(false);
+    }
+
     return (
-        <Modal id="tvshow-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true} centered={true} >
+        <Modal id="tvshow-modal" size="lg" show={showInfoModal} onHide={() => handleHide()} animation={true} centered={true} >
             <Modal.Header closeButton>
                 {viewSeason === "0" &&
                     <Modal.Title>

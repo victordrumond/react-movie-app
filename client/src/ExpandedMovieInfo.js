@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import { Movie } from './Movie';
 import { Helper } from './Helper';
 
-function ExpandedMovieInfo({ movieObj, country }) {
+function ExpandedMovieInfo({ movieObj, country, hide }) {
 
     const movie = useMemo(() => new Movie(movieObj, ''), [movieObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
@@ -42,8 +42,13 @@ function ExpandedMovieInfo({ movieObj, country }) {
         return streamingData[0].services;
     }
 
+    const handleHide = () => {
+        setShowInfoModal(false);
+        hide(false);
+    }
+
     return (
-        <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => setShowInfoModal(false)} animation={true} centered={true} >
+        <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => handleHide()} animation={true} centered={true} >
             <Modal.Header closeButton>
                 <Modal.Title>
                     {movie.getReleaseYear() ? `${movie.getTitle()} (${movie.getReleaseYear()})` : movie.getTitle()}

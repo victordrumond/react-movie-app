@@ -3,6 +3,8 @@ import './Search.css';
 import { UserContext } from './UserContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import coverNotFound from './cover-not-found.png';
+import ExpandedMovieInfo from './ExpandedMovieInfo';
+import ExpandedTvShowInfo from './ExpandedTvShowInfo';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -15,6 +17,7 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import { Requests } from './Requests';
 import { Helper } from './Helper';
+import { LocalStorage } from './LocalStorage';
 import { SearchResult } from './SearchResult';
 
 function Search() {
@@ -27,6 +30,9 @@ function Search() {
     const [data, setData] = useState([]);
     const searchRef = useRef(null);
     const resultsRef = useRef(null);
+
+    const [infoData, setInfoData] = useState(null);
+    const [showExpandedInfo, setShowExpandedInfo] = useState(false);
 
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
@@ -52,7 +58,7 @@ function Search() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (resultsRef.current && !resultsRef.current.contains(event.target) && !searchRef.current.contains(event.target)) {
+            if (!showExpandedInfo && resultsRef.current && !resultsRef.current.contains(event.target) && !searchRef.current.contains(event.target)) {
                 setSearchFor("");
             };
         };
@@ -60,7 +66,7 @@ function Search() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [resultsRef]);
+    }, [resultsRef, showExpandedInfo]);
 
     const handleAdd = async (item, list) => {
         setSearchFor("");
@@ -78,6 +84,24 @@ function Search() {
                 console.log(err);
             })
         });
+    };
+
+    const getMovieExpandedData = async (item) => {
+        if (LocalStorage.hasExpandedMovie(item.id)) {
+            let movieObj = LocalStorage.getExpandedMovie(item.id);
+            if (movieObj) {
+                item.media_type === 'movie' ? setInfoData([movieObj, 'movie']) : setInfoData([movieObj, 'tv']);
+                setShowExpandedInfo(true);
+            }
+        } else {
+            await getAccessTokenSilently().then(token => {
+                Requests.getMovieData(token, item).then(res => {
+                    LocalStorage.setExpandedMovie(res.data);
+                    item.media_type === 'movie' ? setInfoData([res.data, 'movie']) : setInfoData([res.data, 'tv']);
+                    setShowExpandedInfo(true);
+                })
+            })
+        };
     };
 
     const isMovieOnList = async (item, list) => {
@@ -118,23 +142,28 @@ function Search() {
                                 <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>{item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}</Badge></p>
                             </div>
                         </div>
-                        <div className="d-flex justify-content-between align-items-end">
-                            <MdFavorite title="Add to Favorites"
-                                onClick={() => handleAdd(item, "favorites")}
-                                className="results-icon fav-icon"
-                            />
-                            <RiFileListLine title="Add to Watch List"
-                                onClick={() => handleAdd(item, "watchList")}
-                                className="results-icon watch-icon"
-                            />
-                            <IoMdEye title="Add to Watching"
-                                onClick={() => handleAdd(item, "watching")}
-                                className="results-icon watching-icon"
-                            />
-                            <MdTaskAlt title="Add to Watched"
-                                onClick={() => handleAdd(item, "watched")}
-                                className="results-icon watched-icon"
-                            />
+                        <div className='d-flex flex-column justify-content-between'>
+                            <div className='d-flex justify-content-end'>
+                                <Button id="card-button-list" variant="link" onClick={() => getMovieExpandedData(item.result)}>Info</Button>
+                            </div>
+                            <div className="d-flex justify-content-between align-items-end">
+                                <MdFavorite title="Add to Favorites"
+                                    onClick={() => handleAdd(item, "favorites")}
+                                    className="results-icon fav-icon"
+                                />
+                                <RiFileListLine title="Add to Watch List"
+                                    onClick={() => handleAdd(item, "watchList")}
+                                    className="results-icon watch-icon"
+                                />
+                                <IoMdEye title="Add to Watching"
+                                    onClick={() => handleAdd(item, "watching")}
+                                    className="results-icon watching-icon"
+                                />
+                                <MdTaskAlt title="Add to Watched"
+                                    onClick={() => handleAdd(item, "watched")}
+                                    className="results-icon watched-icon"
+                                />
+                            </div>
                         </div>
                     </ListGroup.Item>
                 ))}
@@ -153,6 +182,21 @@ function Search() {
                     </Modal.Footer>
                 </Modal>
             )}
+
+            {showExpandedInfo && infoData[1] === 'movie' &&
+                <ExpandedMovieInfo
+                    movieObj={infoData[0]}
+                    country={context.userData.config.general.country}
+                    hide={() => setShowExpandedInfo(false)}
+                />
+            }
+            {showExpandedInfo && infoData[1] === 'tv' &&
+                <ExpandedTvShowInfo
+                    tvShowObj={infoData[0]}
+                    country={context.userData.config.general.country}
+                    hide={() => setShowExpandedInfo(false)}
+                />
+            }
 
         </Container>
     );
