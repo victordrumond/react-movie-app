@@ -11,12 +11,10 @@ import useWindowSize from './useWindowSize';
 
 function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
 
-    const show = useMemo(() => new TvShow(tvShowObj, ''), [tvShowObj]);
     const width = useWindowSize().width;
-
+    const show = useMemo(() => new TvShow(tvShowObj, ''), [tvShowObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [watchData, setWatchData] = useState(show.getWatchServices());
-    const [selectedCountry, setSelectedCountry] = useState(country);
     const [viewSeason, setViewSeason] = useState("0");
 
     useEffect(() => {
@@ -32,24 +30,51 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
         setShowInfoModal(true);
     }, [show])
 
-    const isAvailable = () => {
+    const getCountry = () => {
+        if (watchData.length === 0) return '';
+        const hasCountry = watchData.findIndex(watchService => watchService.country === country);
+        if (hasCountry >= 0) return country;
+        const hasUsa = watchData.findIndex(watchService => watchService.country === 'US');
+        if (hasUsa >= 0) return 'US';
+        return watchData[0].country;
+    }
+
+    const [selectedCountry, setSelectedCountry] = useState(getCountry());
+
+    const getService = () => {
+        const watchServices = watchData.filter(watchService => watchService.country === selectedCountry);
+        if (watchServices.length === 0) return '';
+        const services = watchServices[0].services;
+        if (services['flatrate'].length > 0) return 'flatrate';
+        if (services['rent'].length > 0) return 'rent';
+        if (services['buy'].length > 0) return 'buy';
+    }
+
+    const [selectedService, setSelectedService] = useState(getService());
+
+    const isShowAvailable = () => {
         return !(watchData.length === 0);
     }
 
-    const getAvailableServicesOnCountry = () => {
-        for (const watchService of watchData) {
-            if (watchService.country === selectedCountry && watchService.services['flatrate'].length > 0) {
-                return watchService.services['flatrate'];
-            }
-        }
-        for (const watchService of watchData) {
-            if (watchService.country === 'US' && watchService.services['flatrate'].length > 0) {
-                return watchService.services['flatrate'];
-            }
-        }
-        for (const watchService of watchData) {
-            if (watchService.services['flatrate'].length > 0) {
-                return watchService.services['flatrate'];
+    const isServiceAvailable = (service) => {
+        const index = watchData.findIndex(watchService => watchService.country === selectedCountry && watchService.services[service].length > 0);
+        return index >= 0;
+    }
+
+    const getAvailableProviders = () => {
+        const index = watchData.findIndex(watchService => watchService.country === selectedCountry);
+        return watchData[index].services[selectedService];
+    }
+
+    const getDefaultProvider = () => {
+        if (isServiceAvailable(selectedService)) return selectedService;
+        const services = ['flatrate', 'rent', 'buy'];
+        for (const service of services) {
+            if (isServiceAvailable(service)) {
+                if (service !== selectedService) {
+                    setSelectedService(service);
+                }
+                return service;
             }
         }
     }
@@ -105,9 +130,22 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
                         <p><b>Network: </b>{show.getNetworks().length > 0 ? Helper.separateByComma(show.getNetworks()) : 'not found'}</p>
                     </div>
                     <div id="watch" className="d-flex flex-column">
+                        <p><b>Watch:</b></p>
                         <div className="d-flex justify-content-start">
-                            <p><b>Streaming:</b></p>
-                            {isAvailable() &&
+                            {isShowAvailable() &&
+                                <Form.Select id="service-select" size="sm" defaultValue={getDefaultProvider()} onChange={(e) => setSelectedService(e.target.value)}>
+                                    {isServiceAvailable('flatrate') &&
+                                        <option key="flatrate" value="flatrate">Streaming</option>
+                                    }
+                                    {isServiceAvailable('rent') &&
+                                        <option key="rent" value="rent">Rent</option>
+                                    }
+                                    {isServiceAvailable('buy') &&
+                                        <option key="buy" value="buy">Buy</option>
+                                    }
+                                </Form.Select>
+                            }
+                            {isShowAvailable() &&
                                 <Form.Select id="country-select" size="sm" defaultValue={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
                                     {watchData.map((item, i) => (
                                         <option key={i} value={item.country}>{item.country}</option>
@@ -116,10 +154,10 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
                             }
                         </div>
                         <div id="watch-services" className="d-flex justify-content-start">
-                            {!isAvailable() &&
-                                <p>Not available for streaming in any country at the moment</p>
+                            {!isShowAvailable() &&
+                                <p>Not available in any country at the moment</p>
                             }
-                            {isAvailable() && getAvailableServicesOnCountry().map((item, i) => (
+                            {isShowAvailable() && getAvailableProviders().map((item, i) => (
                                 <img
                                     key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
                                     alt="provider_logo" title={item.provider_name}

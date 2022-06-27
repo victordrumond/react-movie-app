@@ -34,10 +34,15 @@
     margin: 0;
 }
 
+#service-select {
+    width: 125px;
+    line-height: 1.5;
+}
+
 #country-select {
     margin-left: 0.5rem;
     width: 75px;
-    line-height: 1;
+    line-height: 1.5;
 }
 
 #watch-services img {
