@@ -74,7 +74,7 @@ export class TvShow {
     getAverageRating(): string {
         if (this.item.vote_average) {
             let rating = this.item.vote_average.toString();
-            return rating.length === 1 ? rating + '.0' : rating;
+            return rating.length === 1 ? rating + '.0' : this.item.vote_average.toFixed(1).toString();
         }
         return 'Not Rated';
     }

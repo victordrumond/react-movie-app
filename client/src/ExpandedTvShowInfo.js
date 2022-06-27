@@ -100,7 +100,7 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
             </Modal.Header>
             <Modal.Body id="modal-body" className="d-flex">
                 <div>
-                    {width > 399
+                    {width > 575
                         ? <img className="modal-img" alt="tvshow_cover" src={show.getPosterPath(viewSeason) || coverNotFound} />
                         : <img className="modal-img img-fluid" alt="tvshow_cover" src={show.getBackdropPath() || backdropNotFound} />
                     }
@@ -153,16 +153,18 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
                                 </Form.Select>
                             }
                         </div>
-                        <div id="watch-services" className="d-flex justify-content-start">
+                        <div className="d-flex justify-content-start">
                             {!isShowAvailable() &&
                                 <p>Not available in any country at the moment</p>
                             }
-                            {isShowAvailable() && getAvailableProviders().map((item, i) => (
-                                <img
-                                    key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
-                                    alt="provider_logo" title={item.provider_name}
-                                />
-                            ))}
+                            <div id="watch-services">
+                                {isShowAvailable() && getAvailableProviders().map((item, i) => (
+                                    <img
+                                        key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
+                                        alt="provider_logo" title={item.provider_name}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

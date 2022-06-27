@@ -45,10 +45,14 @@
     line-height: 1.5;
 }
 
+#watch-services {
+    margin-top: 0.5rem;
+}
+
 #watch-services img {
     width: 36px;
     height: 36px;
-    margin: 0.5rem 0.25rem 0 0;
+    margin: 0 0.25rem 0.25rem 0;
 }
 
 #season-select {
@@ -57,7 +61,7 @@
 }
 
 @media screen and (max-width: 991px) {
-    #modal-body img {
+    .modal-img {
         margin-bottom: 1.5rem;
         width: 150px;
         height: 225px;
@@ -74,25 +78,25 @@
         font-size: 20px !important;
     }
 
-    #modal-info p, #watch p {
-        font-size: 14px;
-    }
-}
-
-@media screen and (max-width: 399px) {
-    #modal-body {
-        flex-direction: column;
-    }
-
     #modal-info {
         margin: 0;
     }
 
-    #modal-body img {
+    #modal-info p, #watch p {
+        font-size: 14px;
+    }
+
+    #modal-body {
+        flex-direction: column;
+    }
+
+    .modal-img {
         width: 100%;
         height: auto;
     }
+}
 
+@media screen and (max-width: 399px) {
     #watch-services img {
         width: 32px;
         height: 32px;

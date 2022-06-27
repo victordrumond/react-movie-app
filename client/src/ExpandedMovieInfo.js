@@ -84,7 +84,7 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
             </Modal.Header>
             <Modal.Body id="modal-body" className="d-flex">
                 <div>
-                    {width > 399
+                    {width > 575
                         ? <img className="modal-img" alt="movie_cover" src={movie.getPosterPath() || coverNotFound} />
                         : <img className="modal-img img-fluid" alt="movie_cover" src={movie.getBackdropPath() || backdropNotFound} />
                     }
@@ -129,16 +129,18 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
                                 </Form.Select>
                             }
                         </div>
-                        <div id="watch-services" className="d-flex justify-content-start">
+                        <div className="d-flex justify-content-start">
                             {!isMovieAvailable() &&
                                 <p>Not available in any country at the moment</p>
                             }
-                            {isMovieAvailable() && getAvailableProviders().map((item, i) => (
-                                <img
-                                    key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
-                                    alt="provider_logo" title={item.provider_name}
-                                />
-                            ))}
+                            <div id="watch-services">
+                                {isMovieAvailable() && getAvailableProviders().map((item, i) => (
+                                    <img
+                                        key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
+                                        alt="provider_logo" title={item.provider_name}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
