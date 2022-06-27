@@ -78,11 +78,8 @@ function Authentication() {
             </div>
             <div id="trending">
                 {activeCovers.length > 0 && activeCovers.map((item, i) => (
-                    <img
-                        key={i}
+                    <img key={i} className="img-fluid" alt=""
                         src={item ? "https://image.tmdb.org/t/p/w500" + item : coverNotFound}
-                        alt=""
-                        className="img-fluid"
                     />
                 ))}
             </div>

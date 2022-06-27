@@ -7,6 +7,10 @@
     font-family: "Encode Sans";
 }
 
+#root, html {
+    background-color: #DEE2E6;
+}
+
 #app-container {
     padding: 0;
 }

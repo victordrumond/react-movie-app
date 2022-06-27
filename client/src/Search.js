@@ -117,7 +117,7 @@ function Search() {
     return (
         <Container id="search-container">
             <div className="d-flex" ref={searchRef}>
-                <BiSearch id="search-icon" />
+                <BiSearch className="search-icon" />
                 <Form.Control id="input" type="search"
                     placeholder={`What's your next story, ${user.name}?`}
                     value={searchInput}
@@ -138,13 +138,13 @@ function Search() {
                             />
                             <div id="results-text" className="d-flex flex-column">
                                 <p title={item.getTitle()}>{item.getTitle()}{item.getOriginalTitle() !== item.getTitle() ? ` (${item.getOriginalTitle()})` : ''}</p>
-                                <p className='text-muted'>{item.getReleaseYear()}</p>
+                                <p className="text-muted">{item.getReleaseYear()}</p>
                                 <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>{item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}</Badge></p>
                             </div>
                         </div>
-                        <div className='d-flex flex-column justify-content-between'>
-                            <div className='d-flex justify-content-end'>
-                                <Button id="card-button-list" variant="link" onClick={() => getMovieExpandedData(item.result)}>Info</Button>
+                        <div className="d-flex flex-column justify-content-between">
+                            <div className="d-flex justify-content-end">
+                                <Button variant="link" onClick={() => getMovieExpandedData(item.result)}>Info</Button>
                             </div>
                             <div className="d-flex justify-content-between align-items-end">
                                 <MdFavorite title="Add to Favorites"
@@ -170,7 +170,7 @@ function Search() {
             </ListGroup>
 
             {addMovieToList && !addData[2] && (
-                <Modal id="icons-modal" show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
+                <Modal show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Already On List</Modal.Title>
                     </Modal.Header>

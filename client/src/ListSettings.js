@@ -56,7 +56,7 @@ function ListSettings({ activeList, isListEmpty, layout }) {
     };
 
     return (
-        <Container id="list-settings-container">
+        <Container className="m-0 p-0">
             <Navbar>
                 {isListEmpty &&
                     <div id="empty-list-config">
@@ -68,10 +68,10 @@ function ListSettings({ activeList, isListEmpty, layout }) {
                         <div className="d-flex">
                             <Nav>
                                 <NavDropdown id="filter-dropdown" title="Filter">
-                                    <NavDropdown.Item className="filter-option" >
+                                    <NavDropdown.Item>
                                         <Form.Check key={Math.random()} type="checkbox" label='Movies' checked={getActiveListFiltering(activeList).movies} onChange={(e) => handleUpdateFiltering('movies', e.target.checked)} />
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item className="filter-option" >
+                                    <NavDropdown.Item>
                                         <Form.Check key={Math.random()} type="checkbox" label='TV Shows' checked={getActiveListFiltering(activeList).tvShows} onChange={(e) => handleUpdateFiltering('tvShows', e.target.checked)} />
                                     </NavDropdown.Item>
                                 </NavDropdown>

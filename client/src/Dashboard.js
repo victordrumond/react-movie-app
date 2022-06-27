@@ -52,13 +52,13 @@ function Dashboard() {
         <UserContext.Provider value={context}>
         <Container id="dashboard-container">
             <div id="header-container" className="d-flex justify-content-between align-items-center">
-                <div id="name-and-logo" className="d-flex">
+                <div className="d-flex">
                     <h2>React Movie App</h2>
                     <div className="d-flex">
                         <img src={logo} alt="app_logo" className="img-fluid" />
                     </div>
                 </div>
-                <Button id="sidebar" variant="primary" onClick={() => setShowSidebar(true)}>
+                <Button variant="primary" onClick={() => setShowSidebar(true)}>
                     Sidebar
                 </Button>
                 <Sidebar

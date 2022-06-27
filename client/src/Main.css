@@ -39,30 +39,6 @@
     background-color: white !important;
 }
 
-.trash {
-    color: black;
-}
-
-.favorites {
-    color: #DC3545
-}
-
-.watchList {
-    color: #0275D8;
-}
-
-.watching {
-    color: #fd7e14;
-}
-
-.watched {
-    color: #28A745;
-}
-
-.rating {
-    color: rgba(255, 183, 0, 0.824);
-}
-
 @media screen and (max-width: 992px) {
     .nav-link {
         padding: 0.5rem !important;
@@ -96,5 +72,11 @@
 
     .nav-link {
         padding: 0.5rem 0.75rem !important;
+    }
+}
+
+@media screen and (max-width: 399px) {
+    #content-body {
+        padding: 0 0.75rem 1rem;
     }
 }

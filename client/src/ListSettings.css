@@ -8,11 +8,6 @@
     color: #0000008C;
 }
 
-#list-settings-container {
-    margin: 0;
-    padding: 0;
-}
-
 .list-layout-icon {
     font-size: 22px;
     margin-right: 0.5rem;
@@ -21,15 +16,15 @@
 }
 
 @media screen and (max-width: 575px) {
+    #empty-list-config p {
+        font-size: 14px;
+    }
+    
     #filter-dropdown, #sort-dropdown {
         font-size: 15px;
     }
 
     .sort-option {
         font-size: 14px !important;
-    }
-
-    #empty-list-config p {
-        font-size: 14px;
     }
 }

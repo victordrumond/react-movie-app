@@ -1,7 +1,3 @@
-#root, html {
-    background-color: #DEE2E6;
-}
-
 #header-container {
     margin: 2rem 0 1.5rem;
 }
@@ -43,7 +39,7 @@
 
 @media screen and (max-width: 575px) {
     #dashboard-container {
-        padding: 0 1rem;
+        padding: 0 0.75rem;
     }
 
     #header-container {

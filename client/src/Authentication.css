@@ -1,4 +1,4 @@
-#home-container{
+#home-container {
     min-height: 100vh;
     gap: 2rem;
 }
@@ -106,7 +106,6 @@
 @media screen and (max-width: 575px) {
     #home-info-one h1 {
         font-size: 26px;
-        margin: auto 1rem auto 0;
     }
 
     #home-info-one img {

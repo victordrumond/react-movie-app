@@ -113,21 +113,21 @@ function List({ list, listData, layout }) {
     }
 
     return (
-        <Container className='m-0 p-0'>
+        <Container className="m-0 p-0">
 
             {listData.length === 0 && <ExampleMovieCard list={list} isReallyEmpty={moviesOnList.length === 0} />}
 
-            <div id="list-container">
+            <div id="list-container-list">
                 <ListGroup variant="flush">
                     {layout === 'list' && listData.length > 0 && listData.map((item, index) => (
                         <ListGroup.Item id="movie-card-list" key={index} className="d-flex">
-                            <img className="img-fluid" src={item.getPosterPath() || coverNotFound} alt="cover-img" />
-                            <div className="d-flex flex-column w-100">
+                            <img className="card-img-list img-fluid" src={item.getPosterPath() || coverNotFound} alt="cover-img" />
+                            <div className="w-100 d-flex flex-column">
                                 <Card.Title id="movie-title-list" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
-                                <div className='d-flex justify-content-start'>
+                                <div className="d-flex justify-content-start">
                                     <div id="date-ratings-container">
                                         <div className="d-flex justify-content-between">
-                                            <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
+                                            <Card.Text id="movie-date-list">{item.getReleaseYear()}</Card.Text>
                                             <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
                                                 {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
                                             </Badge>
@@ -139,14 +139,14 @@ function List({ list, listData, layout }) {
                                         />
                                     </div>
                                     {width > 575 &&
-                                        <div id="description-container" className='d-flex align-items-end'>
+                                        <div id="description-container-list" className="d-flex align-items-end">
                                             <Card.Text >{item.getOverview()}</Card.Text>
                                         </div>
                                     }
                                 </div>
                             </div>
-                            <div id="buttons-container" className='d-flex flex-column justify-content-between'>
-                                <div className='d-flex justify-content-end'>
+                            <div id="buttons-container" className="d-flex flex-column justify-content-between">
+                                <div className="d-flex justify-content-end">
                                     <CloseButton id="close-card-list"
                                         onClick={() => {
                                             setDeleteData(item.item);
@@ -154,10 +154,10 @@ function List({ list, listData, layout }) {
                                         }}
                                     />
                                 </div>
-                                <div className='d-flex justify-content-end'>
-                                    <Button id="card-button-list" variant="link" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                <div className="d-flex justify-content-end">
+                                    <Button id="info-button-list" variant="link" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
-                                <div className='d-flex align-items-end'>
+                                <div className="d-flex align-items-end">
                                     {list !== "Favorites" &&
                                         <MdFavorite title="Add to Favorites"
                                             onClick={() => handleAdd(item.item, "Favorites")}
@@ -187,12 +187,12 @@ function List({ list, listData, layout }) {
 
             <div id="list-container-grid">
                 {layout === 'grid' && listData.length > 0 && listData.map((item, index) => (
-                    <Card id="movie-card" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
+                    <Card id="movie-card-grid" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
                         {width > 991 &&
                             <div>
                                 {activeCard === index &&
                                     <CloseButton
-                                        id="close-card"
+                                        id="close-card-grid"
                                         onClick={() => {
                                             setDeleteData(item.item);
                                             setDeleteMovie(true);
@@ -203,7 +203,7 @@ function List({ list, listData, layout }) {
                         {width < 992 &&
                             <div>
                                 <CloseButton
-                                    id="close-card"
+                                    id="close-card-grid"
                                     onClick={() => {
                                         setDeleteData(item.item);
                                         setDeleteMovie(true);
@@ -212,88 +212,88 @@ function List({ list, listData, layout }) {
                             </div>
                         }
                         {width < 400
-                            ? <Card.Img variant="top" className="card-img img-fluid"
+                            ? <Card.Img variant="top" className="card-img-grid img-fluid"
                                 src={item.getPosterPath() || coverNotFound}
                             />
-                            : <Card.Img variant="top" className="card-img img-fluid"
+                            : <Card.Img variant="top" className="card-img-grid img-fluid"
                                 src={item.getBackdropPath() || backdropNotFound}
                             />
                         }
-                        <Card.Body id="movie-card-body">
+                        <Card.Body id="movie-card-body-grid">
                             {width > 400 &&
                                 <div>
                                     <Rating
-                                        id="user-rating"
+                                        id="user-rating-grid"
                                         value={Helper.getMovieRating(item.getId(), userRatings)}
                                         onChange={(e, newValue) => { handleRate(item.item, newValue) }}
                                     />
-                                    <Card.Title id="movie-title" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
+                                    <Card.Title id="movie-title-grid" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>
                                 </div>
                             }
                             {width > 575 &&
                                 <div className="d-flex justify-content-between align-items-center">
-                                    <Card.Text id="movie-date">{item.getReleaseYear()}</Card.Text>
+                                    <Card.Text id="movie-date-grid">{item.getReleaseYear()}</Card.Text>
                                     <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
                                         {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
                                     </Badge>
                                 </div>
                             }
                             {width > 575 &&
-                                <Card.Text id="movie-description">{item.getOverview()}</Card.Text>
+                                <Card.Text id="movie-description-grid">{item.getOverview()}</Card.Text>
                             }
                             {width > 991 &&
                                 <div>
                                     {activeCard === index &&
-                                        <div id="footer-icons">
+                                        <div id="footer-icons-grid">
                                             {list !== "Favorites" &&
                                                 <MdFavorite title="Add to Favorites"
                                                     onClick={() => handleAdd(item.item, "Favorites")}
-                                                    className="footer-icon fav-icon"
+                                                    className="footer-icon-grid fav-icon"
                                                 />}
                                             {list !== "Watch List" &&
                                                 <RiFileListLine title="Add to Watch List"
                                                     onClick={() => handleAdd(item.item, "Watch List")}
-                                                    className="footer-icon watch-icon"
+                                                    className="footer-icon-grid watch-icon"
                                                 />}
                                             {list !== "Watching" &&
                                                 <IoMdEye title="Add to Watching"
                                                     onClick={() => handleAdd(item.item, "Watching")}
-                                                    className="footer-icon watching-icon"
+                                                    className="footer-icon-grid watching-icon"
                                                 />}
                                             {list !== "Watched" &&
                                                 <MdTaskAlt title="Add to Watched"
                                                     onClick={() => handleAdd(item.item, "Watched")}
-                                                    className="footer-icon watched-icon"
+                                                    className="footer-icon-grid watched-icon"
                                                 />}
                                         </div>}
-                                    <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                    <Button id="info-button-grid" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
                             }
                             {width < 992 &&
                                 <div>
-                                    <div id="footer-icons">
+                                    <div id="footer-icons-grid">
                                         {list !== "Favorites" &&
                                             <MdFavorite title="Add to Favorites"
                                                 onClick={() => handleAdd(item.item, "Favorites")}
-                                                className="footer-icon fav-icon"
+                                                className="footer-icon-grid fav-icon"
                                             />}
                                         {list !== "Watch List" &&
                                             <RiFileListLine title="Add to Watch List"
                                                 onClick={() => handleAdd(item.item, "Watch List")}
-                                                className="footer-icon watch-icon"
+                                                className="footer-icon-grid watch-icon"
                                             />}
                                         {list !== "Watching" &&
                                             <IoMdEye title="Add to Watching"
                                                 onClick={() => handleAdd(item.item, "Watching")}
-                                                className="footer-icon watching-icon"
+                                                className="footer-icon-grid watching-icon"
                                             />}
                                         {list !== "Watched" &&
                                             <MdTaskAlt title="Add to Watched"
                                                 onClick={() => handleAdd(item.item, "Watched")}
-                                                className="footer-icon watched-icon"
+                                                className="footer-icon-grid watched-icon"
                                             />}
                                     </div>
-                                    <Button id="card-button" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                    <Button id="info-button-grid" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
                             }
                         </Card.Body>

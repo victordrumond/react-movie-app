@@ -1,22 +1,7 @@
-#list-container {
+/* LIST layout ----------------------------------------------- */
+#list-container-list {
     margin: 0;
     padding: 0;
-}
-
-#list-container-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    margin: 0;
-    padding: 0;
-    grid-gap: 1rem;
-}
-
-#progress-bar {
-    width: 80px !important;
-}
-
-#movie-card {
-    height: 355px;
 }
 
 #movie-card-list {
@@ -24,24 +9,9 @@
     padding: 0.5rem;
 }
 
-#movie-card-list img {
-    height: 91px;
-    padding-right: 1rem;
-}
-
-#movie-card:hover {
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-}
-
-#movie-card-body {
-    padding-top: 0.5rem !important;
-}
-
-#close-card {
-    position: absolute;
-    background-color: lightgrey;
-    right: 4px;
-    top: 4px;
+.card-img-list {
+    height: 91px !important;
+    padding-right: 1rem !important;
 }
 
 #close-card-list {
@@ -50,22 +20,12 @@
     background-color: lightgrey;
 }
 
-.card-img {
-    width: 240px;
-    height: 135px;
-}
-
-#user-rating {
-    padding-top: 0.25rem;
-    margin-left: -0.25rem;
-}
-
 #user-rating-list {
     padding-top: 0.5rem;
     margin-left: -0.25rem;
 }
 
-#movie-title, #movie-title-list {
+#movie-title-list {
     font-size: 16px;
     line-height: 1.5;
     padding: 0;
@@ -77,11 +37,11 @@
     -webkit-box-orient: vertical;
 }
 
-#description-container {
+#description-container-list {
     padding: 0 2rem;
 }
 
-#description-container p {
+#description-container-list p {
     font-size: 14px;
     margin: 0;
     overflow: hidden;
@@ -91,12 +51,80 @@
     -webkit-box-orient: vertical;
 }
 
-#movie-date, #movie-score {
+#movie-date-list {
     font-size: 14px;
     margin: 0;
 }
 
-#movie-description {
+.footer-icon-list {
+    font-size: 22px;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.footer-icon-list:hover {
+    transform: scale(1.2);
+    transition: all 0.3s;
+}
+
+#info-button-list {
+    font-size: 15px;
+    padding: 0;
+}
+/* LIST layout ----------------------------------------------- */
+
+
+/* GRID layout ----------------------------------------------- */
+#list-container-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 0;
+    padding: 0;
+    grid-gap: 1rem;
+}
+
+#movie-card-grid {
+    height: 355px;
+}
+
+#movie-card-grid:hover {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+#close-card-grid {
+    position: absolute;
+    background-color: lightgrey;
+    right: 4px;
+    top: 4px;
+}
+
+.card-img-grid {
+    width: 240px;
+    height: 135px;
+}
+
+#movie-card-body-grid {
+    padding-top: 0.5rem !important;
+}
+
+#user-rating-grid {
+    padding-top: 0.25rem;
+    margin-left: -0.25rem;
+}
+
+#movie-title-grid {
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0 0 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+#movie-description-grid {
     font-size: 14px;
     margin: 0.5rem 0;
     overflow: hidden;
@@ -106,58 +134,54 @@
     -webkit-box-orient: vertical;
 }
 
-#footer-icons {
+#movie-date-grid {
+    font-size: 14px;
+    margin: 0;
+}
+
+#footer-icons-grid {
     position: absolute;
     left: 1rem;
     bottom: 1rem;
 }
 
-.footer-icon {
+.footer-icon-grid {
     font-size: 24px;
     margin-right: 0.5rem;
     cursor: pointer;
 }
 
-.footer-icon-list {
-    font-size: 22px;
-    margin-left: 0.5rem;
-    cursor: pointer;
-}
-
-.footer-icon:hover, .footer-icon-list:hover {
+.footer-icon-grid:hover {
     transform: scale(1.2);
     transition: all 0.3s;
 }
 
-#card-button {
+#info-button-grid {
     position: absolute;
     right: 0.75rem;
     bottom: 0.75rem;
     font-size: 14px;
 }
+/* GRID layout ----------------------------------------------- */
 
-#card-button-list {
-    font-size: 15px;
-    padding: 0;
-}
 
 @media screen and (max-width: 1199px) {
     #list-container-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 
-    #movie-card {
+    #movie-card-grid {
         height: 340px;
     }
 }
 
 @media screen and (max-width: 991px) {
-    #list-container-grid {
-        grid-template-columns: repeat(3, 1fr);
+    #description-container-list {
+        padding: 0 1.5rem;
     }
 
-    #description-container {
-        padding: 0 1.5rem;
+    #list-container-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -166,32 +190,14 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
-    #movie-card {
+    #movie-card-grid {
         height: 350px;
     }
 }
 
 @media screen and (max-width: 575px) {
-    #list-container-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 0.5rem;
-    }
-
-    .card-body {
-        padding: 0.5rem !important;
-    }
-
-    #movie-card {
-        height: 100%;
-    }
-    
     #movie-card-list img {
         padding-right: 1rem;
-    }
-
-    #movie-title {
-        font-size: 15px;
-        margin-bottom: 2rem;
     }
 
     #movie-title-list {
@@ -199,12 +205,26 @@
         margin-bottom: 0.5rem;
     }
 
-    #footer-icons {
+    #list-container-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 0.5rem;
+    }
+
+    #movie-card-grid {
+        height: 100%;
+    }
+
+    #movie-title-grid {
+        font-size: 15px;
+        margin-bottom: 2rem;
+    }
+
+    #footer-icons-grid {
         left: 0.5rem;
         bottom: 0.5rem;
     }
 
-    #card-button {
+    #info-button-grid {
         right: 0.5rem;
         bottom: 0.5rem;
         font-size: 12px;
@@ -213,11 +233,15 @@
 }
 
 @media screen and (max-width: 399px) {
-    .card-img {
-        padding-bottom: 1.75rem !important;
+    #movie-card-list {
+        padding: 0.5rem 0;
     }
 
     #movie-card-list img {
         padding-right: 0.75rem;
+    }
+
+    .card-img-grid {
+        padding-bottom: 1.75rem !important;
     }
 }

@@ -184,7 +184,7 @@ function Main() {
                     </Nav>
                 </Card.Header>
                 <Card.Body id="content-body">
-                    <ListSettings activeList={activeList} isListEmpty={isListEmpty()} layout={(value) => setLayout(value)}/>
+                    <ListSettings activeList={activeList} isListEmpty={isListEmpty()} layout={(value) => setLayout(value)} />
                     <Routes>
                         <Route path="favorites" element={<List list="Favorites" listData={getSelectedPageData('favorites')} layout={layout}/>} />
                         <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPageData('watchList')} layout={layout}/>} />
@@ -233,7 +233,7 @@ function Main() {
             {showActivities > 0 &&
                 <ToastContainer className="position-fixed p-3" position="bottom-end">
                     {newActivities.map((activity, index) => (
-                        <Toast id="activity-toast" key={activity.timestamp} show={true} onClose={() => handleCloseToast(activity)} delay={5000} autohide>
+                        <Toast key={activity.timestamp} show={true} onClose={() => handleCloseToast(activity)} delay={5000} autohide>
                             <Toast.Header>
                                 {activity.getLabel() === 'movie_deleted' &&
                                     <CgTrash className='toast-icon trash' />}

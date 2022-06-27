@@ -1,11 +1,11 @@
-.modal-img {
-    width: 250px;
-    height: 375px;
-}
-
 #tvshow-modal p {
     margin: auto 0;
     font-size: 15px;
+}
+
+.modal-img {
+    width: 250px;
+    height: 375px;
 }
 
 #modal-info {

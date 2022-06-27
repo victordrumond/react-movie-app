@@ -30,8 +30,8 @@ function Activities() {
             }
             {activities.length > 0 && activities.map((activity, index) => (
                 <Alert key={index} className="activity d-flex">
-                    <img src={activity.getImageUrl()} alt="" />
-                    <div className="activity-text d-flex flex-column justify-content-between">
+                    <img className="activity-img" src={activity.getImageUrl()} alt="" />
+                    <div className="w-100 d-flex flex-column justify-content-between">
                         <div className="d-flex justify-content-between">
                             {activity.getLabel() === 'movie_deleted' &&
                                 <CgTrash className='activity-icon trash' />}

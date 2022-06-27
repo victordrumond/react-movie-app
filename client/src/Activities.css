@@ -6,14 +6,10 @@
     padding: 0.5rem !important;
 }
 
-#activities-container img {
+.activity-img {
     width: 40px;
     height: 100%;
     margin-right: 0.5rem;
-}
-
-.activity-text {
-    width: 100%;
 }
 
 .activity-time {
@@ -31,28 +27,4 @@
 
 .activity-icon {
     font-size: 20px;
-}
-
-.trash {
-    color: black;
-}
-
-.favorites {
-    color: #DC3545
-}
-
-.watchList {
-    color: #0275D8;
-}
-
-.watching {
-    color: #fd7e14;
-}
-
-.watched {
-    color: #28A745;
-}
-
-.rating {
-    color: rgba(255, 183, 0, 0.824);
 }

@@ -36,3 +36,27 @@
     color: black !important;
     background-color: #e9ecef !important;
 }
+
+.trash {
+    color: black !important;
+}
+
+.favorites {
+    color: #DC3545 !important;
+}
+
+.watchList {
+    color: #0275D8 !important;
+}
+
+.watching {
+    color: #fd7e14 !important;
+}
+
+.watched {
+    color: #28A745 !important;
+}
+
+.rating {
+    color: rgba(255, 183, 0, 0.824) !important;
+}

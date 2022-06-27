@@ -159,9 +159,8 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
                             }
                             <div id="watch-services">
                                 {isShowAvailable() && getAvailableProviders().map((item, i) => (
-                                    <img
-                                        key={i} src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
-                                        alt="provider_logo" title={item.provider_name}
+                                    <img key={i} alt="provider_logo" title={item.provider_name}
+                                        src={'https://image.tmdb.org/t/p/w500' + item.logo_path}
                                     />
                                 ))}
                             </div>
