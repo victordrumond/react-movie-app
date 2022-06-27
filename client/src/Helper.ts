@@ -7,7 +7,7 @@ export module Helper {
         for (const item of data) {
             formattedData.push(item + ', ');
         }
-        formattedData[formattedData.length - 1].replace(', ', '');
+        formattedData[formattedData.length - 1] = formattedData[formattedData.length - 1].replace(', ', '');
         return formattedData;
     }
 
