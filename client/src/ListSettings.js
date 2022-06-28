@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import './ListSettings.css';
 import { UserContext } from './UserContext';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Helper } from "./Helper";
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import Navbar from 'react-bootstrap/Navbar';
@@ -21,9 +20,8 @@ function ListSettings({ activeList, isListEmpty, layout }) {
     const [currentLayout, setCurrentLayout] = useState('grid');
 
     const handleUpdateSorting = async (newSort) => {
-        let listName = Helper.getNormalizedListName(activeList);
         await getAccessTokenSilently().then(token => {
-            Requests.setSorting(token, user, listName, newSort).then(res => {
+            Requests.setSorting(token, user, activeList, newSort).then(res => {
                 context.setUserData(res.data);
             }).catch(err => {
                 console.log(err);
@@ -32,9 +30,8 @@ function ListSettings({ activeList, isListEmpty, layout }) {
     };
 
     const handleUpdateFiltering = async (filter, value) => {
-        let listName = Helper.getNormalizedListName(activeList);
         await getAccessTokenSilently().then(token => {
-            Requests.setFiltering(token, user, listName, filter, value).then(res => {
+            Requests.setFiltering(token, user, activeList, filter, value).then(res => {
                 context.setUserData(res.data);
             }).catch(err => {
                 console.log(err);
@@ -48,11 +45,11 @@ function ListSettings({ activeList, isListEmpty, layout }) {
     };
 
     const getActiveListSorting = (activeList) => {
-        return listsConfig[Helper.getNormalizedListName(activeList)].sorting;
+        return listsConfig[activeList].sorting;
     };
 
     const getActiveListFiltering = (activeList) => {
-        return listsConfig[Helper.getNormalizedListName(activeList)].filtering;
+        return listsConfig[activeList].filtering;
     };
 
     return (

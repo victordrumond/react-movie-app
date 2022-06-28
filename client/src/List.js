@@ -30,7 +30,7 @@ function List({ list, listData, layout }) {
     const width = useWindowSize().width;
 
     const userRatings = context.userData.data.ratings;
-    const moviesOnList = context.userData.data[Helper.getNormalizedListName(list)];
+    const moviesOnList = context.userData.data[list];
 
     const [activeCard, setActiveCard] = useState(null);
 
@@ -67,9 +67,8 @@ function List({ list, listData, layout }) {
             setAddMovieToList(true);
             return;
         }
-        let newList = Helper.getNormalizedListName(list);
         await getAccessTokenSilently().then(token => {
-            Requests.addMovie(token, user, newList, item).then(res => {
+            Requests.addMovie(token, user, list, item).then(res => {
                 context.setUserData(res.data);
                 setAddData([item.title || item.name, list, true]);
                 setAddMovieToList(true);
@@ -80,9 +79,8 @@ function List({ list, listData, layout }) {
     };
 
     const handleDelete = async (item) => {
-        let currentList = Helper.getNormalizedListName(list);
         await getAccessTokenSilently().then(token => {
-            Requests.deleteMovie(token, user, currentList, item).then(res => {
+            Requests.deleteMovie(token, user, list, item).then(res => {
                 context.setUserData(res.data);
                 setDeleteMovie(false);
                 setDeleteData(null);
@@ -103,13 +101,21 @@ function List({ list, listData, layout }) {
     }
 
     const isMovieOnList = async (item, list) => {
-        let listMovies = context.userData.data[Helper.getNormalizedListName(list)];
+        let listMovies = context.userData.data[list];
         for (const movie of listMovies) {
             if (movie.data.id === item.id) {
                 return true;
             }
         }
         return false;
+    }
+
+    const getButtonComponents = (item, layout) => {
+        const addToFavorites = [<MdFavorite key={`add-favorites-${layout}`} title="Add to Favorites" onClick={() => handleAdd(item, "favorites")} className={`footer-icon-${layout} fav-icon`} />, 'favorites'];
+        const addToWatchList = [<RiFileListLine key={`add-watchList-${layout}`} title="Add to Watch List" onClick={() => handleAdd(item, "watchList")} className={`footer-icon-${layout} watch-icon`} />, 'watchList'];
+        const addToWatching = [<IoMdEye key={`add-watching-${layout}`} title="Add to Watching" onClick={() => handleAdd(item, "watching")} className={`footer-icon-${layout} watching-icon`} />, 'watching'];
+        const addToWatched = [<MdTaskAlt key={`add-watched-${layout}`} title="Add to Watched" onClick={() => handleAdd(item, "watched")} className={`footer-icon-${layout} watched-icon`} />, 'watched'];
+        return [addToFavorites, addToWatchList, addToWatching, addToWatched];
     }
 
     return (
@@ -158,26 +164,7 @@ function List({ list, listData, layout }) {
                                     <Button id="info-button-list" variant="link" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
                                 <div className="d-flex align-items-end">
-                                    {list !== "Favorites" &&
-                                        <MdFavorite title="Add to Favorites"
-                                            onClick={() => handleAdd(item.item, "Favorites")}
-                                            className="footer-icon-list fav-icon"
-                                        />}
-                                    {list !== "Watch List" &&
-                                        <RiFileListLine title="Add to Watch List"
-                                            onClick={() => handleAdd(item.item, "Watch List")}
-                                            className="footer-icon-list watch-icon"
-                                        />}
-                                    {list !== "Watching" &&
-                                        <IoMdEye title="Add to Watching"
-                                            onClick={() => handleAdd(item.item, "Watching")}
-                                            className="footer-icon-list watching-icon"
-                                        />}
-                                    {list !== "Watched" &&
-                                        <MdTaskAlt title="Add to Watched"
-                                            onClick={() => handleAdd(item.item, "Watched")}
-                                            className="footer-icon-list watched-icon"
-                                        />}
+                                    {getButtonComponents(item.item, 'list').filter(element => element[1] !== list).map(element => element[0])}
                                 </div>
                             </div>
                         </ListGroup.Item>
@@ -245,26 +232,7 @@ function List({ list, listData, layout }) {
                                 <div>
                                     {activeCard === index &&
                                         <div id="footer-icons-grid">
-                                            {list !== "Favorites" &&
-                                                <MdFavorite title="Add to Favorites"
-                                                    onClick={() => handleAdd(item.item, "Favorites")}
-                                                    className="footer-icon-grid fav-icon"
-                                                />}
-                                            {list !== "Watch List" &&
-                                                <RiFileListLine title="Add to Watch List"
-                                                    onClick={() => handleAdd(item.item, "Watch List")}
-                                                    className="footer-icon-grid watch-icon"
-                                                />}
-                                            {list !== "Watching" &&
-                                                <IoMdEye title="Add to Watching"
-                                                    onClick={() => handleAdd(item.item, "Watching")}
-                                                    className="footer-icon-grid watching-icon"
-                                                />}
-                                            {list !== "Watched" &&
-                                                <MdTaskAlt title="Add to Watched"
-                                                    onClick={() => handleAdd(item.item, "Watched")}
-                                                    className="footer-icon-grid watched-icon"
-                                                />}
+                                            {getButtonComponents(item.item, 'grid').filter(element => element[1] !== list).map(element => element[0])}
                                         </div>}
                                     <Button id="info-button-grid" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
@@ -272,26 +240,7 @@ function List({ list, listData, layout }) {
                             {width < 992 &&
                                 <div>
                                     <div id="footer-icons-grid">
-                                        {list !== "Favorites" &&
-                                            <MdFavorite title="Add to Favorites"
-                                                onClick={() => handleAdd(item.item, "Favorites")}
-                                                className="footer-icon-grid fav-icon"
-                                            />}
-                                        {list !== "Watch List" &&
-                                            <RiFileListLine title="Add to Watch List"
-                                                onClick={() => handleAdd(item.item, "Watch List")}
-                                                className="footer-icon-grid watch-icon"
-                                            />}
-                                        {list !== "Watching" &&
-                                            <IoMdEye title="Add to Watching"
-                                                onClick={() => handleAdd(item.item, "Watching")}
-                                                className="footer-icon-grid watching-icon"
-                                            />}
-                                        {list !== "Watched" &&
-                                            <MdTaskAlt title="Add to Watched"
-                                                onClick={() => handleAdd(item.item, "Watched")}
-                                                className="footer-icon-grid watched-icon"
-                                            />}
+                                        {getButtonComponents(item.item, 'grid').filter(element => element[1] !== list).map(element => element[0])}
                                     </div>
                                     <Button id="info-button-grid" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
                                 </div>
@@ -306,7 +255,7 @@ function List({ list, listData, layout }) {
                     <Modal.Header closeButton>
                         <Modal.Title>Already On List</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>{addData[0]} is already on {addData[1]}</Modal.Body>
+                    <Modal.Body>{addData[0]} is already on {Helper.getListName(addData[1])}</Modal.Body>
                     <Modal.Footer>
                         <Button variant="success" onClick={() => setAddMovieToList(false)}>
                             Continue
@@ -321,7 +270,7 @@ function List({ list, listData, layout }) {
                         <Modal.Title>Delete From List</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Are you sure you want to delete {deleteData.title || deleteData.name} from {list}?
+                        Are you sure you want to delete {deleteData.title || deleteData.name} from {Helper.getListName(list)}?
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => handleDelete(deleteData)}>

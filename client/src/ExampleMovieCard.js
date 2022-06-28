@@ -7,6 +7,20 @@ import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 
 function ExampleMovieCard({ list, isReallyEmpty }) {
 
+    const getIconComponent = (list) => {
+        if (list === 'favorites') return <MdFavorite className="example-card-img img-fluid" />;
+        if (list === 'watchList') return <RiFileListLine className="example-card-img img-fluid" />;
+        if (list === 'watching') return <IoMdEye className="example-card-img img-fluid" />;
+        if (list === 'watched') return <MdTaskAlt className="example-card-img img-fluid" />;
+    }
+
+    const getDescriptionComponent = (list) => {
+        if (list === 'favorites') return <p>Add your favorite movies and shows to this list</p>;
+        if (list === 'watchList') return <p>Here you can keep track of what you want to watch</p>;
+        if (list === 'watching') return <p>Here you can keep track of what you're currently watching</p>;
+        if (list === 'watched') return <p>Add the movies and shows you already watched to this list</p>;
+    }
+
     return (
         <Card id="example-movie-card">
             {!isReallyEmpty &&
@@ -16,26 +30,10 @@ function ExampleMovieCard({ list, isReallyEmpty }) {
             }
             {isReallyEmpty &&
                 <Card.Body className="d-flex flex-column justify-content-center">
-                    {list === 'Favorites' &&
-                        <div className="d-flex flex-column align-items-center">
-                            <MdFavorite className="example-card-img img-fluid" />
-                            <p>Add your favorite movies and shows to this list</p>
-                        </div>}
-                    {list === "Watch List" &&
-                        <div className="d-flex flex-column align-items-center">
-                            <RiFileListLine className="example-card-img img-fluid" />
-                            <p>Here you can keep track of what you want to watch</p>
-                        </div>}
-                    {list === "Watching" &&
-                        <div className="d-flex flex-column align-items-center">
-                            <IoMdEye className="example-card-img img-fluid" />
-                            <p>Here you can keep track of what you're currently watching</p>
-                        </div>}
-                    {list === "Watched" &&
-                        <div className="d-flex flex-column align-items-center">
-                            <MdTaskAlt className="example-card-img img-fluid" />
-                            <p>Add the movies and shows you already watched to this list</p>
-                        </div>}
+                    <div className="d-flex flex-column align-items-center">
+                        {getIconComponent(list)}
+                        {getDescriptionComponent(list)}
+                    </div>
                 </Card.Body>
             }
         </Card>

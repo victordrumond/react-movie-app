@@ -114,6 +114,14 @@ function Search() {
         return false;
     }
 
+    const getButtonComponents = (item) => {
+        const addToFavorites = [<MdFavorite key="add-favorites" title="Add to Favorites" onClick={() => handleAdd(item, "favorites")} className="results-icon favorites-icon" />, 'favorites'];
+        const addToWatchList = [<RiFileListLine key="add-watchList" title="Add to Watch List" onClick={() => handleAdd(item, "watchList")} className="results-icon watchList-icon" />, 'watchList'];
+        const addToWatching = [<IoMdEye key="add-watching" title="Add to Watching" onClick={() => handleAdd(item, "watching")} className="results-icon watching-icon" />, 'watching'];
+        const addToWatched = [<MdTaskAlt key="add-watched" title="Add to Watched" onClick={() => handleAdd(item, "watched")} className="results-icon watched-icon" />, 'watched'];
+        return [addToFavorites, addToWatchList, addToWatching, addToWatched];
+    }
+
     return (
         <Container id="search-container">
             <div className="d-flex" ref={searchRef}>
@@ -144,25 +152,10 @@ function Search() {
                         </div>
                         <div className="d-flex flex-column justify-content-between">
                             <div className="d-flex justify-content-end">
-                                <Button variant="link" onClick={() => getMovieExpandedData(item.result)}>Info</Button>
+                                <Button id="info-btn" variant="link" onClick={() => getMovieExpandedData(item.result)}>Info</Button>
                             </div>
                             <div className="d-flex justify-content-between align-items-end">
-                                <MdFavorite title="Add to Favorites"
-                                    onClick={() => handleAdd(item, "favorites")}
-                                    className="results-icon fav-icon"
-                                />
-                                <RiFileListLine title="Add to Watch List"
-                                    onClick={() => handleAdd(item, "watchList")}
-                                    className="results-icon watch-icon"
-                                />
-                                <IoMdEye title="Add to Watching"
-                                    onClick={() => handleAdd(item, "watching")}
-                                    className="results-icon watching-icon"
-                                />
-                                <MdTaskAlt title="Add to Watched"
-                                    onClick={() => handleAdd(item, "watched")}
-                                    className="results-icon watched-icon"
-                                />
+                                {getButtonComponents(item).map(element => element[0])}
                             </div>
                         </div>
                     </ListGroup.Item>

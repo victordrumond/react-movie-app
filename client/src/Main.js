@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import './Main.css';
 import { UserContext } from './UserContext';
-import { Helper } from "./Helper";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
@@ -22,6 +21,7 @@ import { Activity } from './Activity';
 import { ListConfig } from './ListConfig';
 import { Constants } from './Constants';
 import useWindowSize from './useWindowSize';
+import { Helper } from './Helper';
 
 function Main() {
 
@@ -30,12 +30,12 @@ function Main() {
     const width = useWindowSize().width;
 
     const listData = context.userData.data;
-    const [activeList, setActiveList] = useState("Favorites");
+    const [activeList, setActiveList] = useState("favorites");
 
     const [activePage, setActivePage] = useState(1);
-    const numOfItemsOnList = context.userData.data[Helper.getNormalizedListName(activeList)].length;
+    const numOfItemsOnList = context.userData.data[activeList].length;
 
-    const listConfig = context.userData.config.lists[Helper.getNormalizedListName(activeList)];
+    const listConfig = context.userData.config.lists[activeList];
     const [layout, setLayout] = useState("grid");
 
     const [newActivities, setNewActivities] = useState([]);
@@ -43,13 +43,13 @@ function Main() {
 
     useEffect(() => {
         if (location.pathname === '/home/watched') {
-            setActiveList("Watched");
+            setActiveList("watched");
         } else if (location.pathname === '/home/watching') {
-            setActiveList("Watching");
+            setActiveList("watching");
         } else if (location.pathname === '/home/watchlist') {
-            setActiveList("Watch List");
+            setActiveList("watchList");
         } else if (location.pathname === '/home/favorites') {
-            setActiveList("Favorites");
+            setActiveList("favorites");
         };
     }, [location.pathname]);
 
@@ -78,7 +78,7 @@ function Main() {
     }, [listData, activePage])
 
     const isListEmpty = () => {
-        return listData[Helper.getNormalizedListName(activeList)].length === 0 ? true : false;
+        return listData[activeList].length === 0;
     }
 
     const getSelectedPageData = (list) => {
@@ -90,7 +90,7 @@ function Main() {
     }
 
     const getNumberOfPages = () => {
-        return initData(listData[Helper.getNormalizedListName(activeList)]).length;
+        return initData(listData[activeList]).length;
     }
 
     const getPaginationIndex = (pageIndex) => {
@@ -140,56 +140,47 @@ function Main() {
         setShowActivities(showActivities + 1);
     }
 
+    const getNavIconComponent = (navName) => {
+        if (navName === 'favorites') return <MdFavorite className="tabs-icon" />;
+        if (navName === 'watchList') return <RiFileListLine className="tabs-icon" />;
+        if (navName === 'watching') return <IoMdEye className="tabs-icon" />;
+        if (navName === 'watched') return <MdTaskAlt className="tabs-icon" />;
+    }
+
     return (
         <Container id="main-container">
 
             <Card className="d-flex flex-column">
                 <Card.Header>
-                    <Nav id="tabs-nav" variant="tabs" defaultActiveKey="Favorites" activeKey={activeList} className="d-flex justify-content-between">
+                    <Nav id="tabs-nav" variant="tabs" defaultActiveKey="favorites" activeKey={activeList} className="d-flex justify-content-between">
                         {width > 575 && width < 768 &&
-                            <p id="list-stat">Showing {getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
+                            <p id="list-stat">Showing {getSelectedPageData(activeList).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
                         }
                         <div className="d-flex">
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="favorites" eventKey="Favorites" onClick={() => setActiveList("Favorites")} className="nav-link d-flex">
-                                    {width > 575 && <p>Favorites</p>}
-                                    <MdFavorite className="tabs-icon" />
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="watchlist" eventKey="Watch List" onClick={() => setActiveList("Watch List")} className="nav-link d-flex">
-                                    {width > 575 && <p>Watch List</p>}
-                                    <RiFileListLine className="tabs-icon" />
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="watching" eventKey="Watching" onClick={() => setActiveList("Watching")} className="nav-link d-flex">
-                                    {width > 575 && <p>Watching</p>}
-                                    <IoMdEye className="tabs-icon" />
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="watched" eventKey="Watched" onClick={() => setActiveList("Watched")} className="nav-link d-flex">
-                                    {width > 575 && <p>Watched</p>}
-                                    <MdTaskAlt className="tabs-icon" />
-                                </Nav.Link>
-                            </Nav.Item>
+                            {['favorites', 'watchList', 'watching', 'watched'].map((navName, index) => (
+                                <Nav.Item key={index}>
+                                    <Nav.Link as={Link} to={navName.toLowerCase()} eventKey={navName} onClick={() => setActiveList(navName)} className="nav-link d-flex">
+                                        {width > 575 && <p>{Helper.getListName(navName)}</p>}
+                                        {getNavIconComponent(navName)}
+                                    </Nav.Link>
+                                </Nav.Item>
+                            ))}
                         </div>
                         {width > 767 &&
-                            <p id="list-stat">Showing {getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"} </p>
+                            <p id="list-stat">Showing {getSelectedPageData(activeList).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"} </p>
                         }
                         {width < 576 &&
-                            <p id="list-stat">{getSelectedPageData(Helper.getNormalizedListName(activeList)).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
+                            <p id="list-stat">{getSelectedPageData(activeList).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
                         }
                     </Nav>
                 </Card.Header>
                 <Card.Body id="content-body">
                     <ListSettings activeList={activeList} isListEmpty={isListEmpty()} layout={(value) => setLayout(value)} />
                     <Routes>
-                        <Route path="favorites" element={<List list="Favorites" listData={getSelectedPageData('favorites')} layout={layout}/>} />
-                        <Route path="watchlist" element={<List list="Watch List" listData={getSelectedPageData('watchList')} layout={layout}/>} />
-                        <Route path="watching" element={<List list="Watching" listData={getSelectedPageData('watching')} layout={layout}/>} />
-                        <Route path="watched" element={<List list="Watched" listData={getSelectedPageData('watched')} layout={layout}/>} />
+                        <Route path="favorites" element={<List list="favorites" listData={getSelectedPageData('favorites')} layout={layout} />} />
+                        <Route path="watchlist" element={<List list="watchList" listData={getSelectedPageData('watchList')} layout={layout} />} />
+                        <Route path="watching" element={<List list="watching" listData={getSelectedPageData('watching')} layout={layout} />} />
+                        <Route path="watched" element={<List list="watched" listData={getSelectedPageData('watched')} layout={layout} />} />
                     </Routes>
                 </Card.Body>
                 <Card.Footer id="pagination-container">
@@ -207,7 +198,7 @@ function Main() {
                         {activePage >= Constants.MAX_VISIBLE_PAGES && getNumberOfPages() > Constants.MAX_VISIBLE_PAGES &&
                             <Pagination.Ellipsis />
                         }
-                        {!isListEmpty() && initData(listData[Helper.getNormalizedListName(activeList)]).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
+                        {!isListEmpty() && initData(listData[activeList]).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === getPaginationIndex(index + 1)} onClick={() => setActivePage(getPaginationIndex(index + 1))}>{getPaginationIndex(index + 1)}</Pagination.Item>
                         ))}
                         {isListEmpty() &&

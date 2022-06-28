@@ -22,13 +22,9 @@ export module Helper {
         return 'colorNR';
     }
 
-    export function getNormalizedListName(listName: string): string {
-        return listName.replace(' ', '').replace(listName[0], listName[0].toLowerCase());
-    }
-
     export function getListName(normalizedListName: string): string | undefined {
         if (normalizedListName === 'favorites') return 'Favorites';
-        if (normalizedListName === 'watchList') return 'Watch List';
+        if (normalizedListName === 'watchList' || normalizedListName === 'watchlist') return 'Watch List';
         if (normalizedListName === 'watching') return 'Watching';
         if (normalizedListName === 'watched') return 'Watched';
         return undefined;

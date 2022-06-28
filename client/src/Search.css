@@ -49,16 +49,20 @@
     height: 75px;
 }
 
+#info-btn {
+    padding-right: 0;
+}
+
 .results-icon {
     cursor: pointer;
     font-size: 24px;
 }
 
-.fav-icon:hover {
+.favorites-icon:hover {
     color: #DC3545;
 }
 
-.watch-icon:hover {
+.watchList-icon:hover {
     color: #0275D8;
 }
 
