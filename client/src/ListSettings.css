@@ -8,6 +8,14 @@
     color: #0000008C;
 }
 
+#search-list {
+    height: 1rem;
+    width: 300px;
+    height: 100%;
+    margin-right: 0.75rem;
+    font-size: 15px;
+}
+
 .list-layout-icon {
     font-size: 22px;
     margin-right: 0.5rem;
@@ -19,12 +27,27 @@
     #empty-list-config p {
         font-size: 14px;
     }
+
+    #filter-dropdown {
+        font-size: 15px;
+        padding-left: 0 !important;
+    }
     
-    #filter-dropdown, #sort-dropdown {
+    #sort-dropdown {
         font-size: 15px;
     }
 
-    .sort-option {
+    .sort-option, .filter-option {
         font-size: 14px !important;
+        margin: 0 !important;
+    }
+
+    #search-list {
+        width: 100%;
+        margin: 0;
+    }
+
+    .list-layout-icon {
+        margin-right: 0;
     }
 }

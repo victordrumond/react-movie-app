@@ -41,6 +41,8 @@ function Main() {
     const [newActivities, setNewActivities] = useState([]);
     const [showActivities, setShowActivities] = useState(0);
 
+    const [findItem, setFindItem] = useState('');
+
     useEffect(() => {
         if (location.pathname === '/home/watched') {
             setActiveList("watched");
@@ -123,7 +125,8 @@ function Main() {
                 items.push(new TvShow(movie.data, movie.timestamp));
             }
         }
-        let filteredData = ListConfig.filterData(items, listConfig);
+        let searchedData = ListConfig.searchForItem(items, findItem);
+        let filteredData = ListConfig.filterData(searchedData, listConfig);
         let sortedData = ListConfig.sortData(filteredData, listConfig);
         let chunkedData = ListConfig.chunkData(sortedData, getItemsPerPage());
         return chunkedData;
@@ -175,7 +178,13 @@ function Main() {
                     </Nav>
                 </Card.Header>
                 <Card.Body id="content-body">
-                    <ListSettings activeList={activeList} isListEmpty={isListEmpty()} layout={(value) => setLayout(value)} />
+                    <ListSettings
+                        activeList={activeList}
+                        isListEmpty={isListEmpty()}
+                        layout={(value) => setLayout(value)}
+                        findItem={findItem}
+                        setFindItem={(value) => setFindItem(value)}
+                    />
                     <Routes>
                         <Route path="favorites" element={<List list="favorites" listData={getSelectedPageData('favorites')} layout={layout} />} />
                         <Route path="watchlist" element={<List list="watchList" listData={getSelectedPageData('watchList')} layout={layout} />} />

@@ -7,9 +7,9 @@ export module ListConfig {
         if (data.length === 0) return data;
         if (config.sorting === 'title') {
             return data.sort((a, b) => {
-                let aTitle = (a instanceof Movie) ? a.item.title : a.item.name;
+                let aTitle: string | undefined = (a instanceof Movie) ? a.item.title : a.item.name;
                 if (!aTitle) aTitle = '';
-                let bTitle = (b instanceof Movie) ? b.item.title : b.item.name;
+                let bTitle: string | undefined = (b instanceof Movie) ? b.item.title : b.item.name;
                 if (!bTitle) bTitle = '';
                 return aTitle.localeCompare(bTitle);
             })
@@ -64,6 +64,18 @@ export module ListConfig {
             let chunk = data.slice(size * i, size * (i + 1));
             result.push(chunk);
         }
+        return result;
+    }
+
+    export function searchForItem(data: (Movie | TvShow)[], search: string): (Movie | TvShow)[] {
+        if (!search) return data;
+        let result = data.filter(item => {
+            const title = item.getTitle();
+            const overview = item.getOverview();
+            let searchForTitle = title.toLowerCase().indexOf(search.toLowerCase());
+            let searchForOverview = overview.toLowerCase().indexOf(search.toLowerCase());
+            return (searchForTitle > -1 || searchForOverview > -1);
+        });
         return result;
     }
 

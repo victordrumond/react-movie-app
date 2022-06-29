@@ -10,11 +10,14 @@ import Container from 'react-bootstrap/Container';
 import { Requests } from './Requests';
 import { BsFillGridFill } from 'react-icons/bs';
 import { FaListUl } from 'react-icons/fa';
+import useWindowSize from './useWindowSize';
+import { Helper } from './Helper';
 
-function ListSettings({ activeList, isListEmpty, layout }) {
+function ListSettings({ activeList, isListEmpty, layout, findItem, setFindItem }) {
 
     const { user, getAccessTokenSilently } = useAuth0();
     const context = useContext(UserContext);
+    const width = useWindowSize().width;
 
     const listsConfig = context.userData.config.lists;
     const [currentLayout, setCurrentLayout] = useState('grid');
@@ -52,6 +55,58 @@ function ListSettings({ activeList, isListEmpty, layout }) {
         return listsConfig[activeList].filtering;
     };
 
+    const getFilteringComponent = () => {
+        return <Nav><NavDropdown id="filter-dropdown" title="Filter">
+            <NavDropdown.Item>
+                <Form.Check key={Math.random()} type="checkbox" className="filter-option" label='Movies' checked={getActiveListFiltering(activeList).movies} onChange={(e) => handleUpdateFiltering('movies', e.target.checked)} />
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+                <Form.Check key={Math.random()} type="checkbox" className="filter-option" label='TV Shows' checked={getActiveListFiltering(activeList).tvShows} onChange={(e) => handleUpdateFiltering('tvShows', e.target.checked)} />
+            </NavDropdown.Item>
+        </NavDropdown></Nav>
+    }
+
+    const getSortingComponent = () => {
+        return <Nav><NavDropdown id="sort-dropdown" title="Sort">
+            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('last_added')}>
+                {getActiveListSorting(activeList) === 'last_added' ? <b>Last added</b> : 'Last added'}
+            </NavDropdown.Item>
+            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('first_added')}>
+                {getActiveListSorting(activeList) === 'first_added' ? <b>First added</b> : 'First added'}
+            </NavDropdown.Item>
+            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('title')}>
+                {getActiveListSorting(activeList) === 'title' ? <b>Title</b> : 'Title'}
+            </NavDropdown.Item>
+            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('highest_score')}>
+                {getActiveListSorting(activeList) === 'highest_score' ? <b>Highest rated</b> : 'Highest rated'}
+            </NavDropdown.Item>
+            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('lowest_score')}>
+                {getActiveListSorting(activeList) === 'lowest_score' ? <b>Lowest rated</b> : 'Lowest rated'}
+            </NavDropdown.Item>
+        </NavDropdown></Nav>
+    }
+
+    const getSearchComponent = () => {
+        return <Form.Control id="search-list" type="search"
+            placeholder={`Find on ${Helper.getListName(activeList)}`}
+            value={findItem}
+            onChange={e => {
+                setFindItem(e.target.value);
+            }}
+        />
+    }
+
+    const getChangeLayoutComponent = () => {
+        return <div className="d-flex align-items-center">
+            {currentLayout === 'grid' &&
+                <BsFillGridFill className="list-layout-icon" onClick={() => handleUpdateLayout('list')} />
+            }
+            {currentLayout === 'list' &&
+                <FaListUl className="list-layout-icon" onClick={() => handleUpdateLayout('grid')} />
+            }
+        </div>
+    }
+
     return (
         <Container className="m-0 p-0">
             <Navbar>
@@ -62,45 +117,30 @@ function ListSettings({ activeList, isListEmpty, layout }) {
                 }
                 {!isListEmpty &&
                     <Navbar.Collapse className="d-flex justify-content-between">
-                        <div className="d-flex">
-                            <Nav>
-                                <NavDropdown id="filter-dropdown" title="Filter">
-                                    <NavDropdown.Item>
-                                        <Form.Check key={Math.random()} type="checkbox" label='Movies' checked={getActiveListFiltering(activeList).movies} onChange={(e) => handleUpdateFiltering('movies', e.target.checked)} />
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item>
-                                        <Form.Check key={Math.random()} type="checkbox" label='TV Shows' checked={getActiveListFiltering(activeList).tvShows} onChange={(e) => handleUpdateFiltering('tvShows', e.target.checked)} />
-                                    </NavDropdown.Item>
-                                </NavDropdown>
-                            </Nav>
-                            <Nav>
-                                <NavDropdown id="sort-dropdown" title="Sort">
-                                    <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('last_added')}>
-                                        {getActiveListSorting(activeList) === 'last_added' ? <b>Last added</b> : 'Last added'}
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('first_added')}>
-                                        {getActiveListSorting(activeList) === 'first_added' ? <b>First added</b> : 'First added'}
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('title')}>
-                                        {getActiveListSorting(activeList) === 'title' ? <b>Title</b> : 'Title'}
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('highest_score')}>
-                                        {getActiveListSorting(activeList) === 'highest_score' ? <b>Highest rated</b> : 'Highest rated'}
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('lowest_score')}>
-                                        {getActiveListSorting(activeList) === 'lowest_score' ? <b>Lowest rated</b> : 'Lowest rated'}
-                                    </NavDropdown.Item>
-                                </NavDropdown>
-                            </Nav>
-                        </div>
-                        <div>
-                            {currentLayout === 'grid' &&
-                                <BsFillGridFill className="list-layout-icon" onClick={() => handleUpdateLayout('list')}/>
-                            }
-                            {currentLayout === 'list' &&
-                                <FaListUl className="list-layout-icon" onClick={() => handleUpdateLayout('grid')}/>
-                            }
-                        </div>
+                        {width < 576 &&
+                            <div className="d-flex flex-column mt-2 w-100">
+                                {getSearchComponent()}
+                                <div className="d-flex w-100 justify-content-between">
+                                    <div className="d-flex">
+                                        {getFilteringComponent()}
+                                        {getSortingComponent()}
+                                    </div>
+                                    {getChangeLayoutComponent()}
+                                </div>
+                            </div>
+                        }
+                        {width > 575 &&
+                            <div className="d-flex w-100 justify-content-between">
+                                <div className="d-flex">
+                                    {getFilteringComponent()}
+                                    {getSortingComponent()}
+                                </div>
+                                <div className="d-flex">
+                                    {getSearchComponent()}
+                                    {getChangeLayoutComponent()}
+                                </div>
+                            </div>
+                        }
                     </Navbar.Collapse>
                 }
             </Navbar>
