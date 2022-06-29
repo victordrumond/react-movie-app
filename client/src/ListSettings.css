@@ -9,11 +9,11 @@
 }
 
 #search-list {
-    height: 1rem;
     width: 300px;
     height: 100%;
     margin-right: 0.75rem;
     font-size: 15px;
+    padding: 0.25rem 0.5rem;
 }
 
 .list-layout-icon {

@@ -70,11 +70,14 @@ export module ListConfig {
     export function searchForItem(data: (Movie | TvShow)[], search: string): (Movie | TvShow)[] {
         if (!search) return data;
         let result = data.filter(item => {
-            const title = item.getTitle();
-            const overview = item.getOverview();
-            let searchForTitle = title.toLowerCase().indexOf(search.toLowerCase());
-            let searchForOverview = overview.toLowerCase().indexOf(search.toLowerCase());
-            return (searchForTitle > -1 || searchForOverview > -1);
+            const [title, originalTitle, releaseYear, overview] = [item.getTitle(), item.getOriginalTitle(), item.getReleaseYear(), item.getOverview()];
+            let keywords = '';
+            if (title) keywords += `${title} `;
+            if (originalTitle) keywords += `${originalTitle} `;
+            if (releaseYear) keywords += `${releaseYear} `;
+            if (overview !== 'Overview not found') keywords += `${overview} `;
+            let searchForKeywords = keywords.toLowerCase().indexOf(search.toLowerCase());
+            return (searchForKeywords > -1);
         });
         return result;
     }
