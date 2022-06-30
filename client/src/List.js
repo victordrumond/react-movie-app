@@ -22,6 +22,7 @@ import ExpandedMovieInfo from './ExpandedMovieInfo';
 import ExpandedTvShowInfo from './ExpandedTvShowInfo';
 import Rating from '@mui/material/Rating';
 import useWindowSize from './useWindowSize';
+// import { TvShow } from './TvShow';
 
 function List({ list, listData, layout }) {
 
@@ -42,6 +43,8 @@ function List({ list, listData, layout }) {
 
     const [addMovieToList, setAddMovieToList] = useState(false);
     const [addData, setAddData] = useState(null);
+
+    // const [showManageSeasons, setShowManageSeasons] = useState(false);
 
     const getMovieExpandedData = async (item) => {
         if (LocalStorage.hasExpandedMovie(item.id)) {
@@ -111,11 +114,20 @@ function List({ list, listData, layout }) {
     }
 
     const getButtonComponents = (item, layout) => {
-        const addToFavorites = [<MdFavorite key={`add-favorites-${layout}`} title="Add to Favorites" onClick={() => handleAdd(item, "favorites")} className={`footer-icon-${layout} fav-icon`} />, 'favorites'];
-        const addToWatchList = [<RiFileListLine key={`add-watchList-${layout}`} title="Add to Watch List" onClick={() => handleAdd(item, "watchList")} className={`footer-icon-${layout} watch-icon`} />, 'watchList'];
+        const addToFavorites = [<MdFavorite key={`add-favorites-${layout}`} title="Add to Favorites" onClick={() => handleAdd(item, "favorites")} className={`footer-icon-${layout} favorites-icon`} />, 'favorites'];
+        const addToWatchList = [<RiFileListLine key={`add-watchList-${layout}`} title="Add to Watch List" onClick={() => handleAdd(item, "watchList")} className={`footer-icon-${layout} watchList-icon`} />, 'watchList'];
         const addToWatching = [<IoMdEye key={`add-watching-${layout}`} title="Add to Watching" onClick={() => handleAdd(item, "watching")} className={`footer-icon-${layout} watching-icon`} />, 'watching'];
         const addToWatched = [<MdTaskAlt key={`add-watched-${layout}`} title="Add to Watched" onClick={() => handleAdd(item, "watched")} className={`footer-icon-${layout} watched-icon`} />, 'watched'];
         return [addToFavorites, addToWatchList, addToWatching, addToWatched];
+    }
+
+    // const showSection = (index) => {
+    //     return (index !== activeCard || (index === activeCard && !showManageSeasons));
+    // }
+
+    const handleMouseLeave = () => {
+        setActiveCard(null);
+        // setShowManageSeasons(false);
     }
 
     return (
@@ -174,12 +186,11 @@ function List({ list, listData, layout }) {
 
             <div id="list-container-grid">
                 {layout === 'grid' && listData.length > 0 && listData.map((item, index) => (
-                    <Card id="movie-card-grid" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => setActiveCard(null)}>
+                    <Card id="movie-card-grid" key={index} onMouseEnter={() => setActiveCard(index)} onMouseLeave={() => handleMouseLeave()}>
                         {width > 991 &&
                             <div>
                                 {activeCard === index &&
-                                    <CloseButton
-                                        id="close-card-grid"
+                                    <CloseButton id="close-card-grid"
                                         onClick={() => {
                                             setDeleteData(item.item);
                                             setDeleteMovie(true);
@@ -189,8 +200,7 @@ function List({ list, listData, layout }) {
                         }
                         {width < 992 &&
                             <div>
-                                <CloseButton
-                                    id="close-card-grid"
+                                <CloseButton id="close-card-grid"
                                     onClick={() => {
                                         setDeleteData(item.item);
                                         setDeleteMovie(true);
@@ -220,14 +230,25 @@ function List({ list, listData, layout }) {
                             {width > 575 &&
                                 <div className="d-flex justify-content-between align-items-center">
                                     <Card.Text id="movie-date-grid">{item.getReleaseYear()}</Card.Text>
-                                    <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
-                                        {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
-                                    </Badge>
+                                    {/* <div>
+                                        {(item instanceof TvShow) &&
+                                            <Badge id="manage-seasons" bg="dark" onClick={() => setShowManageSeasons(!showManageSeasons)}>
+                                                TV
+                                            </Badge>
+                                        } */}
+                                        <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
+                                            {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
+                                        </Badge>
+                                    {/* </div> */}
                                 </div>
                             }
+                            {/* {width > 575 && showSection(index) && */}
                             {width > 575 &&
                                 <Card.Text id="movie-description-grid">{item.getOverview()}</Card.Text>
                             }
+                            {/* {width > 575 && !showSection(index) &&
+                                <div>TESTE</div>
+                            } */}
                             {width > 991 &&
                                 <div>
                                     {activeCard === index &&

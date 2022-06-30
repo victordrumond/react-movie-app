@@ -84,7 +84,7 @@
 }
 
 #movie-card-grid {
-    height: 355px;
+    height: 360px;
 }
 
 #movie-card-grid:hover {
@@ -164,6 +164,11 @@
 }
 /* GRID layout ----------------------------------------------- */
 
+#manage-seasons {
+    font-weight: 300;
+    margin-right: 0.25rem;
+    cursor: pointer;
+}
 
 @media screen and (max-width: 1199px) {
     #list-container-grid {

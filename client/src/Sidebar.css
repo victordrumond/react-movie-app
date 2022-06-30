@@ -1,5 +1,5 @@
 #sidebar-header {
-    padding: 1rem 1rem 0;
+    padding: 1rem;
 }
 
 #sidebar-title {
@@ -13,6 +13,10 @@
 
 #sidebar-title p {
     margin: auto 10px;
+}
+
+#sidebar-body {
+    padding: 0 1rem 1rem;
 }
 
 #sidebar-menu {

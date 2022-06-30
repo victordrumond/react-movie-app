@@ -19,7 +19,7 @@ function Sidebar({ show, hide, user, logout }) {
                     <p>Welcome back, <b>{user.nickname || user.name}</b>!</p>
                 </Offcanvas.Title>
             </Offcanvas.Header>
-            <Offcanvas.Body className="d-flex flex-column">
+            <Offcanvas.Body id="sidebar-body" className="d-flex flex-column">
                 <Button id="logout" variant="outline-dark" onClick={() => logout()} size="sm">
                     Logout
                 </Button>
