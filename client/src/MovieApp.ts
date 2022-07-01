@@ -80,4 +80,9 @@ namespace MovieApp {
         }
     }
 
+    export type Filtering = {
+        movies: boolean,
+        tvShows: boolean
+    }
+
 }

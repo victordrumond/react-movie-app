@@ -11,25 +11,6 @@ export module Helper {
         return formattedData;
     }
 
-    export function getScoreBarColor(score: string): string {
-        const scoreNum = parseFloat(score);
-        if (scoreNum < 4) return 'colorF';
-        if (scoreNum < 6) return 'colorE';
-        if (scoreNum < 7) return 'colorD';
-        if (scoreNum < 8) return 'colorC';
-        if (scoreNum < 9) return 'colorB';
-        if (scoreNum <= 10) return 'colorA';
-        return 'colorNR';
-    }
-
-    export function getListName(normalizedListName: string): string | undefined {
-        if (normalizedListName === 'favorites') return 'Favorites';
-        if (normalizedListName === 'watchList' || normalizedListName === 'watchlist') return 'Watch List';
-        if (normalizedListName === 'watching') return 'Watching';
-        if (normalizedListName === 'watched') return 'Watched';
-        return undefined;
-    }
-
     export function getDateString(isoDateString: string): string {
         if (isoDateString) {
             const date = new Date(isoDateString);
@@ -47,6 +28,11 @@ export module Helper {
     export function validateUsername(username: string): boolean {
         let regex = /^\w+$/;
         return regex.test(username);
+    }
+
+    export function getDenormalizeName(normalizedName: string): string {
+        if (!normalizedName) return '';
+        return normalizedName.replaceAll('_', ' ').replace(normalizedName[0], normalizedName[0].toUpperCase());
     }
 
 }

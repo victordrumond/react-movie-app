@@ -93,7 +93,7 @@ function Settings() {
     }
 
     const validateFormData = (name, nickname, picture) => {
-        return (name !== user.name || nickname !== user.nickname || picture !== user.picture) ? true : false;
+        return (name !== user.name || nickname !== user.nickname || picture !== user.picture);
     }
 
     const getButtonVariant = () => {

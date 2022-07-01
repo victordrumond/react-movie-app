@@ -1,5 +1,5 @@
 import { Constants } from './Constants';
-import { Helper } from './Helper';
+import { Builder } from './Builder';
 
 export class Activity {
 
@@ -46,10 +46,10 @@ export class Activity {
 
     getDescription(): string {
         if (this.label === 'movie_added' && this.data.movie && this.data.list) {
-            return `${this.data.movie} was added to ${Helper.getListName(this.data.list)}`;
+            return `${this.data.movie} was added to ${Builder.getListName(this.data.list)}`;
         }
         if (this.label === 'movie_deleted' && this.data.movie && this.data.list) {
-            return `${this.data.movie} was deleted from ${Helper.getListName(this.data.list)}`;
+            return `${this.data.movie} was deleted from ${Builder.getListName(this.data.list)}`;
         }
         if (this.label === 'movie_rated' && this.data.movie && !this.data.rating) {
             return `${this.data.movie} rating has been reset`;

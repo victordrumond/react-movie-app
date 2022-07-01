@@ -16,7 +16,7 @@ import { RiFileListLine } from 'react-icons/ri';
 import { MdFavorite, MdTaskAlt } from 'react-icons/md';
 import { BiSearch } from 'react-icons/bi';
 import { Requests } from './Requests';
-import { Helper } from './Helper';
+import { Builder } from './Builder';
 import { LocalStorage } from './LocalStorage';
 import { SearchResult } from './SearchResult';
 
@@ -70,7 +70,7 @@ function Search() {
 
     const handleAdd = async (item, list) => {
         setSearchFor("");
-        if (await isMovieOnList(item.result, list)) {
+        if (Builder.isItemOnList(context.userData, item.result, list)) {
             setAddData([item.result.title || item.result.name, list, false]);
             setAddMovieToList(true);
             return;
@@ -103,15 +103,6 @@ function Search() {
             })
         };
     };
-
-    const isMovieOnList = async (movie, list) => {
-        const isMovieSaved = context.userData.movies.findIndex(item => item.data.id === movie.id);
-        if (isMovieSaved > -1) {
-          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
-          return isMovieOnList > -1;
-        }
-        return false;
-    }
 
     const getButtonComponents = (item) => {
         const addToFavorites = [<MdFavorite key="add-favorites" title="Add to Favorites" onClick={() => handleAdd(item, "favorites")} className="results-icon favorites-icon" />, 'favorites'];
@@ -146,7 +137,7 @@ function Search() {
                             <div id="results-text" className="d-flex flex-column">
                                 <p title={item.getTitle()}>{item.getTitle()}{item.getOriginalTitle() !== item.getTitle() ? ` (${item.getOriginalTitle()})` : ''}</p>
                                 <p className="text-muted">{item.getReleaseYear()}</p>
-                                <p><Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>{item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}</Badge></p>
+                                <p><Badge id="search-score" bg={Builder.getScoreBarColor(item.getAverageRating())}>{item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}</Badge></p>
                             </div>
                         </div>
                         <div className="d-flex flex-column justify-content-between">
@@ -166,7 +157,7 @@ function Search() {
                     <Modal.Header closeButton>
                         <Modal.Title>Already On List</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>{addData[0]} is already on {Helper.getListName(addData[1])}</Modal.Body>
+                    <Modal.Body>{addData[0]} is already on {Builder.getListName(addData[1])}</Modal.Body>
                     <Modal.Footer>
                         <Button variant="success" onClick={() => setAddMovieToList(false)}>
                             Continue

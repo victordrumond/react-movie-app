@@ -21,7 +21,7 @@ import { Activity } from './Activity';
 import { ListConfig } from './ListConfig';
 import { Constants } from './Constants';
 import useWindowSize from './useWindowSize';
-import { Helper } from './Helper';
+import { Builder } from './Builder';
 
 function Main() {
 
@@ -33,25 +33,13 @@ function Main() {
     const [activeList, setActiveList] = useState("favorites");
     const [activePage, setActivePage] = useState(1);
     
-    const getListData = (list) => {
-        let items = [];
-        for (const item of productions) {
-            const isItemOnList = item.lists.findIndex(e => e.list === list);
-            if (isItemOnList > -1) {
-                items.push(item);
-            }
-        }
-        return items;
-    }
-
-    const numOfItemsOnList = getListData(activeList).length;
-
+    const listData = Builder.getListData(context.userData, activeList);
     const listConfig = context.userData.config.lists[activeList];
-    const [layout, setLayout] = useState("grid");
 
     const [newActivities, setNewActivities] = useState([]);
     const [showActivities, setShowActivities] = useState(0);
 
+    const [layout, setLayout] = useState("grid");
     const [findItem, setFindItem] = useState('');
 
     useEffect(() => {
@@ -91,11 +79,11 @@ function Main() {
     }, [productions, activePage])
 
     const isListEmpty = () => {
-        return getListData(activeList).length === 0;
+        return listData.length === 0;
     }
 
-    const getSelectedPageData = (list) => {
-        let data = initData(getListData(list));
+    const getSelectedPageData = () => {
+        let data = initData(listData);
         if (data.length >= activePage) {
             return data[activePage - 1];
         }
@@ -103,7 +91,7 @@ function Main() {
     }
 
     const getNumberOfPages = () => {
-        return initData(getListData(activeList)).length;
+        return initData(listData).length;
     }
 
     const getPaginationIndex = (pageIndex) => {
@@ -117,19 +105,14 @@ function Main() {
         return pageIndex;
     }
 
-    const getItemsPerPage = () => {
-        if (layout === 'list') return 10;
-        if (width > 1199) return 10;
-        if (width > 991) return 12;
-        if (width > 767) return 12;
-        return 10;
-    }
-
     const initData = (movies) => {
         if (movies.length === 0) return [[]];
         let items = [];
         for (const movie of movies) {
-            let timestamp = movie.lists.filter(e => e.list === activeList)[0].timestamp;
+            let timestamp = 0;
+            if (movie.lists.filter(e => e.list === activeList).length > 0) {
+                timestamp = movie.lists.filter(e => e.list === activeList)[0].timestamp;
+            }
             if (movie.data.media_type === 'movie') {
                 items.push(new Movie(movie.data, timestamp, movie.score));
             }
@@ -140,7 +123,7 @@ function Main() {
         let searchedData = ListConfig.searchForItem(items, findItem);
         let filteredData = ListConfig.filterData(searchedData, listConfig);
         let sortedData = ListConfig.sortData(filteredData, listConfig);
-        let chunkedData = ListConfig.chunkData(sortedData, getItemsPerPage());
+        let chunkedData = ListConfig.chunkData(sortedData, Builder.getItemsPerPage(width, layout));
         return chunkedData;
     }
 
@@ -169,23 +152,23 @@ function Main() {
                 <Card.Header>
                     <Nav id="tabs-nav" variant="tabs" defaultActiveKey="favorites" activeKey={activeList} className="d-flex justify-content-between">
                         {width > 575 && width < 768 &&
-                            <p id="list-stat">Showing {getSelectedPageData(activeList).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
+                            <p id="list-stat">Showing {getSelectedPageData().length} of {listData.length} {listData.length === 1 ? "item" : "items"}</p>
                         }
                         <div className="d-flex">
                             {['favorites', 'watchList', 'watching', 'watched'].map((navName, index) => (
                                 <Nav.Item key={index}>
                                     <Nav.Link as={Link} to={navName.toLowerCase()} eventKey={navName} onClick={() => setActiveList(navName)} className="nav-link d-flex">
-                                        {width > 575 && <p>{Helper.getListName(navName)}</p>}
+                                        {width > 575 && <p>{Builder.getListName(navName)}</p>}
                                         {getNavIconComponent(navName)}
                                     </Nav.Link>
                                 </Nav.Item>
                             ))}
                         </div>
                         {width > 767 &&
-                            <p id="list-stat">Showing {getSelectedPageData(activeList).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"} </p>
+                            <p id="list-stat">Showing {getSelectedPageData().length} of {listData.length} {listData.length === 1 ? "item" : "items"} </p>
                         }
                         {width < 576 &&
-                            <p id="list-stat">{getSelectedPageData(activeList).length} of {numOfItemsOnList} {numOfItemsOnList === 1 ? "item" : "items"}</p>
+                            <p id="list-stat">{getSelectedPageData().length} of {listData.length} {listData.length === 1 ? "item" : "items"}</p>
                         }
                     </Nav>
                 </Card.Header>
@@ -198,10 +181,10 @@ function Main() {
                         setFindItem={(value) => setFindItem(value)}
                     />
                     <Routes>
-                        <Route path="favorites" element={<List list="favorites" listData={getSelectedPageData('favorites')} layout={layout} />} />
-                        <Route path="watchlist" element={<List list="watchList" listData={getSelectedPageData('watchList')} layout={layout} />} />
-                        <Route path="watching" element={<List list="watching" listData={getSelectedPageData('watching')} layout={layout} />} />
-                        <Route path="watched" element={<List list="watched" listData={getSelectedPageData('watched')} layout={layout} />} />
+                        <Route path="favorites" element={<List list="favorites" listData={getSelectedPageData()} layout={layout} />} />
+                        <Route path="watchlist" element={<List list="watchList" listData={getSelectedPageData()} layout={layout} />} />
+                        <Route path="watching" element={<List list="watching" listData={getSelectedPageData()} layout={layout} />} />
+                        <Route path="watched" element={<List list="watched" listData={getSelectedPageData()} layout={layout} />} />
                     </Routes>
                 </Card.Body>
                 <Card.Footer id="pagination-container">
@@ -219,7 +202,7 @@ function Main() {
                         {activePage >= Constants.MAX_VISIBLE_PAGES && getNumberOfPages() > Constants.MAX_VISIBLE_PAGES &&
                             <Pagination.Ellipsis />
                         }
-                        {!isListEmpty() && initData(getListData(activeList)).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
+                        {!isListEmpty() && initData(listData).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === getPaginationIndex(index + 1)} onClick={() => setActivePage(getPaginationIndex(index + 1))}>{getPaginationIndex(index + 1)}</Pagination.Item>
                         ))}
                         {isListEmpty() &&

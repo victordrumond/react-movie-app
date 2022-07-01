@@ -3,7 +3,7 @@ import './List.css';
 import { UserContext } from './UserContext';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
-import { Helper } from "./Helper";
+import { Builder } from "./Builder";
 import { LocalStorage } from './LocalStorage';
 import { useAuth0 } from '@auth0/auth0-react';
 import Container from 'react-bootstrap/Container';
@@ -30,28 +30,16 @@ function List({ list, listData, layout }) {
     const { user, getAccessTokenSilently } = useAuth0();
     const width = useWindowSize().width;
 
-    const getMoviesOnList = (list) => {
-        let items = [];
-        for (const item of context.userData.movies) {
-            const isItemOnList = item.lists.findIndex(e => e.list === list);
-            if (isItemOnList > -1) {
-                items.push(item);
-            }
-        }
-        return items;
-    }
-
-    const moviesOnList = getMoviesOnList(list);
-
+    const moviesOnList = Builder.getListData(context.userData, list);
     const [activeCard, setActiveCard] = useState(null);
 
-    const [infoData, setInfoData] = useState(null);
     const [showExpandedInfo, setShowExpandedInfo] = useState(false);
+    const [infoData, setInfoData] = useState(null);
 
     const [deleteMovie, setDeleteMovie] = useState(false);
     const [deleteData, setDeleteData] = useState(null);
 
-    const [addMovieToList, setAddMovieToList] = useState(false);
+    const [addMovie, setAddMovie] = useState(false);
     const [addData, setAddData] = useState(null);
 
     // const [showManageSeasons, setShowManageSeasons] = useState(false);
@@ -75,16 +63,16 @@ function List({ list, listData, layout }) {
     };
 
     const handleAdd = async (item, list) => {
-        if (await isMovieOnList(item, list)) {
+        if (Builder.isItemOnList(context.userData, item, list)) {
             setAddData([item.title || item.name, list, false]);
-            setAddMovieToList(true);
+            setAddMovie(true);
             return;
         }
         await getAccessTokenSilently().then(token => {
             Requests.addMovie(token, user, list, item).then(res => {
                 context.setUserData(res.data);
                 setAddData([item.title || item.name, list, true]);
-                setAddMovieToList(true);
+                setAddMovie(true);
             }).catch(err => {
                 console.log(err);
             })
@@ -111,15 +99,6 @@ function List({ list, listData, layout }) {
                 console.log(err);
             })
         });
-    }
-
-    const isMovieOnList = async (movie, list) => {
-        const isMovieSaved = context.userData.movies.findIndex(item => item.data.id === movie.id);
-        if (isMovieSaved > -1) {
-          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
-          return isMovieOnList > -1;
-        }
-        return false;
     }
 
     const getButtonComponents = (item, layout) => {
@@ -155,7 +134,7 @@ function List({ list, listData, layout }) {
                                     <div id="date-ratings-container">
                                         <div className="d-flex justify-content-between">
                                             <Card.Text id="movie-date-list">{item.getReleaseYear()}</Card.Text>
-                                            <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
+                                            <Badge id="search-score" bg={Builder.getScoreBarColor(item.getAverageRating())}>
                                                 {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
                                             </Badge>
                                         </div>
@@ -245,7 +224,7 @@ function List({ list, listData, layout }) {
                                                 TV
                                             </Badge>
                                         } */}
-                                        <Badge id="search-score" bg={Helper.getScoreBarColor(item.getAverageRating())}>
+                                        <Badge id="search-score" bg={Builder.getScoreBarColor(item.getAverageRating())}>
                                             {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
                                         </Badge>
                                     {/* </div> */}
@@ -280,14 +259,14 @@ function List({ list, listData, layout }) {
                 ))}
             </div>
 
-            {addMovieToList && !addData[2] && (
-                <Modal id="icons-modal" show={addMovieToList} onHide={() => setAddMovieToList(false)} animation={true} centered>
+            {addMovie && !addData[2] && (
+                <Modal id="icons-modal" show={addMovie} onHide={() => setAddMovie(false)} animation={true} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Already On List</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>{addData[0]} is already on {Helper.getListName(addData[1])}</Modal.Body>
+                    <Modal.Body>{addData[0]} is already on {Builder.getListName(addData[1])}</Modal.Body>
                     <Modal.Footer>
-                        <Button variant="success" onClick={() => setAddMovieToList(false)}>
+                        <Button variant="success" onClick={() => setAddMovie(false)}>
                             Continue
                         </Button>
                     </Modal.Footer>
@@ -300,7 +279,7 @@ function List({ list, listData, layout }) {
                         <Modal.Title>Delete From List</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Are you sure you want to delete {deleteData.title || deleteData.name} from {Helper.getListName(list)}?
+                        Are you sure you want to delete {deleteData.title || deleteData.name} from {Builder.getListName(list)}?
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => handleDelete(deleteData)}>

@@ -7,6 +7,7 @@ import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import { TvShow } from './TvShow';
 import { Helper } from './Helper';
+import { Builder } from './Builder';
 import useWindowSize from './useWindowSize';
 
 function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
@@ -111,7 +112,7 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
                             <p>{`Status: ${show.getStatus()}`}</p>
                             <p>{show.getNumberOfSeasons()}</p>
                             <p>{show.getParentalRating(selectedCountry)}</p>
-                            <Badge bg={Helper.getScoreBarColor(show.getAverageRating())}>
+                            <Badge bg={Builder.getScoreBarColor(show.getAverageRating())}>
                                 {show.getAverageRating() === 'Not Rated' ? 'NR' : show.getAverageRating()}
                             </Badge>
                         </div>

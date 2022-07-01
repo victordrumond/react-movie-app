@@ -7,6 +7,7 @@ import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
 import { Movie } from './Movie';
 import { Helper } from './Helper';
+import { Builder } from './Builder';
 import useWindowSize from './useWindowSize';
 
 function ExpandedMovieInfo({ movieObj, country, hide }) {
@@ -94,7 +95,7 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
                         <p>{`Status: ${movie.getStatus()}`}</p>
                         <p>{movie.getRuntime()}</p>
                         <p>{movie.getParentalRating(selectedCountry)}</p>
-                        <Badge bg={Helper.getScoreBarColor(movie.getAverageRating())}>
+                        <Badge bg={Builder.getScoreBarColor(movie.getAverageRating())}>
                             {movie.getAverageRating() === 'Not Rated' ? 'NR' : movie.getAverageRating()}
                         </Badge>
                     </div>

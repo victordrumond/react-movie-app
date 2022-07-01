@@ -12,6 +12,7 @@ import { BsFillGridFill } from 'react-icons/bs';
 import { FaListUl } from 'react-icons/fa';
 import useWindowSize from './useWindowSize';
 import { Helper } from './Helper';
+import { Builder } from './Builder';
 
 function ListSettings({ activeList, isListEmpty, layout, findItem, setFindItem }) {
 
@@ -47,48 +48,30 @@ function ListSettings({ activeList, isListEmpty, layout, findItem, setFindItem }
         layout(value);
     };
 
-    const getActiveListSorting = (activeList) => {
-        return listsConfig[activeList].sorting;
-    };
-
-    const getActiveListFiltering = (activeList) => {
-        return listsConfig[activeList].filtering;
-    };
-
     const getFilteringComponent = () => {
         return <Nav><NavDropdown id="filter-dropdown" title="Filter">
             <NavDropdown.Item>
-                <Form.Check key={Math.random()} type="checkbox" className="filter-option" label='Movies' checked={getActiveListFiltering(activeList).movies} onChange={(e) => handleUpdateFiltering('movies', e.target.checked)} />
+                <Form.Check key={Math.random()} type="checkbox" className="filter-option" label='Movies' checked={Builder.getListFiltering(listsConfig, activeList).movies} onChange={(e) => handleUpdateFiltering('movies', e.target.checked)} />
             </NavDropdown.Item>
             <NavDropdown.Item>
-                <Form.Check key={Math.random()} type="checkbox" className="filter-option" label='TV Shows' checked={getActiveListFiltering(activeList).tvShows} onChange={(e) => handleUpdateFiltering('tvShows', e.target.checked)} />
+                <Form.Check key={Math.random()} type="checkbox" className="filter-option" label='TV Shows' checked={Builder.getListFiltering(listsConfig, activeList).tvShows} onChange={(e) => handleUpdateFiltering('tvShows', e.target.checked)} />
             </NavDropdown.Item>
         </NavDropdown></Nav>
     }
 
     const getSortingComponent = () => {
         return <Nav><NavDropdown id="sort-dropdown" title="Sort">
-            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('last_added')}>
-                {getActiveListSorting(activeList) === 'last_added' ? <b>Last added</b> : 'Last added'}
-            </NavDropdown.Item>
-            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('first_added')}>
-                {getActiveListSorting(activeList) === 'first_added' ? <b>First added</b> : 'First added'}
-            </NavDropdown.Item>
-            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('title')}>
-                {getActiveListSorting(activeList) === 'title' ? <b>Title</b> : 'Title'}
-            </NavDropdown.Item>
-            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('highest_score')}>
-                {getActiveListSorting(activeList) === 'highest_score' ? <b>Highest rated</b> : 'Highest rated'}
-            </NavDropdown.Item>
-            <NavDropdown.Item className="sort-option" onClick={() => handleUpdateSorting('lowest_score')}>
-                {getActiveListSorting(activeList) === 'lowest_score' ? <b>Lowest rated</b> : 'Lowest rated'}
-            </NavDropdown.Item>
+            {Builder.getFilters().map((filter, index) => (
+                <NavDropdown.Item key={index} className="sort-option" onClick={() => handleUpdateSorting(filter)}>
+                    {Builder.getListSorting(listsConfig, activeList) === filter ? <b>{Helper.getDenormalizeName(filter)}</b> : Helper.getDenormalizeName(filter)}
+                </NavDropdown.Item>
+            ))}
         </NavDropdown></Nav>
     }
 
     const getSearchComponent = () => {
         return <Form.Control id="search-list" type="search"
-            placeholder={`Find on ${Helper.getListName(activeList)}`}
+            placeholder={`Find on ${Builder.getListName(activeList)}`}
             value={findItem}
             onChange={e => {
                 setFindItem(e.target.value);
