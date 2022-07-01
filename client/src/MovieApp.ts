@@ -2,7 +2,7 @@ namespace MovieApp {
 
     export type UserData = {
         user: User;
-        movies: SavedMovie[];
+        movies: SavedItem[];
         config: Config;
         activities: Activity[];
     }
@@ -12,10 +12,15 @@ namespace MovieApp {
         sub: string
     }
 
-    export type SavedMovie = {
+    export type SavedItem = {
         data: TMDb.MovieObject | TMDb.TvShowObject,
-        lists: string[],
+        lists: SavedList[],
         score: number | null,
+        timestamp: number
+    }
+
+    export type SavedList = {
+        list: string,
         timestamp: number
     }
 

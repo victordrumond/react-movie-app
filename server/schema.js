@@ -10,7 +10,7 @@ const movieSchema = new mongoose.Schema({
         email: String,
         sub: String
     },
-    movies: [ { data: Object, lists: Array, score: Number, timestamp: Number } ],
+    movies: [ { data: Object, lists: [{ list: String, timestamp: Number }], score: Number } ],
     config: {
         lists: {
             favorites: { sorting: String, filtering: { movies: Boolean, tvShows: Boolean } },

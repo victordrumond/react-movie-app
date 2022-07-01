@@ -36,7 +36,7 @@ function Main() {
     const getListData = (list) => {
         let items = [];
         for (const item of productions) {
-            const isItemOnList = item.lists.findIndex(e => e === list);
+            const isItemOnList = item.lists.findIndex(e => e.list === list);
             if (isItemOnList > -1) {
                 items.push(item);
             }
@@ -129,11 +129,12 @@ function Main() {
         if (movies.length === 0) return [[]];
         let items = [];
         for (const movie of movies) {
+            let timestamp = movie.lists.filter(e => e.list === activeList)[0].timestamp;
             if (movie.data.media_type === 'movie') {
-                items.push(new Movie(movie.data, movie.timestamp, movie.score));
+                items.push(new Movie(movie.data, timestamp, movie.score));
             }
             if (movie.data.media_type === 'tv') {
-                items.push(new TvShow(movie.data, movie.timestamp, movie.score));
+                items.push(new TvShow(movie.data, timestamp, movie.score));
             }
         }
         let searchedData = ListConfig.searchForItem(items, findItem);

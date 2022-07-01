@@ -24,7 +24,7 @@ namespace TMDb {
         credits?: Credits;
         content_ratings?: ContentRatings;
         first_air_date?: string;
-        genres: Genre[];
+        genres?: Genre[];
         id?: number;
         in_production?: boolean;
         last_air_date?: string;

@@ -142,17 +142,17 @@ app.post('/api/addmovie', checkJwt, async (req, res) => {
   }
   const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
   if (isMovieSaved > -1) {
-    const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+    const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
     if (isMovieOnList > -1) {
       console.log(`${movie.title || movie.name} already on ${list}`);
       return;
     }
     if (isMovieOnList < 0) {
-      await userData.movies[isMovieSaved].lists.push(list);
+      await userData.movies[isMovieSaved].lists.push({ list: list, timestamp: Date.now() });
     }
   }
   if (isMovieSaved < 0) {
-    const newMovie = { data: movie, lists: [list], score: 0, timestamp: Date.now() };
+    const newMovie = { data: movie, lists: [{ list: list, timestamp: Date.now() }], score: 0 };
     await userData.movies.push(newMovie);
   }
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
@@ -178,7 +178,7 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
     console.log(`${movie.title || movie.name} is not on ${list}`);
     return;
   }
-  const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+  const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
   if (isMovieOnList < 0) {
     console.log(`${movie.title || movie.name} is not on ${list}`);
     return;

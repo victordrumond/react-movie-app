@@ -33,7 +33,7 @@ function List({ list, listData, layout }) {
     const getMoviesOnList = (list) => {
         let items = [];
         for (const item of context.userData.movies) {
-            const isItemOnList = item.lists.findIndex(e => e === list);
+            const isItemOnList = item.lists.findIndex(e => e.list === list);
             if (isItemOnList > -1) {
                 items.push(item);
             }
@@ -116,7 +116,7 @@ function List({ list, listData, layout }) {
     const isMovieOnList = async (movie, list) => {
         const isMovieSaved = context.userData.movies.findIndex(item => item.data.id === movie.id);
         if (isMovieSaved > -1) {
-          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
           return isMovieOnList > -1;
         }
         return false;

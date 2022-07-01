@@ -107,7 +107,7 @@ function Search() {
     const isMovieOnList = async (movie, list) => {
         const isMovieSaved = context.userData.movies.findIndex(item => item.data.id === movie.id);
         if (isMovieSaved > -1) {
-          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
           return isMovieOnList > -1;
         }
         return false;
