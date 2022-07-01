@@ -5,13 +5,7 @@ export const initUserData: MovieApp.UserData = {
         email: "email",
         sub: "sub"
     },
-    data: {
-        favorites: [],
-        watchList: [],
-        watching: [],
-        watched: [],
-        ratings: []
-    },
+    movies: [],
     config: {
         lists: {
             favorites: { sorting: "last_added", filtering: { movies: true, tvShows: true } },

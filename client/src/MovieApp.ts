@@ -2,7 +2,7 @@ namespace MovieApp {
 
     export type UserData = {
         user: User;
-        data: Data;
+        movies: SavedMovie[];
         config: Config;
         activities: Activity[];
     }
@@ -12,12 +12,11 @@ namespace MovieApp {
         sub: string
     }
 
-    export type Data = {
-        favorites: Production[],
-        watchList: Production[],
-        watching: Production[],
-        watched: Production[],
-        ratings: UserRatings[]
+    export type SavedMovie = {
+        data: TMDb.MovieObject | TMDb.TvShowObject,
+        lists: string[],
+        score: number | null,
+        timestamp: number
     }
 
     export type CountryWatchServices = {
@@ -37,16 +36,6 @@ namespace MovieApp {
         poster_path?: string;
         season_number?: number;
         overview?: string;
-    }
-
-    export type Production = {
-        timestamp: number;
-        data: TMDb.MovieObject | TMDb.TvShowObject;
-    }
-
-    export type UserRatings = {
-        movieId: number;
-        score: number;
     }
 
     export type Activity = {

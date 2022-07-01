@@ -1,10 +1,12 @@
 export class TvShow {
 
     item: TMDb.TvShowObject;
+    score: number;
     timestamp: number;
 
-    constructor(tvShowObj: TMDb.TvShowObject, timestamp: number) {
+    constructor(tvShowObj: TMDb.TvShowObject, timestamp: number, score: number) {
         this.item = tvShowObj;
+        this.score = score;
         this.timestamp = timestamp;
     }
 

@@ -44,14 +44,6 @@ export module Helper {
         return +isoDateString.substring(10, 0).replaceAll('-', '');
     }
 
-    export function getMovieRating(id: number, userRatings: MovieApp.UserRatings[]): number {
-        let isMovieRated = userRatings.findIndex(item => item.movieId === id);
-        if (isMovieRated < 0) {
-            return 0;
-        }
-        return userRatings[isMovieRated].score || 0;
-    }
-
     export function validateUsername(username: string): boolean {
         let regex = /^\w+$/;
         return regex.test(username);

@@ -28,12 +28,23 @@ function Main() {
     const context = useContext(UserContext);
     const location = useLocation();
     const width = useWindowSize().width;
+    const productions = context.userData.movies;
 
-    const listData = context.userData.data;
     const [activeList, setActiveList] = useState("favorites");
-
     const [activePage, setActivePage] = useState(1);
-    const numOfItemsOnList = context.userData.data[activeList].length;
+    
+    const getListData = (list) => {
+        let items = [];
+        for (const item of productions) {
+            const isItemOnList = item.lists.findIndex(e => e === list);
+            if (isItemOnList > -1) {
+                items.push(item);
+            }
+        }
+        return items;
+    }
+
+    const numOfItemsOnList = getListData(activeList).length;
 
     const listConfig = context.userData.config.lists[activeList];
     const [layout, setLayout] = useState("grid");
@@ -77,14 +88,14 @@ function Main() {
             setActivePage(getNumberOfPages());
         }
         // eslint-disable-next-line
-    }, [listData, activePage])
+    }, [productions, activePage])
 
     const isListEmpty = () => {
-        return listData[activeList].length === 0;
+        return getListData(activeList).length === 0;
     }
 
     const getSelectedPageData = (list) => {
-        let data = initData(listData[list]);
+        let data = initData(getListData(list));
         if (data.length >= activePage) {
             return data[activePage - 1];
         }
@@ -92,7 +103,7 @@ function Main() {
     }
 
     const getNumberOfPages = () => {
-        return initData(listData[activeList]).length;
+        return initData(getListData(activeList)).length;
     }
 
     const getPaginationIndex = (pageIndex) => {
@@ -119,10 +130,10 @@ function Main() {
         let items = [];
         for (const movie of movies) {
             if (movie.data.media_type === 'movie') {
-                items.push(new Movie(movie.data, movie.timestamp));
+                items.push(new Movie(movie.data, movie.timestamp, movie.score));
             }
             if (movie.data.media_type === 'tv') {
-                items.push(new TvShow(movie.data, movie.timestamp));
+                items.push(new TvShow(movie.data, movie.timestamp, movie.score));
             }
         }
         let searchedData = ListConfig.searchForItem(items, findItem);
@@ -207,7 +218,7 @@ function Main() {
                         {activePage >= Constants.MAX_VISIBLE_PAGES && getNumberOfPages() > Constants.MAX_VISIBLE_PAGES &&
                             <Pagination.Ellipsis />
                         }
-                        {!isListEmpty() && initData(listData[activeList]).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
+                        {!isListEmpty() && initData(getListData(activeList)).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === getPaginationIndex(index + 1)} onClick={() => setActivePage(getPaginationIndex(index + 1))}>{getPaginationIndex(index + 1)}</Pagination.Item>
                         ))}
                         {isListEmpty() &&

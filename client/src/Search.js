@@ -104,12 +104,11 @@ function Search() {
         };
     };
 
-    const isMovieOnList = async (item, list) => {
-        let listMovies = context.userData.data[list];
-        for (const movie of listMovies) {
-            if (movie.data.id === item.id) {
-                return true;
-            }
+    const isMovieOnList = async (movie, list) => {
+        const isMovieSaved = context.userData.movies.findIndex(item => item.data.id === movie.id);
+        if (isMovieSaved > -1) {
+          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+          return isMovieOnList > -1;
         }
         return false;
     }

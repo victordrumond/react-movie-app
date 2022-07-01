@@ -12,7 +12,7 @@ import useWindowSize from './useWindowSize';
 function ExpandedMovieInfo({ movieObj, country, hide }) {
 
     const width = useWindowSize().width;
-    const movie = useMemo(() => new Movie(movieObj, ''), [movieObj]);
+    const movie = useMemo(() => new Movie(movieObj, '', 0), [movieObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [watchData, setWatchData] = useState(movie.getWatchServices());
 

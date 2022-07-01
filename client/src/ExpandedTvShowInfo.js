@@ -12,7 +12,7 @@ import useWindowSize from './useWindowSize';
 function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
 
     const width = useWindowSize().width;
-    const show = useMemo(() => new TvShow(tvShowObj, ''), [tvShowObj]);
+    const show = useMemo(() => new TvShow(tvShowObj, '', 0), [tvShowObj]);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [watchData, setWatchData] = useState(show.getWatchServices());
     const [viewSeason, setViewSeason] = useState("0");

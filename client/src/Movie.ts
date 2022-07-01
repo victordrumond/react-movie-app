@@ -1,10 +1,12 @@
 export class Movie {
 
     item: TMDb.MovieObject;
+    score: number;
     timestamp: number;
 
-    constructor(movieObj: TMDb.MovieObject, timestamp: number) {
+    constructor(movieObj: TMDb.MovieObject, timestamp: number, score: number) {
         this.item = movieObj;
+        this.score = score;
         this.timestamp = timestamp;
     }
 

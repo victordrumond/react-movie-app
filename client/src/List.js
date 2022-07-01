@@ -30,8 +30,18 @@ function List({ list, listData, layout }) {
     const { user, getAccessTokenSilently } = useAuth0();
     const width = useWindowSize().width;
 
-    const userRatings = context.userData.data.ratings;
-    const moviesOnList = context.userData.data[list];
+    const getMoviesOnList = (list) => {
+        let items = [];
+        for (const item of context.userData.movies) {
+            const isItemOnList = item.lists.findIndex(e => e === list);
+            if (isItemOnList > -1) {
+                items.push(item);
+            }
+        }
+        return items;
+    }
+
+    const moviesOnList = getMoviesOnList(list);
 
     const [activeCard, setActiveCard] = useState(null);
 
@@ -103,12 +113,11 @@ function List({ list, listData, layout }) {
         });
     }
 
-    const isMovieOnList = async (item, list) => {
-        let listMovies = context.userData.data[list];
-        for (const movie of listMovies) {
-            if (movie.data.id === item.id) {
-                return true;
-            }
+    const isMovieOnList = async (movie, list) => {
+        const isMovieSaved = context.userData.movies.findIndex(item => item.data.id === movie.id);
+        if (isMovieSaved > -1) {
+          const isMovieOnList = context.userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+          return isMovieOnList > -1;
         }
         return false;
     }
@@ -152,7 +161,7 @@ function List({ list, listData, layout }) {
                                         </div>
                                         <Rating
                                             id="user-rating-list"
-                                            value={Helper.getMovieRating(item.getId(), userRatings)}
+                                            value={item.score || 0}
                                             onChange={(e, newValue) => { handleRate(item.item, newValue) }}
                                         />
                                     </div>
@@ -221,7 +230,7 @@ function List({ list, listData, layout }) {
                                 <div>
                                     <Rating
                                         id="user-rating-grid"
-                                        value={Helper.getMovieRating(item.getId(), userRatings)}
+                                        value={item.score || 0}
                                         onChange={(e, newValue) => { handleRate(item.item, newValue) }}
                                     />
                                     <Card.Title id="movie-title-grid" title={item.getOriginalTitle()}>{item.getTitle()}</Card.Title>

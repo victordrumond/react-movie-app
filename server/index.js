@@ -140,17 +140,26 @@ app.post('/api/addmovie', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
-  if (isMovieOnList < 0) {
-    const newMovie = { timestamp: Date.now(), data: movie };
-    await userData.data[list].push(newMovie);
-    const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
-    userData = await Utils.recordActivity(userData, 'movie_added', activityData);
-    userData = await userData.save();
-    console.log(`${movie.title || movie.name} added to ${list}`);
-    return res.json(userData);
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+  if (isMovieSaved > -1) {
+    const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e === list);
+    if (isMovieOnList > -1) {
+      console.log(`${movie.title || movie.name} already on ${list}`);
+      return;
+    }
+    if (isMovieOnList < 0) {
+      await userData.movies[isMovieSaved].lists.push(list);
+    }
   }
-  console.log(`${movie.title || movie.name} already on ${list}`);
+  if (isMovieSaved < 0) {
+    const newMovie = { data: movie, lists: [list], score: 0, timestamp: Date.now() };
+    await userData.movies.push(newMovie);
+  }
+  const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
+  userData = await Utils.recordActivity(userData, 'movie_added', activityData);
+  userData = await userData.save();
+  console.log(`${movie.title || movie.name} added to ${list}`);
+  return res.json(userData);
 })
 
 
@@ -164,12 +173,20 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieOnList = userData.data[list].findIndex(mov => mov.data.id === movie.id);
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+  if (isMovieSaved < 0) {
+    console.log(`${movie.title || movie.name} is not on ${list}`);
+    return;
+  }
+  const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e === list);
   if (isMovieOnList < 0) {
     console.log(`${movie.title || movie.name} is not on ${list}`);
     return;
   }
-  await userData.data[list].splice(isMovieOnList, 1);
+  await userData.movies[isMovieSaved].lists.splice(isMovieOnList, 1);
+  if (userData.movies[isMovieSaved].lists.length === 0) {
+    await userData.movies.splice(isMovieSaved, 1);
+  }
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
   userData = await Utils.recordActivity(userData, 'movie_deleted', activityData);
   userData = await userData.save();
@@ -201,7 +218,7 @@ app.post('/api/users/newuser', checkJwt, async (req, res) => {
   }
   const newUser = {
     user: { email: email, sub: sub },
-    data: { favorites: [], watchList: [], watching: [], watched: [], ratings: [] },
+    data: [],
     config: {
       lists: {
         favorites: { sorting: "last_added", filtering: { movies: true, tvShows: true } },
@@ -272,20 +289,18 @@ app.post('/api/updaterating', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieRated = userData.data.ratings.findIndex(item => item.movieId === movie.id);
-  if (isMovieRated >= 0 && userData.data.ratings[isMovieRated].score === score) {
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+  if (isMovieSaved < 0) {
+    console.log(`${movie.title || movie.name} is not saved`);
+    return;
+  }
+  const movieRating = userData.movies[isMovieSaved].score;
+  if (movieRating === score) {
     console.log(`Current rating of ${movie.title || movie.name} is already ${score}`);
     return;
   }
-  if (isMovieRated >= 0 && userData.data.ratings[isMovieRated].score !== score) {
-    userData.data.ratings[isMovieRated].score = score;
-    console.log(`${movie.title || movie.name} rating updated to ${score}`);
-  }
-  if (isMovieRated < 0) {
-    const newRating = { movieId: movie.id, score: score };
-    await userData.data.ratings.push(newRating);
-    console.log(`${movie.title || movie.name} rating set to ${score}`);
-  }
+  userData.movies[isMovieSaved].score = score;
+  console.log(`${movie.title || movie.name} rating set to ${score}`);
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, rating: score };
   userData = await Utils.recordActivity(userData, 'movie_rated', activityData);
   userData = await userData.save();
