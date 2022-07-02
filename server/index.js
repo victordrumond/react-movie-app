@@ -110,7 +110,7 @@ app.get("/api/movie/:id", checkJwt, async (req, res) => {
 
 
 // Get tv show data by id
-app.get("/api/tvshow/:id", checkJwt, async (req, res) => {
+app.get("/api/tv/:id", checkJwt, async (req, res) => {
   await axios.get('https://api.themoviedb.org/3/tv/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,content_ratings,watch/providers')
     .then(response => {
       return res.json(response.data);
@@ -131,8 +131,8 @@ app.get("/api/search/:query", async (req, res) => {
 
 
 // Add movie to list
-app.post('/api/addmovie', checkJwt, async (req, res) => {
-  const [email, sub, movie, list] = [req.body.user.email, req.body.user.sub, req.body.movie, req.body.list];
+app.post('/api/add', checkJwt, async (req, res) => {
+  const [email, sub, object, list] = [req.body.user.email, req.body.user.sub, req.body.item, req.body.list];
   let userData = await model.findOne({ "user.email": email });
   if (!userData) {
     return res.sendStatus(404);
@@ -140,25 +140,30 @@ app.post('/api/addmovie', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === object.id);
   if (isMovieSaved > -1) {
-    const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
+    const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(item => item.list === list);
     if (isMovieOnList > -1) {
-      console.log(`${movie.title || movie.name} already on ${list}`);
+      console.log(`${object.title || object.name} already on ${list}`);
       return;
     }
-    if (isMovieOnList < 0) {
-      await userData.movies[isMovieSaved].lists.push({ list: list, timestamp: Date.now() });
-    }
+    await userData.movies[isMovieSaved].lists.push({ list: list, timestamp: Date.now() });
   }
   if (isMovieSaved < 0) {
-    const newMovie = { data: movie, lists: [{ list: list, timestamp: Date.now() }], score: 0 };
-    await userData.movies.push(newMovie);
+    const credits = object.media_type === 'tv' ? 'aggregate_credits' : 'credits';
+    await axios
+      .get(`https://api.themoviedb.org/3/${object.media_type}/${object.id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=${credits}`)
+      .then(async (response) => {
+        const movie = Utils.prepareToAdd(object, response.data);
+        const newMovie = { data: movie, lists: [{ list: list, timestamp: Date.now() }], score: 0 };
+        await userData.movies.push(newMovie);
+      })
+    ;
   }
-  const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
+  const activityData = { image: object.poster_path, movie: object.title || object.name, list: list };
   userData = await Utils.recordActivity(userData, 'movie_added', activityData);
   userData = await userData.save();
-  console.log(`${movie.title || movie.name} added to ${list}`);
+  console.log(`${object.title || object.name} added to ${list}`);
   return res.json(userData);
 })
 

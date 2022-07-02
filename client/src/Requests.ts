@@ -49,16 +49,16 @@ export module Requests {
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
-        return item.media_type === 'movie' ? axios.get(`/api/movie/${item.id}`, config) : axios.get(`/api/tvshow/${item.id}`, config);
+        return item.media_type === 'movie' ? axios.get(`/api/movie/${item.id}`, config) : axios.get(`/api/tv/${item.id}`, config);
     }
 
-    // Set movie on database
-    export function addMovie(token: string, userObj: Auth0.User, list: string, movie: TMDb.SearchObject): AxiosPromise {
-        const body = { user: userObj, list: list, movie: movie };
+    // Set item on database
+    export function addItem(token: string, userObj: Auth0.User, list: string, itemObj: TMDb.SearchObject): AxiosPromise {
+        const body = { user: userObj, list: list, item: itemObj };
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
-        return axios.post('/api/addmovie', body, config);
+        return axios.post('/api/add', body, config);
     }
 
     // Delete movie from database

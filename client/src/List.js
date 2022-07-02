@@ -63,13 +63,13 @@ function List({ list, listData, layout }) {
     };
 
     const handleAdd = async (item, list) => {
-        if (Builder.isItemOnList(context.userData, item, list)) {
+        if (Builder.isItemOnList(context.userData, item.id, list)) {
             setAddData([item.title || item.name, list, false]);
             setAddMovie(true);
             return;
         }
         await getAccessTokenSilently().then(token => {
-            Requests.addMovie(token, user, list, item).then(res => {
+            Requests.addItem(token, user, list, item).then(res => {
                 context.setUserData(res.data);
                 setAddData([item.title || item.name, list, true]);
                 setAddMovie(true);

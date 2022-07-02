@@ -70,13 +70,13 @@ function Search() {
 
     const handleAdd = async (item, list) => {
         setSearchFor("");
-        if (Builder.isItemOnList(context.userData, item.result, list)) {
+        if (Builder.isItemOnList(context.userData, item.result.id, list)) {
             setAddData([item.result.title || item.result.name, list, false]);
             setAddMovieToList(true);
             return;
         }
         await getAccessTokenSilently().then(token => {
-            Requests.addMovie(token, user, list, item.result).then(res => {
+            Requests.addItem(token, user, list, item.result).then(res => {
                 context.setUserData(res.data);
                 setAddData([item.result.title || item.result.name, list, true]);
                 setAddMovieToList(true);

@@ -26,8 +26,8 @@ export module Builder {
         return ['last_added', 'first_added', 'title', 'highest_score', 'lowest_score'];
     }
 
-    export function isItemOnList(userData: MovieApp.UserData, movie: TMDb.SearchObject, list: string): boolean {
-        const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+    export function isItemOnList(userData: MovieApp.UserData, movieId: number, list: string): boolean {
+        const isMovieSaved = userData.movies.findIndex(item => item.data.id === movieId);
         if (isMovieSaved > -1) {
           const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
           return isMovieOnList > -1;
