@@ -3,7 +3,7 @@ namespace TMDb {
     export interface MovieObject {
         backdrop_path?: string | null;
         credits?: Credits;
-        genres?: Genre[];
+        genres?: Genre[] | string[];
         id?: number;
         original_title?: string;
         overview?: string;
@@ -24,7 +24,7 @@ namespace TMDb {
         credits?: Credits;
         content_ratings?: ContentRatings;
         first_air_date?: string;
-        genres?: Genre[];
+        genres?: Genre[] | string[];
         id?: number;
         in_production?: boolean;
         last_air_date?: string;
@@ -61,8 +61,8 @@ namespace TMDb {
     }
 
     interface Credits {
-        cast?: Person[];
-        crew?: Person[];
+        cast?: Person[] | string[];
+        crew?: Person[] | string[];
     }
 
     interface Person {

@@ -86,8 +86,13 @@ export class Movie {
         let genres: string[] = [];
         if (this.item.genres) {
             for (const genre of this.item.genres) {
-                if (genre.name) {
-                    genres.push(genre.name);
+                if (typeof genre === 'object') {
+                    if (genre.name) {
+                        genres.push(genre.name);
+                    }
+                }
+                if (typeof genre === 'string') {
+                    genres.push(genre);
                 }
             }
         }
@@ -98,8 +103,13 @@ export class Movie {
         let cast: string[] = [];
         if (this.item.credits && this.item.credits.cast) {
             for (const person of this.item.credits.cast) {
-                if (person.name && person.known_for_department === 'Acting') {
-                    cast.push(person.name);
+                if (typeof person === 'object') {
+                    if (person.name && person.known_for_department === 'Acting') {
+                        cast.push(person.name);
+                    }
+                }
+                if (typeof person === 'string') {
+                    cast.push(person);
                 }
             }
         }
@@ -110,8 +120,13 @@ export class Movie {
         let crew: string[] = [];
         if (this.item.credits && this.item.credits.crew) {
             for (const person of this.item.credits.crew) {
-                if (person.name && person.job === 'Director') {
-                    crew.push(person.name);
+                if (typeof person === 'object') {
+                    if (person.name && person.job === 'Director') {
+                        crew.push(person.name);
+                    }
+                }
+                if (typeof person === 'string') {
+                    crew.push(person);
                 }
             }
         }
@@ -122,8 +137,13 @@ export class Movie {
         let companies: string[] = [];
         if (this.item.production_companies) {
             for (const company of this.item.production_companies) {
-                if (company.name) {
-                    companies.push(company.name);
+                if (typeof company === 'object') {
+                    if (company.name) {
+                        companies.push(company.name);
+                    }
+                }
+                if (typeof company === 'string') {
+                    companies.push(company);
                 }
             }
         }

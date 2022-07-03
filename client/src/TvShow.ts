@@ -112,8 +112,13 @@ export class TvShow {
         let genres: string[] = [];
         if (this.item.genres) {
             for (const genre of this.item.genres) {
-                if (genre.name) {
-                    genres.push(genre.name);
+                if (typeof genre === 'object') {
+                    if (genre.name) {
+                        genres.push(genre.name);
+                    }
+                }
+                if (typeof genre === 'string') {
+                    genres.push(genre);
                 }
             }
         }
@@ -124,8 +129,13 @@ export class TvShow {
         let cast: string[] = [];
         if (this.item.credits && this.item.credits.cast) {
             for (const person of this.item.credits.cast) {
-                if (person.name && person.known_for_department === 'Acting') {
-                    cast.push(person.name);
+                if (typeof person === 'object') {
+                    if (person.name && person.known_for_department === 'Acting') {
+                        cast.push(person.name);
+                    }
+                }
+                if (typeof person === 'string') {
+                    cast.push(person);
                 }
             }
         }
@@ -136,8 +146,13 @@ export class TvShow {
         let creators: string[] = [];
         if (this.item.created_by) {
             for (const person of this.item.created_by) {
-                if (person.name) {
-                    creators.push(person.name);
+                if (typeof person === 'object') {
+                    if (person.name) {
+                        creators.push(person.name);
+                    }
+                }
+                if (typeof person === 'string') {
+                    creators.push(person);
                 }
             }
         }
@@ -148,8 +163,13 @@ export class TvShow {
         let companies: string[] = [];
         if (this.item.production_companies) {
             for (const company of this.item.production_companies) {
-                if (company.name) {
-                    companies.push(company.name);
+                if (typeof company === 'object') {
+                    if (company.name) {
+                        companies.push(company.name);
+                    }
+                }
+                if (typeof company === 'string') {
+                    companies.push(company);
                 }
             }
         }
@@ -160,8 +180,13 @@ export class TvShow {
         let networks: string[] = [];
         if (this.item.networks) {
             for (const network of this.item.networks) {
-                if (network.name) {
-                    networks.push(network.name);
+                if (typeof network === 'object') {
+                    if (network.name) {
+                        networks.push(network.name);
+                    }
+                }
+                if (typeof network === 'string') {
+                    networks.push(network);
                 }
             }
         }

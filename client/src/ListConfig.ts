@@ -71,14 +71,24 @@ export module ListConfig {
         if (!search) return data;
         let result = data.filter(item => {
             const [title, originalTitle, releaseYear, overview] = [item.getTitle(), item.getOriginalTitle(), item.getReleaseYear(), item.getOverview()];
+            const [genres, cast, crew, companies] = [item.getGenres(), item.getCast(), item.item.credits?.crew, item.getProductionCompanies()];
             let keywords = '';
             if (title) keywords += `${title} `;
             if (originalTitle) keywords += `${originalTitle} `;
             if (releaseYear) keywords += `${releaseYear} `;
             if (overview !== 'Overview not found') keywords += `${overview} `;
+            if (genres && genres.length > 0) genres.forEach(item => keywords += `${item} `);
+            if (cast && cast.length > 0) cast.forEach(item => keywords += `${item} `);
+            if (crew && crew.length > 0) crew.forEach(item => keywords += `${item} `);
+            if (companies && companies.length > 0) companies.forEach(item => keywords += `${item} `);
+            if (item instanceof TvShow) {
+                const [networks, creators] = [item.getNetworks(), item.getCreators()];
+                if (networks && networks.length > 0) networks.forEach(item => keywords += `${item} `);
+                if (creators && creators.length > 0) creators.forEach(item => keywords += `${item} `);
+            }
             let searchForKeywords = keywords.toLowerCase().indexOf(search.toLowerCase());
             return (searchForKeywords > -1);
-        });
+        })
         return result;
     }
 
