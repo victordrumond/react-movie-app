@@ -142,6 +142,23 @@ export class TvShow {
         return cast.length > 8 ? cast.slice(0, 8) : cast;
     }
 
+    getDirection(): string[] {
+        let crew: string[] = [];
+        if (this.item.credits && this.item.credits.crew) {
+            for (const person of this.item.credits.crew) {
+                if (typeof person === 'object') {
+                    if (person.name && person.job === 'Director') {
+                        crew.push(person.name);
+                    }
+                }
+                if (typeof person === 'string') {
+                    crew.push(person);
+                }
+            }
+        }
+        return crew;
+    }
+
     getCreators(): string[] {
         let creators: string[] = [];
         if (this.item.created_by) {

@@ -71,7 +71,7 @@ export module ListConfig {
         if (!search) return data;
         let result = data.filter(item => {
             const [title, originalTitle, releaseYear, overview] = [item.getTitle(), item.getOriginalTitle(), item.getReleaseYear(), item.getOverview()];
-            const [genres, cast, crew, companies] = [item.getGenres(), item.getCast(), item.item.credits?.crew, item.getProductionCompanies()];
+            const [genres, cast, crew, companies] = [item.getGenres(), item.getCast(), item.getDirection(), item.getProductionCompanies()];
             let keywords = '';
             if (title) keywords += `${title} `;
             if (originalTitle) keywords += `${originalTitle} `;

@@ -111,8 +111,10 @@ app.get("/api/movie/:id", checkJwt, async (req, res) => {
 
 // Get tv show data by id
 app.get("/api/tv/:id", checkJwt, async (req, res) => {
-  await axios.get('https://api.themoviedb.org/3/tv/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=credits,content_ratings,watch/providers')
+  await axios.get('https://api.themoviedb.org/3/tv/' + req.params.id + '?api_key=' + process.env.TMDB_API_KEY + '&append_to_response=aggregate_credits,content_ratings,watch/providers')
     .then(response => {
+      response.data.credits = response.data.aggregate_credits;
+      delete response.data.aggregate_credits;
       return res.json(response.data);
     });
 })
