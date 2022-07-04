@@ -106,4 +106,13 @@ export module Requests {
         return axios.post('/api/updatecountry', body, config);
     }
 
+    // Manage TV show seasons on each list
+    export function manageSeasons(token: string, userObj: Auth0.User, id: number, list: string, season: number): AxiosPromise {
+        const body = { user: userObj, itemId: id, list: list, season: season };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.post('/api/tv/manageseasons', body, config);
+    }
+
 }

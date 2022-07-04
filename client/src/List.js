@@ -20,9 +20,10 @@ import { Requests } from './Requests';
 import ExampleMovieCard from './ExampleMovieCard';
 import ExpandedMovieInfo from './ExpandedMovieInfo';
 import ExpandedTvShowInfo from './ExpandedTvShowInfo';
+import ManageSeasons from './ManageSeasons';
 import Rating from '@mui/material/Rating';
 import useWindowSize from './useWindowSize';
-// import { TvShow } from './TvShow';
+import { TvShow } from './TvShow';
 
 function List({ list, listData, layout }) {
 
@@ -42,7 +43,7 @@ function List({ list, listData, layout }) {
     const [addMovie, setAddMovie] = useState(false);
     const [addData, setAddData] = useState(null);
 
-    // const [showManageSeasons, setShowManageSeasons] = useState(false);
+    const [showManageSeasons, setShowManageSeasons] = useState(false);
 
     const getMovieExpandedData = async (item) => {
         if (LocalStorage.hasExpandedMovie(item.id)) {
@@ -109,13 +110,13 @@ function List({ list, listData, layout }) {
         return [addToFavorites, addToWatchList, addToWatching, addToWatched];
     }
 
-    // const showSection = (index) => {
-    //     return (index !== activeCard || (index === activeCard && !showManageSeasons));
-    // }
+    const showSection = (index) => {
+        return (index !== activeCard || (index === activeCard && !showManageSeasons));
+    }
 
     const handleMouseLeave = () => {
         setActiveCard(null);
-        // setShowManageSeasons(false);
+        setShowManageSeasons(false);
     }
 
     return (
@@ -218,25 +219,24 @@ function List({ list, listData, layout }) {
                             {width > 575 &&
                                 <div className="d-flex justify-content-between align-items-center">
                                     <Card.Text id="movie-date-grid">{item.getReleaseYear()}</Card.Text>
-                                    {/* <div>
+                                    <div>
                                         {(item instanceof TvShow) &&
-                                            <Badge id="manage-seasons" bg="dark" onClick={() => setShowManageSeasons(!showManageSeasons)}>
+                                            <Badge id="tv-badge" bg="dark" onClick={() => setShowManageSeasons(!showManageSeasons)}>
                                                 TV
                                             </Badge>
-                                        } */}
+                                        }
                                         <Badge id="search-score" bg={Builder.getScoreBarColor(item.getAverageRating())}>
                                             {item.getAverageRating() === 'Not Rated' ? 'NR' : item.getAverageRating()}
                                         </Badge>
-                                    {/* </div> */}
+                                    </div>
                                 </div>
                             }
-                            {/* {width > 575 && showSection(index) && */}
-                            {width > 575 &&
+                            {width > 575 && showSection(index) &&
                                 <Card.Text id="movie-description-grid">{item.getOverview()}</Card.Text>
                             }
-                            {/* {width > 575 && !showSection(index) &&
-                                <div>TESTE</div>
-                            } */}
+                            {width > 575 && !showSection(index) &&
+                                <ManageSeasons show={item} list={list}/>
+                            }
                             {width > 991 &&
                                 <div>
                                     {activeCard === index &&

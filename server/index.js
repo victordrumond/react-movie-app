@@ -337,6 +337,33 @@ app.post('/api/updatecountry', checkJwt, async (req, res) => {
 })
 
 
+// Update manage seasons
+app.post('/api/tv/manageseasons', checkJwt, async (req, res) => {
+  const [email, sub, showId, list, season] = [req.body.user.email, req.body.user.sub, req.body.itemId, req.body.list, req.body.season];
+  let userData = await model.findOne({ "user.email": email });
+  if (!userData) return res.sendStatus(404);
+  if (userData.user.email !== email || userData.user.sub !== sub) return res.sendStatus(401);
+  const showIndex = userData.movies.findIndex(item => item.data.id === showId);
+  const listIndex = userData.movies[showIndex].lists.findIndex(item => item.list === list);
+  const listInfo = userData.movies[showIndex].lists[listIndex];
+  if (listInfo.seasons) {
+    const hasSeason = listInfo.seasons.findIndex(item => item === season);
+    if (hasSeason > -1) {
+      await userData.movies[showIndex].lists[listIndex].seasons.splice(hasSeason, 1);
+      console.log(`Season ${season} of ${userData.movies[showIndex].data.name} deselect on ${list}`);
+      userData = await userData.save();
+      return res.json(userData);
+    }
+    await userData.movies[showIndex].lists[listIndex].seasons.push(season);
+  } else {
+    userData.movies[showIndex].lists[listIndex].seasons = [season];
+  }
+  console.log(`Season ${season} of ${userData.movies[showIndex].data.name} selected on ${list}`);
+  userData = await userData.save();
+  return res.json(userData);
+})
+
+
 // Every other GET request not handled before will return the React app
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));

@@ -21,7 +21,8 @@ namespace MovieApp {
 
     export type SavedList = {
         list: string,
-        timestamp: number
+        timestamp: number,
+        seasons?: number[]
     }
 
     export type CountryWatchServices = {

@@ -63,4 +63,21 @@ export module Builder {
         return 'colorNR';
     }
 
+    export function getSeasonCode(season: number): string {
+        if (season < 1) return '';
+        if (season < 10) return `S0${season}`;
+        return `S${season}`;
+    }
+
+    export function isSeasonSelectedOnList(userData: MovieApp.UserData, showId: number, list: string, season: number): boolean {
+        const showIndex = userData.movies.findIndex(item => item.data.id === showId);
+        const listIndex = userData.movies[showIndex].lists.findIndex(item => item.list === list);
+        const listInfo = userData.movies[showIndex].lists[listIndex];
+        if (listInfo.seasons) {
+            const hasSeason = listInfo.seasons.findIndex(item => item === season);
+            return hasSeason > -1;
+        }
+        return false;
+    }
+
 }
