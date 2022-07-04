@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Search.css';
 import { UserContext } from './UserContext';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -24,6 +25,9 @@ function Search() {
 
     const context = useContext(UserContext);
     const { user, getAccessTokenSilently } = useAuth0();
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [searchInput, setSearchInput] = useState("");
     const [searchFor, setSearchFor] = useState("");
@@ -80,11 +84,18 @@ function Search() {
                 context.setUserData(res.data);
                 setAddData([item.result.title || item.result.name, list, true]);
                 setAddMovieToList(true);
+                setNewUrl(list);
             }).catch(err => {
                 console.log(err);
             })
         });
     };
+
+    const setNewUrl = (list) => {
+        if (location.pathname !== `/home/${list.toLowerCase()}`) {
+            navigate(`/home/${list.toLowerCase()}`);
+        }
+    }
 
     const getMovieExpandedData = async (item) => {
         if (LocalStorage.hasExpandedMovie(item.id)) {
