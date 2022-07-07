@@ -98,16 +98,16 @@ function Search() {
     }
 
     const getMovieExpandedData = async (item) => {
-        if (LocalStorage.hasExpandedMovie(item.id)) {
-            let movieObj = LocalStorage.getExpandedMovie(item.id);
+        if (LocalStorage.hasExpandedItem(item.id, item.media_type)) {
+            let movieObj = LocalStorage.getExpandedItem(item.id, item.media_type);
             if (movieObj) {
                 item.media_type === 'movie' ? setInfoData([movieObj, 'movie']) : setInfoData([movieObj, 'tv']);
                 setShowExpandedInfo(true);
             }
         } else {
             await getAccessTokenSilently().then(token => {
-                Requests.getMovieData(token, item).then(res => {
-                    LocalStorage.setExpandedMovie(res.data);
+                Requests.getItemData(token, item).then(res => {
+                    LocalStorage.setExpandedItem(res.data);
                     item.media_type === 'movie' ? setInfoData([res.data, 'movie']) : setInfoData([res.data, 'tv']);
                     setShowExpandedInfo(true);
                 })

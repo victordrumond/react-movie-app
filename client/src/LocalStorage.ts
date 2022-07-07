@@ -2,41 +2,43 @@ import { Helper } from './Helper';
 
 export module LocalStorage {
 
-    export function hasExpandedMovie(movieId: number): boolean {
-        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies')!);
-        if (!expandedMovies) {
-            return false;
-        }
-        for (const movie of expandedMovies) {
-            if (movie.id === movieId) {
-                return true;
+    export function hasExpandedItem(id: number, type: string): boolean {
+        let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
+        if (!expandedItems) return false;
+        for (const item of expandedItems) {
+            if (type === 'movie' && item.hasOwnProperty('title')) {
+                if (item.id === id) return true;
+            }
+            if (type === 'tv' && item.hasOwnProperty('name')) {
+                if (item.id === id) return true;
             }
         }
         return false;
     }
 
-    export function getExpandedMovie(movieId: number): boolean | null {
-        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies')!);
-        if (!expandedMovies) {
-            return null;
-        }
-        for (const movie of expandedMovies) {
-            if (movie.id === movieId) {
-                return movie;
+    export function getExpandedItem(id: number, type: string): any | null {
+        let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
+        if (!expandedItems) return null;
+        for (const item of expandedItems) {
+            if (type === 'movie' && item.hasOwnProperty('title') && item.id === id) {
+                return item;
+            }
+            if (type === 'tv' && item.hasOwnProperty('name') && item.id === id) {
+                return item;
             }
         }
         return null;
     }
 
-    export function setExpandedMovie(movie: TMDb.SearchObject): void {
-        let expandedMovies = JSON.parse(localStorage.getItem('expandedMovies')!);
-        if (!expandedMovies) {
-            let expandedMovies = [movie];
-            localStorage.setItem('expandedMovies', JSON.stringify(expandedMovies));
+    export function setExpandedItem(item: TMDb.SearchObject): void {
+        let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
+        if (!expandedItems) {
+            let expandedItems = [item];
+            localStorage.setItem('expandedMovies', JSON.stringify(expandedItems));
             return;
         }
-        expandedMovies.push(movie);
-        localStorage.setItem('expandedMovies', JSON.stringify(expandedMovies));
+        expandedItems.push(item);
+        localStorage.setItem('expandedMovies', JSON.stringify(expandedItems));
     }
 
     export function hasUpdatedTrendingCovers(): boolean {
