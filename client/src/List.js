@@ -293,13 +293,16 @@ function List({ list, listData, layout }) {
                 <ExpandedMovieInfo
                     movieObj={infoData[0]}
                     country={context.userData.config.general.country}
+                    display={showExpandedInfo}
                     hide={() => setShowExpandedInfo(false)}
                 />
             }
+
             {showExpandedInfo && infoData[1] === 'tv' &&
                 <ExpandedTvShowInfo
                     tvShowObj={infoData[0]}
                     country={context.userData.config.general.country}
+                    display={showExpandedInfo}
                     hide={() => setShowExpandedInfo(false)}
                 />
             }

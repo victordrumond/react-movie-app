@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import './ExpandedMovieInfo.css';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
@@ -10,17 +10,11 @@ import { Helper } from './Helper';
 import { Builder } from './Builder';
 import useWindowSize from './useWindowSize';
 
-function ExpandedMovieInfo({ movieObj, country, hide }) {
+function ExpandedMovieInfo({ movieObj, country, display, hide }) {
 
     const width = useWindowSize().width;
     const movie = useMemo(() => new Movie(movieObj, '', 0), [movieObj]);
-    const [showInfoModal, setShowInfoModal] = useState(false);
-    const [watchData, setWatchData] = useState(movie.getWatchServices());
-
-    useEffect(() => {
-        setWatchData(movie.getWatchServices());
-        setShowInfoModal(true);
-    }, [movie])
+    const watchData = movie.getWatchServices();
 
     const getCountry = () => {
         if (watchData.length === 0) return '';
@@ -71,13 +65,8 @@ function ExpandedMovieInfo({ movieObj, country, hide }) {
         }
     }
 
-    const handleHide = () => {
-        setShowInfoModal(false);
-        hide(false);
-    }
-
     return (
-        <Modal id="movie-modal" size="lg" show={showInfoModal} onHide={() => handleHide()} animation={true} centered={true} >
+        <Modal id="movie-modal" size="lg" show={display} onHide={() => hide(false)} animation={true} centered={true} >
             <Modal.Header closeButton>
                 <Modal.Title>
                     {movie.getReleaseYear() ? `${movie.getTitle()} (${movie.getReleaseYear()})` : movie.getTitle()}

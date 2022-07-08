@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import './ExpandedTvShowInfo.css';
 import backdropNotFound from './backdrop-not-found.png';
 import coverNotFound from './cover-not-found.png';
@@ -10,26 +10,13 @@ import { Helper } from './Helper';
 import { Builder } from './Builder';
 import useWindowSize from './useWindowSize';
 
-function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
+function ExpandedTvShowInfo({ tvShowObj, country, display, hide }) {
 
     const width = useWindowSize().width;
     const show = useMemo(() => new TvShow(tvShowObj, '', 0), [tvShowObj]);
-    const [showInfoModal, setShowInfoModal] = useState(false);
-    const [watchData, setWatchData] = useState(show.getWatchServices());
+    const watchData = show.getWatchServices();
+
     const [viewSeason, setViewSeason] = useState("0");
-
-    useEffect(() => {
-        setViewSeason("0");
-    }, [tvShowObj])
-
-    useEffect(() => {
-        setSelectedCountry(country);
-    }, [country])
-
-    useEffect(() => {
-        setWatchData(show.getWatchServices());
-        setShowInfoModal(true);
-    }, [show])
 
     const getCountry = () => {
         if (watchData.length === 0) return '';
@@ -80,13 +67,8 @@ function ExpandedTvShowInfo({ tvShowObj, country, hide }) {
         }
     }
 
-    const handleHide = () => {
-        setShowInfoModal(false);
-        hide(false);
-    }
-
     return (
-        <Modal id="tvshow-modal" size="lg" show={showInfoModal} onHide={() => handleHide()} animation={true} centered={true} >
+        <Modal id="tvshow-modal" size="lg" show={display} onHide={() => hide(false)} animation={true} centered={true} >
             <Modal.Header closeButton>
                 {viewSeason === "0" &&
                     <Modal.Title>
