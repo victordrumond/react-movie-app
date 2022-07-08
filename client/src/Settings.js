@@ -18,12 +18,14 @@ function Settings() {
     const { user, getAccessTokenSilently } = useAuth0();
     const context = useContext(UserContext);
     
-    const [userProfileUpdated, setUserProfileUpdated] = useState(false);
-    const [loading, setLoading] = useState(null);
+    const [currentCountry, setCurrentCountry] = useState(context.userData.config.general.country);
     const [countries, setCountries] = useState([]);
+
+    const [userProfileUpdated, setUserProfileUpdated] = useState(false);
+    const [firstLoading, setFirstLoading] = useState(null);
     const [error, setError] = useState(null);
 
-    const [currentCountry, setCurrentCountry] = useState(context.userData.config.general.country);
+    const [secondLoading, setSecondLoading] = useState(null);
 
     useEffect(() => {
         getCountries();
@@ -33,18 +35,27 @@ function Settings() {
         if (userProfileUpdated) {
             getAccessTokenSilently({ ignoreCache: true });
             setUserProfileUpdated(false);
-            setLoading(false);
+            setFirstLoading(false);
         }
     }, [userProfileUpdated, getAccessTokenSilently]);
 
     useEffect(() => {
-        if (!loading) {
+        if (!firstLoading) {
             const timer = setTimeout(() => {
-                setLoading(null);
+                setFirstLoading(null);
             }, 5000)
             return () => clearTimeout(timer)
         }
-    }, [loading]);
+    }, [firstLoading]);
+
+    useEffect(() => {
+        if (!secondLoading) {
+            const timer = setTimeout(() => {
+                setSecondLoading(null);
+            }, 3000)
+            return () => clearTimeout(timer)
+        }
+    }, [secondLoading]);
 
     const getCountries = () => {
         if (LocalStorage.hasUpdatedCountryList()) {
@@ -80,7 +91,7 @@ function Settings() {
             return;
         }
         setError(null);
-        setLoading(true);
+        setFirstLoading(true);
         await getAccessTokenSilently().then(token => {
             Requests.editUserProfile(token, user.sub, name, nickname, picture)
                 .then(res => {
@@ -94,11 +105,14 @@ function Settings() {
     }
 
     const handleUpdateItem = async (e) => {
-        const [id, type] = [e.target.value.split('-')[1], e.target.value.split('-')[0]];
+        e.preventDefault();
+        const [id, type] = [e.target[0].value.split('-')[1], e.target[0].value.split('-')[0]];
+        setSecondLoading(true);
         await getAccessTokenSilently().then(token => {
             Requests.updateItemData(token, user, id, type)
                 .then(res => {
                     context.setUserData(res.data);
+                    setSecondLoading(false);
                 })
                 .catch(err => {
                     console.log(err);
@@ -111,16 +125,16 @@ function Settings() {
         return (name !== user.name || nickname !== user.nickname || picture !== user.picture);
     }
 
-    const getButtonVariant = () => {
-        if (loading === null) return 'primary';
-        if (loading) return 'primary';
-        if (!loading) return 'success'
+    const getButtonVariant = (loadingState) => {
+        if (loadingState === null) return 'primary';
+        if (loadingState) return 'primary';
+        if (!loadingState) return 'success'
     }
 
-    const getButtonInnerHTML = () => {
-        if (loading === null) return 'Save';
-        if (loading) return '';
-        if (!loading) return 'Done!'
+    const getButtonInnerHTML = (loadingState, defaultText) => {
+        if (loadingState === null) return defaultText;
+        if (loadingState) return '';
+        if (!loadingState) return 'Done!'
     }
 
     const alphabetize = (savedItems) => {
@@ -173,10 +187,10 @@ function Settings() {
                         <Form.Label>Picture URL:</Form.Label>
                         <Form.Control type="url" defaultValue={user.picture} />
                     </Form.Group>
-                    <div className="pt-2 d-flex justify-content-start align-items-center">
-                        <Button id="update-profile-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant()} type="submit" >
-                            {getButtonInnerHTML()}
-                            {loading &&
+                    <div className="pt-2 d-flex justify-content-end align-items-center">
+                        <Button id="update-profile-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(firstLoading)} type="submit" >
+                            {getButtonInnerHTML(firstLoading, 'Save')}
+                            {firstLoading &&
                                 <Spinner
                                     as="span"
                                     animation="border"
@@ -192,14 +206,27 @@ function Settings() {
                     <MdOutlineDownloading className="update-section-icon" />
                     <p>Update items</p>
                 </div>
-                <Form id="update-settings-form" >
+                <Form id="update-settings-form" onSubmit={(e) => handleUpdateItem(e)}>
                     <Form.Label>Select saved item:</Form.Label>
-                    <Form.Select id="update-item" onChange={(e) => handleUpdateItem(e)} >
+                    <Form.Select id="update-item">
                         {context.userData.movies.length > 0 && alphabetize(context.userData.movies).map((item, i) => (
                             <option key={i} value={`${item.data.media_type}-${item.data.id}`}>{item.data.name || item.data.title}</option>
                         ))}
                     </Form.Select>
                     <Form.Text>Learn more</Form.Text>
+                    <div className="pt-2 d-flex justify-content-end align-items-center">
+                        <Button id="update-items-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(secondLoading)} type="submit" >
+                            {getButtonInnerHTML(secondLoading, 'Update')}
+                            {secondLoading &&
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />}
+                        </Button>
+                    </div>
                 </Form>
             </Container>
         )
