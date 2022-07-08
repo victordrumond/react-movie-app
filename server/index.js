@@ -143,6 +143,12 @@ app.patch("/api/updateitem", checkJwt, async (req, res) => {
     console.log(`Item is not saved`);
     return;
   }
+  const lastUpdated = Utils.getComparableDate(userData.movies[isItemSaved].updated);
+  const newUpdate = Utils.getComparableDate(Date.now());
+  if (newUpdate === lastUpdated) {
+    console.log(`Item is already updated`);
+    return res.json(userData);
+  }
   const credits = (type === 'tv') ? 'aggregate_credits' : 'credits';
   let itemName = '';
   await axios
@@ -155,6 +161,7 @@ app.patch("/api/updateitem", checkJwt, async (req, res) => {
       }
       const movie = Utils.prepareToUpdate(response.data, type);
       userData.movies[isItemSaved].data = movie;
+      userData.movies[isItemSaved].updated = Date.now();
     })
   ;
   userData = await userData.save();
@@ -188,7 +195,7 @@ app.post('/api/add', checkJwt, async (req, res) => {
       .get(`https://api.themoviedb.org/3/${object.media_type}/${object.id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=${credits}`)
       .then(async (response) => {
         const movie = Utils.prepareToAdd(object, response.data);
-        const newMovie = { data: movie, lists: [{ list: list, timestamp: Date.now() }], score: 0 };
+        const newMovie = { data: movie, lists: [{ list: list, timestamp: Date.now() }], score: 0, updated: null };
         await userData.movies.push(newMovie);
       })
     ;

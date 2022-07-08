@@ -99,4 +99,11 @@ const getNameFromPropArray = (array) => {
     return final;
 }
 
-module.exports = { recordActivity, resizeActivities, prepareToAdd, prepareToUpdate };
+const getComparableDate = (timestamp) => {
+    if (!timestamp) return 0;
+    let dateObj = new Date(timestamp);
+    let isoDateString = dateObj.toISOString();
+    return +isoDateString.substring(10, 0).replaceAll('-', '');
+}
+
+module.exports = { recordActivity, resizeActivities, prepareToAdd, prepareToUpdate, getComparableDate };
