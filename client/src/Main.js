@@ -25,33 +25,35 @@ import { Builder } from './Builder';
 
 function Main() {
 
-    const context = useContext(UserContext);
-    const location = useLocation();
     const width = useWindowSize().width;
-    const productions = context.userData.movies;
+    const location = useLocation();
+    const context = useContext(UserContext);
 
     const [activeList, setActiveList] = useState("favorites");
     const [activePage, setActivePage] = useState(1);
-    
+
     const listData = Builder.getListData(context.userData, activeList);
     const listConfig = context.userData.config.lists[activeList];
 
     const [newActivities, setNewActivities] = useState([]);
-    const [showActivities, setShowActivities] = useState(0);
+    const [updatedActivities, setUpdatedActivities] = useState(0);
 
     const [layout, setLayout] = useState("grid");
     const [findItem, setFindItem] = useState('');
 
     useEffect(() => {
-        if (location.pathname === '/home/watched') {
-            setActiveList("watched");
-        } else if (location.pathname === '/home/watching') {
-            setActiveList("watching");
-        } else if (location.pathname === '/home/watchlist') {
-            setActiveList("watchList");
-        } else if (location.pathname === '/home/favorites') {
-            setActiveList("favorites");
-        };
+        if (location.pathname !== `/home/${activeList.toLowerCase()}`) {
+            if (location.pathname === '/home/watched') {
+                setActiveList("watched");
+            } else if (location.pathname === '/home/watching') {
+                setActiveList("watching");
+            } else if (location.pathname === '/home/watchlist') {
+                setActiveList("watchList");
+            } else if (location.pathname === '/home/favorites') {
+                setActiveList("favorites");
+            }
+        }
+        // eslint-disable-next-line
     }, [location.pathname]);
 
     useEffect(() => {
@@ -62,25 +64,19 @@ function Main() {
                 activities.push(item);
             }
         }
-        setNewActivities(activities);
-        setShowActivities(showActivities + 1);
+        if (activities.length > 0) {
+            setNewActivities(activities);
+            setUpdatedActivities(updatedActivities + 1);
+        }
         // eslint-disable-next-line
     }, [context.userData.activities]);
-
-    useEffect(() => {
-        setActivePage(1);
-    }, [activeList])
 
     useEffect(() => {
         if (activePage > getNumberOfPages()) {
             setActivePage(getNumberOfPages());
         }
         // eslint-disable-next-line
-    }, [productions, activePage])
-
-    const isListEmpty = () => {
-        return listData.length === 0;
-    }
+    }, [context.userData.movies, activePage])
 
     const getSelectedPageData = () => {
         let data = initData(listData);
@@ -105,10 +101,10 @@ function Main() {
         return pageIndex;
     }
 
-    const initData = (movies) => {
-        if (movies.length === 0) return [[]];
+    const initData = (data) => {
+        if (!data || data.length === 0) return [[]];
         let items = [];
-        for (const movie of movies) {
+        for (const movie of data) {
             let timestamp = 0;
             if (movie.lists.filter(e => e.list === activeList).length > 0) {
                 timestamp = movie.lists.filter(e => e.list === activeList)[0].timestamp;
@@ -135,7 +131,12 @@ function Main() {
         }
         current.splice(findActivity, 1);
         setNewActivities(current);
-        setShowActivities(showActivities + 1);
+        setUpdatedActivities(updatedActivities + 1);
+    }
+
+    const handleChangeList = (newList) => {
+        setActiveList(newList);
+        setActivePage(1);
     }
 
     const getNavIconComponent = (navName) => {
@@ -155,11 +156,11 @@ function Main() {
                             <p id="list-stat">Showing {getSelectedPageData().length} of {listData.length} {listData.length === 1 ? "item" : "items"}</p>
                         }
                         <div className="d-flex">
-                            {['favorites', 'watchList', 'watching', 'watched'].map((navName, index) => (
+                            {Builder.getListsNames().map((listName, index) => (
                                 <Nav.Item key={index}>
-                                    <Nav.Link as={Link} to={navName.toLowerCase()} eventKey={navName} onClick={() => setActiveList(navName)} className="nav-link d-flex">
-                                        {width > 575 && <p>{Builder.getListName(navName)}</p>}
-                                        {getNavIconComponent(navName)}
+                                    <Nav.Link as={Link} to={listName.toLowerCase()} eventKey={listName} onClick={() => handleChangeList(listName)} className="nav-link d-flex">
+                                        {width > 575 && <p>{Builder.getListName(listName)}</p>}
+                                        {getNavIconComponent(listName)}
                                     </Nav.Link>
                                 </Nav.Item>
                             ))}
@@ -175,7 +176,7 @@ function Main() {
                 <Card.Body id="content-body">
                     <ListSettings
                         activeList={activeList}
-                        isListEmpty={isListEmpty()}
+                        isListEmpty={Builder.isListEmpty(listData)}
                         layout={(value) => setLayout(value)}
                         findItem={findItem}
                         setFindItem={(value) => setFindItem(value)}
@@ -202,10 +203,10 @@ function Main() {
                         {activePage >= Constants.MAX_VISIBLE_PAGES && getNumberOfPages() > Constants.MAX_VISIBLE_PAGES &&
                             <Pagination.Ellipsis />
                         }
-                        {!isListEmpty() && initData(listData).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
+                        {!Builder.isListEmpty(listData) && initData(listData).slice(0, Constants.MAX_VISIBLE_PAGES).map((item, index) => (
                             <Pagination.Item key={index} active={activePage === getPaginationIndex(index + 1)} onClick={() => setActivePage(getPaginationIndex(index + 1))}>{getPaginationIndex(index + 1)}</Pagination.Item>
                         ))}
-                        {isListEmpty() &&
+                        {Builder.isListEmpty(listData) &&
                             <Pagination.Item disabled>1</Pagination.Item>
                         }
                         {getNumberOfPages() > Constants.MAX_VISIBLE_PAGES && activePage < getNumberOfPages() - 1 &&
@@ -225,7 +226,7 @@ function Main() {
                 </Card.Footer>
             </Card>
 
-            {showActivities > 0 &&
+            {updatedActivities > 0 &&
                 <ToastContainer className="position-fixed p-3" position="bottom-end">
                     {newActivities.map((activity, index) => (
                         <Toast key={activity.timestamp} show={true} onClose={() => handleCloseToast(activity)} delay={5000} autohide>

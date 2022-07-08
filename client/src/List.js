@@ -31,32 +31,32 @@ function List({ list, listData, layout }) {
     const { user, getAccessTokenSilently } = useAuth0();
     const width = useWindowSize().width;
 
-    const moviesOnList = Builder.getListData(context.userData, list);
+    const itemsOnList = Builder.getListData(context.userData, list);
     const [activeCard, setActiveCard] = useState(null);
 
     const [showExpandedInfo, setShowExpandedInfo] = useState(false);
     const [infoData, setInfoData] = useState(null);
 
-    const [deleteMovie, setDeleteMovie] = useState(false);
+    const [deleteItem, setDeleteItem] = useState(false);
     const [deleteData, setDeleteData] = useState(null);
 
-    const [addMovie, setAddMovie] = useState(false);
+    const [addItem, setAddItem] = useState(false);
     const [addData, setAddData] = useState(null);
 
     const [showManageSeasons, setShowManageSeasons] = useState(false);
 
-    const getMovieExpandedData = async (item) => {
-        if (LocalStorage.hasExpandedMovie(item.id)) {
-            let movieObj = LocalStorage.getExpandedMovie(item.id);
-            if (movieObj) {
-                item.media_type === 'movie' ? setInfoData([movieObj, 'movie']) : setInfoData([movieObj, 'tv']);
+    const getItemExpandedData = async (item) => {
+        if (LocalStorage.hasExpandedItem(item.id, item.media_type)) {
+            let itemObj = LocalStorage.getExpandedItem(item.id, item.media_type);
+            if (itemObj) {
+                setInfoData([itemObj, item.media_type])
                 setShowExpandedInfo(true);
             }
         } else {
             await getAccessTokenSilently().then(token => {
-                Requests.getMovieData(token, item).then(res => {
-                    LocalStorage.setExpandedMovie(res.data);
-                    item.media_type === 'movie' ? setInfoData([res.data, 'movie']) : setInfoData([res.data, 'tv']);
+                Requests.getItemData(token, item).then(res => {
+                    LocalStorage.setExpandedItem(res.data);
+                    setInfoData([res.data, item.media_type])
                     setShowExpandedInfo(true);
                 })
             })
@@ -66,14 +66,14 @@ function List({ list, listData, layout }) {
     const handleAdd = async (item, list) => {
         if (Builder.isItemOnList(context.userData, item.id, list)) {
             setAddData([item.title || item.name, list, false]);
-            setAddMovie(true);
+            setAddItem(true);
             return;
         }
         await getAccessTokenSilently().then(token => {
             Requests.addItem(token, user, list, item).then(res => {
                 context.setUserData(res.data);
                 setAddData([item.title || item.name, list, true]);
-                setAddMovie(true);
+                setAddItem(true);
             }).catch(err => {
                 console.log(err);
             })
@@ -84,7 +84,7 @@ function List({ list, listData, layout }) {
         await getAccessTokenSilently().then(token => {
             Requests.deleteMovie(token, user, list, item).then(res => {
                 context.setUserData(res.data);
-                setDeleteMovie(false);
+                setDeleteItem(false);
                 setDeleteData(null);
             }).catch(err => {
                 console.log(err);
@@ -122,7 +122,7 @@ function List({ list, listData, layout }) {
     return (
         <Container className="m-0 p-0">
 
-            {listData.length === 0 && <ExampleMovieCard list={list} isReallyEmpty={moviesOnList.length === 0} />}
+            {listData.length === 0 && <ExampleMovieCard list={list} isReallyEmpty={itemsOnList.length === 0} />}
 
             <div id="list-container-list">
                 <ListGroup variant="flush">
@@ -157,12 +157,12 @@ function List({ list, listData, layout }) {
                                     <CloseButton id="close-card-list"
                                         onClick={() => {
                                             setDeleteData(item.item);
-                                            setDeleteMovie(true);
+                                            setDeleteItem(true);
                                         }}
                                     />
                                 </div>
                                 <div className="d-flex justify-content-end">
-                                    <Button id="info-button-list" variant="link" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                    <Button id="info-button-list" variant="link" onClick={() => getItemExpandedData(item.item)}>Info</Button>
                                 </div>
                                 <div className="d-flex align-items-end">
                                     {getButtonComponents(item.item, 'list').filter(element => element[1] !== list).map(element => element[0])}
@@ -182,7 +182,7 @@ function List({ list, listData, layout }) {
                                     <CloseButton id="close-card-grid"
                                         onClick={() => {
                                             setDeleteData(item.item);
-                                            setDeleteMovie(true);
+                                            setDeleteItem(true);
                                         }}
                                     />}
                             </div>
@@ -192,7 +192,7 @@ function List({ list, listData, layout }) {
                                 <CloseButton id="close-card-grid"
                                     onClick={() => {
                                         setDeleteData(item.item);
-                                        setDeleteMovie(true);
+                                        setDeleteItem(true);
                                     }}
                                 />
                             </div>
@@ -243,7 +243,7 @@ function List({ list, listData, layout }) {
                                         <div id="footer-icons-grid">
                                             {getButtonComponents(item.item, 'grid').filter(element => element[1] !== list).map(element => element[0])}
                                         </div>}
-                                    <Button id="info-button-grid" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                    <Button id="info-button-grid" variant="primary" onClick={() => getItemExpandedData(item.item)}>Info</Button>
                                 </div>
                             }
                             {width < 992 &&
@@ -251,7 +251,7 @@ function List({ list, listData, layout }) {
                                     <div id="footer-icons-grid">
                                         {getButtonComponents(item.item, 'grid').filter(element => element[1] !== list).map(element => element[0])}
                                     </div>
-                                    <Button id="info-button-grid" variant="primary" onClick={() => getMovieExpandedData(item.item)}>Info</Button>
+                                    <Button id="info-button-grid" variant="primary" onClick={() => getItemExpandedData(item.item)}>Info</Button>
                                 </div>
                             }
                         </Card.Body>
@@ -259,22 +259,22 @@ function List({ list, listData, layout }) {
                 ))}
             </div>
 
-            {addMovie && !addData[2] && (
-                <Modal id="icons-modal" show={addMovie} onHide={() => setAddMovie(false)} animation={true} centered>
+            {addItem && !addData[2] && (
+                <Modal id="icons-modal" show={addItem} onHide={() => setAddItem(false)} animation={true} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Already On List</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{addData[0]} is already on {Builder.getListName(addData[1])}</Modal.Body>
                     <Modal.Footer>
-                        <Button variant="success" onClick={() => setAddMovie(false)}>
+                        <Button variant="success" onClick={() => setAddItem(false)}>
                             Continue
                         </Button>
                     </Modal.Footer>
                 </Modal>
             )}
 
-            {deleteMovie && (
-                <Modal id="delete-modal" show={deleteMovie} onHide={() => setDeleteMovie(false)} animation={true} centered>
+            {deleteItem && (
+                <Modal id="delete-modal" show={deleteItem} onHide={() => setDeleteItem(false)} animation={true} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Delete From List</Modal.Title>
                     </Modal.Header>

@@ -20,7 +20,8 @@ function Dashboard() {
         if (location.pathname !== '/home/watchlist' && location.pathname !== '/home/watching' && location.pathname !== '/home/watched') {
             navigate('/home/favorites');
         }
-    }, [navigate, location.pathname]);
+        // eslint-disable-next-line
+    }, [location.pathname]);
 
     const { user, logout, getAccessTokenSilently } = useAuth0();
     const [userData, setUserData] = useState(initUserData);
@@ -48,7 +49,9 @@ function Dashboard() {
         })
     }
 
-    return (
+    if (userData.user.email === 'email') {
+        return <p id="loading-msg">Loading...</p>
+    } else return (
         <UserContext.Provider value={context}>
         <Container id="dashboard-container">
             <div id="header-container" className="d-flex justify-content-between align-items-center">
