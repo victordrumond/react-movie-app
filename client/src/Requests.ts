@@ -1,4 +1,5 @@
 import axios, { AxiosPromise } from 'axios';
+import { Builder } from './Builder';
 
 export module Requests {
 
@@ -45,11 +46,11 @@ export module Requests {
     }
 
     // Get detailed data from specific movie/tv show
-    export function getMovieData(token: string, item: TMDb.SearchObject): AxiosPromise {
+    export function getItemData(token: string, item: TMDb.SearchObject): AxiosPromise {
         const config = {
             headers: { Authorization: "Bearer " + token }
         };
-        return item.media_type === 'movie' ? axios.get(`/api/movie/${item.id}`, config) : axios.get(`/api/tv/${item.id}`, config);
+        return Builder.isMovie(item) ? axios.get(`/api/movie/${item.id}`, config) : axios.get(`/api/tv/${item.id}`, config);
     }
 
     // Set item on database

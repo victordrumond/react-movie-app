@@ -1,4 +1,18 @@
+import { Movie } from "./Movie";
+import { TvShow } from "./TvShow";
+
 export module Builder {
+
+    export function isMovie(item: Movie | TvShow | TMDb.SearchObject): boolean {
+        if (item instanceof Movie) return true;
+        if (item instanceof TvShow) return false;
+        if (item.media_type) return item.media_type === 'movie';
+        return item.title ? true : false;
+    }
+
+    export function isListEmpty(list: any[]): boolean {
+        return list.length === 0;
+    }
 
     export function getListName(listNameCamelCase: string): string | undefined {
         if (listNameCamelCase === 'favorites') return 'Favorites';
@@ -6,6 +20,10 @@ export module Builder {
         if (listNameCamelCase === 'watching') return 'Watching';
         if (listNameCamelCase === 'watched') return 'Watched';
         return;
+    }
+
+    export function getListsNames(): string[] {
+        return ['favorites', 'watchList', 'watching', 'watched'];
     }
 
     export function getListSorting(listsConfig: MovieApp.ListsConfig, list: string): string | undefined {
