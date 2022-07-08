@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { CgProfile } from 'react-icons/cg';
 import { BsCheck, BsFillGearFill } from 'react-icons/bs';
+import { MdOutlineDownloading } from 'react-icons/md';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Requests } from './Requests';
 import { Helper } from './Helper';
@@ -92,6 +93,20 @@ function Settings() {
         })
     }
 
+    const handleUpdateItem = async (e) => {
+        const [id, type] = [e.target.value.split('-')[1], e.target.value.split('-')[0]];
+        await getAccessTokenSilently().then(token => {
+            Requests.updateItemData(token, user, id, type)
+                .then(res => {
+                    context.setUserData(res.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            ;
+        })
+    }
+
     const validateFormData = (name, nickname, picture) => {
         return (name !== user.name || nickname !== user.nickname || picture !== user.picture);
     }
@@ -106,6 +121,13 @@ function Settings() {
         if (loading === null) return 'Save';
         if (loading) return '';
         if (!loading) return 'Done!'
+    }
+
+    const alphabetize = (savedItems) => {
+        return savedItems.sort((a, b) => {
+            let [aTitle, bTitle] = [a.data.title || a.data.name, b.data.title || b.data.name];
+            return aTitle.localeCompare(bTitle);
+        })
     }
 
     if (countries.length === 0) {
@@ -165,6 +187,19 @@ function Settings() {
                         </Button>
                         {error && <p id="error-msg">{error}</p>}
                     </div>
+                </Form>
+                <div id="update-title" className="d-flex justify-content-start">
+                    <MdOutlineDownloading className="update-section-icon" />
+                    <p>Update items</p>
+                </div>
+                <Form id="update-settings-form" >
+                    <Form.Label>Select saved item:</Form.Label>
+                    <Form.Select id="update-item" onChange={(e) => handleUpdateItem(e)} >
+                        {context.userData.movies.length > 0 && alphabetize(context.userData.movies).map((item, i) => (
+                            <option key={i} value={`${item.data.media_type}-${item.data.id}`}>{item.data.name || item.data.title}</option>
+                        ))}
+                    </Form.Select>
+                    <Form.Text>Learn more</Form.Text>
                 </Form>
             </Container>
         )

@@ -6,11 +6,11 @@
     margin: 0;
 }
 
-#profile-title p, #general-title p {
+#profile-title p, #general-title p, #update-title p {
     font-size: 15px;
 }
 
-#default-country {
+#default-country, #update-item {
     margin: 0 !important;
     width: 100% !important;
     height: 36.5px;
@@ -23,7 +23,12 @@
     margin-right: 5px;
 }
 
-#user-settings-form, #general-settings-form {
+.update-section-icon {
+    font-size: 23px;
+    margin-right: 5px;
+}
+
+#user-settings-form, #general-settings-form, #update-settings-form {
     padding: 15px 0 25px;
 }
 
@@ -32,11 +37,11 @@
 }
 
 #user-settings-form label, #user-settings-form input,
-#general-settings-form label {
+#general-settings-form label, #update-settings-form label {
     font-size: 15px;
 }
 
-#update-profile-btn, #update-general-btn {
+#update-profile-btn, #update-items-btn {
     font-size: 15px;
     width: 72px;
     height: 36px;

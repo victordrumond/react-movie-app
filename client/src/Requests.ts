@@ -53,6 +53,15 @@ export module Requests {
         return Builder.isMovie(item) ? axios.get(`/api/movie/${item.id}`, config) : axios.get(`/api/tv/${item.id}`, config);
     }
 
+    // Update specific movie/tv show data
+    export function updateItemData(token: string, userObj: Auth0.User, itemId: number, itemType: string): AxiosPromise {
+        const body = { user: userObj, itemId: itemId, itemType: itemType };
+        const config = {
+            headers: { Authorization: "Bearer " + token }
+        };
+        return axios.patch('/api/updateitem', body, config);
+    }
+
     // Set item on database
     export function addItem(token: string, userObj: Auth0.User, list: string, itemObj: TMDb.SearchObject): AxiosPromise {
         const body = { user: userObj, list: list, item: itemObj };
