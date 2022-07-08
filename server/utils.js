@@ -27,21 +27,40 @@ const prepareToAdd = (object, detailedObj) => {
             finalObj[prop] = detailedObj[prop];
         }
     }
+    finalObj = editProps(finalObj, detailedObj);
+    return finalObj;
+}
+
+const prepareToUpdate = (detailedObj, type) => {
+    let finalObj = detailedObj;
+    const propsToRemove = ['belongs_to_collection', 'budget', 'homepage', 'imdb_id', 'popularity', 'production_countries', 'revenue', 'spoken_languages', 'tagline', 'video', 'vote_count', 'episode_run_time', 'in_production', 'languages', 'last_air_date', 'last_episode_to_air', 'next_episode_to_air', 'number_of_episodes', 'origin_country', 'seasons', 'type'];
+    for (const prop of propsToRemove) {
+        if (finalObj.hasOwnProperty(prop)) {
+            delete finalObj[prop];
+        }
+    }
+    finalObj = editProps(finalObj, detailedObj);
+    finalObj.media_type = type;
+    return finalObj;
+}
+
+const editProps = (object, detailedObj) => {
+    let result = object;
     const genres = detailedObj.genres;
     if (genres) {
-        finalObj.genres = getNameFromPropArray(genres);
+        result.genres = getNameFromPropArray(genres);
     }
     const companies = detailedObj.production_companies;
     if (companies) {
-        finalObj.production_companies = getNameFromPropArray(companies);
+        result.production_companies = getNameFromPropArray(companies);
     }
     const networks = detailedObj.networks;
     if (networks) {
-        finalObj.networks = getNameFromPropArray(networks);
+        result.networks = getNameFromPropArray(networks);
     }
     const creators = detailedObj.created_by;
     if (creators) {
-        finalObj.created_by = getNameFromPropArray(creators);
+        result.created_by = getNameFromPropArray(creators);
     }
     const credits = detailedObj.credits || detailedObj.aggregate_credits;
     if (credits) {
@@ -63,9 +82,9 @@ const prepareToAdd = (object, detailedObj) => {
         }
         const finalCast = cast.length > 10 ? cast.slice(0, 10) : cast;
         const finalCrew = crew.length > 5 ? crew.slice(0, 5) : crew;
-        finalObj.credits = { cast: finalCast, crew: finalCrew };
+        result.credits = { cast: finalCast, crew: finalCrew };
     }
-    return finalObj;
+    return result;
 }
 
 const getNameFromPropArray = (array) => {
@@ -80,4 +99,4 @@ const getNameFromPropArray = (array) => {
     return final;
 }
 
-module.exports = { recordActivity, resizeActivities, prepareToAdd };
+module.exports = { recordActivity, resizeActivities, prepareToAdd, prepareToUpdate };

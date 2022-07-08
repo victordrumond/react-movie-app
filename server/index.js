@@ -132,6 +132,37 @@ app.get("/api/search/:query", async (req, res) => {
 });
 
 
+// Update movie/tv show data
+app.patch("/api/updateitem", checkJwt, async (req, res) => {
+  const [email, sub, id, type] = [req.body.user.email, req.body.user.sub, req.body.itemId, req.body.itemType];
+  let userData = await model.findOne({ "user.email": email });
+  if (!userData) return res.sendStatus(404);
+  if (userData.user.email !== email || userData.user.sub !== sub) return res.sendStatus(401);
+  const isItemSaved = userData.movies.findIndex(item => item.data.id === parseInt(id) && item.data.media_type === type);
+  if (isItemSaved < 0) {
+    console.log(`Item is not saved`);
+    return;
+  }
+  const credits = (type === 'tv') ? 'aggregate_credits' : 'credits';
+  let itemName = '';
+  await axios
+    .get(`https://api.themoviedb.org/3/${type}/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=${credits}`)
+    .then(async (response) => {
+      itemName = (response.data.title || response.data.name);
+      if (type === 'tv') {
+        response.data.credits = response.data.aggregate_credits;
+        delete response.data.aggregate_credits;
+      }
+      const movie = Utils.prepareToUpdate(response.data, type);
+      userData.movies[isItemSaved].data = movie;
+    })
+  ;
+  userData = await userData.save();
+  console.log(`${itemName} data updated`);
+  return res.json(userData);
+});
+
+
 // Add movie to list
 app.post('/api/add', checkJwt, async (req, res) => {
   const [email, sub, object, list] = [req.body.user.email, req.body.user.sub, req.body.item, req.body.list];
