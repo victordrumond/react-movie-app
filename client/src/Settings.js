@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import UpdateItemsDocumentation from './UpdateItemsDocumentation';
 import { CgProfile } from 'react-icons/cg';
 import { BsCheck, BsFillGearFill } from 'react-icons/bs';
 import { MdOutlineDownloading } from 'react-icons/md';
@@ -23,9 +24,9 @@ function Settings() {
 
     const [userProfileUpdated, setUserProfileUpdated] = useState(false);
     const [firstLoading, setFirstLoading] = useState(null);
-    const [error, setError] = useState(null);
-
     const [secondLoading, setSecondLoading] = useState(null);
+    const [error, setError] = useState(null);
+    const [showInfo, setShowInfo] = useState(false);
 
     useEffect(() => {
         getCountries();
@@ -149,6 +150,7 @@ function Settings() {
     } else {
         return (
             <Container id="settings-container">
+
                 <div id="general-title" className="d-flex justify-content-start">
                     <BsFillGearFill className="settings-section-icon" />
                     <p>General Settings</p>
@@ -213,7 +215,9 @@ function Settings() {
                             <option key={i} value={`${item.data.media_type}-${item.data.id}`}>{item.data.name || item.data.title}</option>
                         ))}
                     </Form.Select>
-                    <Form.Text>Learn more</Form.Text>
+                    <Form.Text id="learn-more-link" onClick={() => setShowInfo(true)}>
+                        Learn more
+                    </Form.Text>
                     <div className="pt-2 d-flex justify-content-end align-items-center">
                         <Button id="update-items-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(secondLoading)} type="submit" >
                             {getButtonInnerHTML(secondLoading, 'Update')}
@@ -228,6 +232,9 @@ function Settings() {
                         </Button>
                     </div>
                 </Form>
+
+                {showInfo && <UpdateItemsDocumentation display={showInfo} hide={() => setShowInfo(false)}/>}
+
             </Container>
         )
     };
