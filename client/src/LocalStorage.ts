@@ -4,8 +4,9 @@ export module LocalStorage {
 
     export function hasExpandedItem(id: number, type: string): boolean {
         let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
-        if (!expandedItems) return false;
-        for (const item of expandedItems) {
+        updateExpandedItems(expandedItems);
+        if (!expandedItems || expandedItems.data.length === 0) return false;
+        for (const item of expandedItems.data) {
             if (type === 'movie' && item.hasOwnProperty('title')) {
                 if (item.id === id) return true;
             }
@@ -18,8 +19,9 @@ export module LocalStorage {
 
     export function getExpandedItem(id: number, type: string): any | null {
         let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
-        if (!expandedItems) return null;
-        for (const item of expandedItems) {
+        updateExpandedItems(expandedItems);
+        if (!expandedItems || expandedItems.data.length === 0) return null;
+        for (const item of expandedItems.data) {
             if (type === 'movie' && item.hasOwnProperty('title') && item.id === id) {
                 return item;
             }
@@ -32,13 +34,19 @@ export module LocalStorage {
 
     export function setExpandedItem(item: TMDb.SearchObject): void {
         let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
-        if (!expandedItems) {
-            let expandedItems = [item];
+        updateExpandedItems(expandedItems);
+        try {
+            if (!expandedItems) {
+                let expandedItems = { data: [item], updated: Date.now() };
+                localStorage.setItem('expandedMovies', JSON.stringify(expandedItems));
+                return;
+            }
+            expandedItems.data.push(item);
             localStorage.setItem('expandedMovies', JSON.stringify(expandedItems));
-            return;
+        } catch (e) {
+            clearExpandedMovies();
+            setExpandedItem(item);
         }
-        expandedItems.push(item);
-        localStorage.setItem('expandedMovies', JSON.stringify(expandedItems));
     }
 
     export function hasUpdatedTrendingCovers(): boolean {
@@ -99,6 +107,24 @@ export module LocalStorage {
             data: countries
         }
         localStorage.setItem('countryList', JSON.stringify(updatedCountryList));
+    }
+
+    function clearExpandedMovies(): void {
+        let expandedItems = JSON.parse(localStorage.getItem('expandedMovies')!);
+        if (expandedItems) {
+            localStorage.setItem('expandedMovies', JSON.stringify({ data: [], updated: Date.now() }));
+        }
+    }
+
+    function updateExpandedItems(expandedItems: any): void {
+        if (expandedItems && expandedItems.hasOwnProperty('updated')) {
+            const updatedAt = Helper.getComparableDate(expandedItems.updated);
+            const today = Helper.getComparableDate(Date.now());
+            if (updatedAt === today) {
+                return;
+            }
+            clearExpandedMovies();
+        }
     }
 
 }

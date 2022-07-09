@@ -125,9 +125,9 @@ function Search() {
 
     return (
         <Container id="search-container">
-            <div className="d-flex" ref={searchRef}>
+            <div className="d-flex">
                 <BiSearch className="search-icon" />
-                <Form.Control id="input" type="search"
+                <Form.Control id="input" type="search" ref={searchRef}
                     placeholder={`What's your next story, ${user.name}?`}
                     value={searchInput}
                     onChange={e => {
@@ -181,13 +181,16 @@ function Search() {
                 <ExpandedMovieInfo
                     movieObj={infoData[0]}
                     country={context.userData.config.general.country}
+                    display={showExpandedInfo}
                     hide={() => setShowExpandedInfo(false)}
                 />
             }
+
             {showExpandedInfo && infoData[1] === 'tv' &&
                 <ExpandedTvShowInfo
                     tvShowObj={infoData[0]}
                     country={context.userData.config.general.country}
+                    display={showExpandedInfo}
                     hide={() => setShowExpandedInfo(false)}
                 />
             }
