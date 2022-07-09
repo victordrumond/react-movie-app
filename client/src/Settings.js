@@ -23,8 +23,11 @@ function Settings() {
     const [countries, setCountries] = useState([]);
 
     const [userProfileUpdated, setUserProfileUpdated] = useState(false);
+
     const [firstLoading, setFirstLoading] = useState(null);
     const [secondLoading, setSecondLoading] = useState(null);
+    const [thirdLoading, setThirdLoading] = useState(null);
+
     const [error, setError] = useState(null);
     const [showInfo, setShowInfo] = useState(false);
 
@@ -36,7 +39,7 @@ function Settings() {
         if (userProfileUpdated) {
             getAccessTokenSilently({ ignoreCache: true });
             setUserProfileUpdated(false);
-            setFirstLoading(false);
+            setSecondLoading(false);
         }
     }, [userProfileUpdated, getAccessTokenSilently]);
 
@@ -44,7 +47,7 @@ function Settings() {
         if (!firstLoading) {
             const timer = setTimeout(() => {
                 setFirstLoading(null);
-            }, 5000)
+            }, 3000)
             return () => clearTimeout(timer)
         }
     }, [firstLoading]);
@@ -53,10 +56,19 @@ function Settings() {
         if (!secondLoading) {
             const timer = setTimeout(() => {
                 setSecondLoading(null);
-            }, 3000)
+            }, 5000)
             return () => clearTimeout(timer)
         }
     }, [secondLoading]);
+
+    useEffect(() => {
+        if (!thirdLoading) {
+            const timer = setTimeout(() => {
+                setThirdLoading(null);
+            }, 3000)
+            return () => clearTimeout(timer)
+        }
+    }, [thirdLoading]);
 
     const getCountries = () => {
         if (LocalStorage.hasUpdatedCountryList()) {
@@ -69,11 +81,19 @@ function Settings() {
         }
     }
 
-    const handleSubmitCountry = async (countryCode) => {
+    const handleSubmitCountry = async (e) => {
+        e.preventDefault();
+        const countryCode = e.target[0].value;
+        setFirstLoading(true);
+        if (countryCode === context.userData.config.general.country) {
+            setFirstLoading(false);
+            return;
+        }
         await getAccessTokenSilently().then(token => {
             Requests.updateCountry(token, user, countryCode).then(res => {
                 context.setUserData(res.data);
                 setCurrentCountry(res.data.config.general.country);
+                setFirstLoading(false);
             }).catch(err => {
                 console.log(err);
             })
@@ -92,7 +112,7 @@ function Settings() {
             return;
         }
         setError(null);
-        setFirstLoading(true);
+        setSecondLoading(true);
         await getAccessTokenSilently().then(token => {
             Requests.editUserProfile(token, user.sub, name, nickname, picture)
                 .then(res => {
@@ -108,12 +128,21 @@ function Settings() {
     const handleUpdateItem = async (e) => {
         e.preventDefault();
         const [id, type] = [e.target[0].value.split('-')[1], e.target[0].value.split('-')[0]];
-        setSecondLoading(true);
+        const findItem = context.userData.movies.findIndex(item => item.data.id === parseInt(id) && item.data.media_type === type);
+        setThirdLoading(true);
+        if (findItem > -1) {
+            const lastUpdated = Helper.getComparableDate(context.userData.movies[findItem].updated);
+            const newUpdate = Helper.getComparableDate(Date.now());
+            if (newUpdate === lastUpdated) {
+                setThirdLoading(false);
+                return;
+            }
+        }
         await getAccessTokenSilently().then(token => {
             Requests.updateItemData(token, user, id, type)
                 .then(res => {
                     context.setUserData(res.data);
-                    setSecondLoading(false);
+                    setThirdLoading(false);
                 })
                 .catch(err => {
                     console.log(err);
@@ -155,14 +184,27 @@ function Settings() {
                     <BsFillGearFill className="settings-section-icon" />
                     <p>General Settings</p>
                 </div>
-                <Form id="general-settings-form" >
+                <Form id="general-settings-form" onSubmit={(e) => handleSubmitCountry(e)}>
                     <Form.Label>Country:</Form.Label>
-                    <Form.Select id="default-country" defaultValue={currentCountry} onChange={(e) => handleSubmitCountry(e.target.value)} >
+                    <Form.Select id="default-country" defaultValue={currentCountry}>
                         {countries.length > 0 && countries.map((item, i) => (
                             <option key={i} value={item.iso_3166_1}>{item.english_name}</option>
                         ))}
                     </Form.Select>
                     <Form.Text>Used to show regional information such as parental rating and watch availability</Form.Text>
+                    <div className="pt-2 d-flex justify-content-end align-items-center">
+                        <Button id="update-country-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(firstLoading)} type="submit" >
+                            {getButtonInnerHTML(firstLoading, 'Save')}
+                            {firstLoading &&
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />}
+                        </Button>
+                    </div>
                 </Form>
                 <div id="profile-title" className="d-flex justify-content-start">
                     <CgProfile className="settings-section-icon" />
@@ -190,9 +232,10 @@ function Settings() {
                         <Form.Control type="url" defaultValue={user.picture} />
                     </Form.Group>
                     <div className="pt-2 d-flex justify-content-end align-items-center">
-                        <Button id="update-profile-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(firstLoading)} type="submit" >
-                            {getButtonInnerHTML(firstLoading, 'Save')}
-                            {firstLoading &&
+                        {error && <p id="error-msg">{error}</p>}
+                        <Button id="update-profile-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(secondLoading)} type="submit" >
+                            {getButtonInnerHTML(secondLoading, 'Save')}
+                            {secondLoading &&
                                 <Spinner
                                     as="span"
                                     animation="border"
@@ -201,7 +244,6 @@ function Settings() {
                                     aria-hidden="true"
                                 />}
                         </Button>
-                        {error && <p id="error-msg">{error}</p>}
                     </div>
                 </Form>
                 <div id="update-title" className="d-flex justify-content-start">
@@ -219,9 +261,9 @@ function Settings() {
                         Learn more
                     </Form.Text>
                     <div className="pt-2 d-flex justify-content-end align-items-center">
-                        <Button id="update-items-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(secondLoading)} type="submit" >
-                            {getButtonInnerHTML(secondLoading, 'Update')}
-                            {secondLoading &&
+                        <Button id="update-items-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(thirdLoading)} type="submit" >
+                            {getButtonInnerHTML(thirdLoading, 'Update')}
+                            {thirdLoading &&
                                 <Spinner
                                     as="span"
                                     animation="border"

@@ -366,7 +366,7 @@ app.post('/api/updatecountry', checkJwt, async (req, res) => {
   const currentCountry = userData.config.general.country;
   if (country === currentCountry) {
     console.log(`Current country is already ${country}`);
-    return;
+    return res.json(userData);
   }
   userData.config.general.country = country;
   console.log(`Country updated to ${country}`);
