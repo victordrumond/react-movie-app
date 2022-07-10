@@ -26,7 +26,7 @@ function Activities() {
     return (
         <Container id="activities-container">
             {activities.length === 0 &&
-                <p>No recent activities to show</p>
+                <p id="no-activities">No recent activities to show</p>
             }
             {activities.length > 0 && activities.map((activity, index) => (
                 <Alert key={index} className="activity d-flex">

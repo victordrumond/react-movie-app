@@ -103,12 +103,16 @@ function Settings() {
     const handleSubmitProfile = async (e) => {
         e.preventDefault();
         const [name, nickname, picture] = [e.target[1].value, e.target[2].value, e.target[3].value.replace(/ /g, '')];
-        if (!Helper.validateUsername(nickname)) {
-            setError('Invalid username');
+        if (!name || !nickname || !picture) {
+            setError('One or more fields are left blank');
             return;
         }
-        if (!validateFormData(name, nickname, picture)) {
-            setError('Please edit at least one field');
+        if (name === user.name && nickname === user.nickname && picture === user.picture) {
+            setError('Please change at least one field');
+            return;
+        }
+        if (!Helper.validateUsername(nickname)) {
+            setError('Invalid username');
             return;
         }
         setError(null);
@@ -149,10 +153,6 @@ function Settings() {
                 })
             ;
         })
-    }
-
-    const validateFormData = (name, nickname, picture) => {
-        return (name !== user.name || nickname !== user.nickname || picture !== user.picture);
     }
 
     const getButtonVariant = (loadingState) => {
@@ -248,11 +248,14 @@ function Settings() {
                 </Form>
                 <div id="update-title" className="d-flex justify-content-start">
                     <MdOutlineDownloading className="update-section-icon" />
-                    <p>Update items</p>
+                    <p>Update Items</p>
                 </div>
                 <Form id="update-settings-form" onSubmit={(e) => handleUpdateItem(e)}>
                     <Form.Label>Select saved item:</Form.Label>
-                    <Form.Select id="update-item">
+                    <Form.Select id="update-item" disabled={context.userData.movies.length === 0}>
+                        {context.userData.movies.length === 0 &&
+                            <option>No saved items to show</option>
+                        }
                         {context.userData.movies.length > 0 && alphabetize(context.userData.movies).map((item, i) => (
                             <option key={i} value={`${item.data.media_type}-${item.data.id}`}>{item.data.name || item.data.title}</option>
                         ))}
@@ -261,7 +264,7 @@ function Settings() {
                         Learn more
                     </Form.Text>
                     <div className="pt-2 d-flex justify-content-end align-items-center">
-                        <Button id="update-items-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(thirdLoading)} type="submit" >
+                        <Button disabled={context.userData.movies.length === 0} id="update-items-btn" className="d-flex justify-content-center align-items-center" variant={getButtonVariant(thirdLoading)} type="submit" >
                             {getButtonInnerHTML(thirdLoading, 'Update')}
                             {thirdLoading &&
                                 <Spinner
@@ -279,7 +282,7 @@ function Settings() {
 
             </Container>
         )
-    };
+    }
 
 };
 

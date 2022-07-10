@@ -2,6 +2,10 @@
     padding: 0;
 }
 
+#no-activities {
+    font-size: 15px;
+}
+
 .activity {
     padding: 0.5rem !important;
 }
