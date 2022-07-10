@@ -16,7 +16,7 @@ const resizeActivities = (activities) => {
 const prepareToAdd = (object, detailedObj) => {
     let finalObj = object;
     const propsToRemove = ['genre_ids', 'origin_country', 'popularity', 'video', 'vote_count'];
-    const propsToAdd = ['adult', 'runtime', 'status', 'number_of_seasons'];
+    const propsToAdd = ['adult', 'runtime', 'status'];
     for (const prop of propsToRemove) {
         if (finalObj.hasOwnProperty(prop)) {
             delete finalObj[prop];
@@ -83,6 +83,16 @@ const editProps = (object, detailedObj) => {
         const finalCast = cast.length > 10 ? cast.slice(0, 10) : cast;
         const finalCrew = crew.length > 5 ? crew.slice(0, 5) : crew;
         result.credits = { cast: finalCast, crew: finalCrew };
+    }
+    const seasons = detailedObj.seasons;
+    if (seasons) {
+        let realSeasons = [];
+        for (const season of seasons) {
+            if (season.season_number && season.season_number > 0) {
+                realSeasons.push(season);
+            }
+        }
+        result.number_of_seasons = realSeasons.length;
     }
     return result;
 }
