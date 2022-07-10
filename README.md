@@ -2,13 +2,13 @@
 https://victordrumond-movie-app.herokuapp.com/
 
 ## Technologies
-`React` `React-Bootstrap` `Node.js` `Express.js` `Mongoose`
+`React-Bootstrap` `Node.js` `Express.js` `Mongoose`
 
 ## Description
-* A responsive app to organize movie collections in a simple and easy way.
+* A responsive app to organize a collection of movies and TV shows in a simple and easy way.
 * Built with React & Node.js. Using Bootstrap, Express, MongoDB Atlas and Mongoose.
-* Search by movie title and get data for over 725,000 movies.
-* Manage your movies in three different lists: Favorites, Watch List & Watched.
+* Search by title and get data for over 900,000 productions.
+* Manage your saved items in four different lists: Favorites, Watch List, Watching & Watched.
 
 ## Credits
 * Movie API by [The Movie Database](https://www.themoviedb.org/).
@@ -17,10 +17,11 @@ https://victordrumond-movie-app.herokuapp.com/
 * Icons from [React Icons](https://react-icons.github.io/react-icons/).
 * App running on Heroku. [Learn more](https://devcenter.heroku.com/articles/getting-started-with-nodejs).
 
-## Screenshot
-![img](./client/public/screenshot.jpg)
+## Screenshots
+![img](./client/public/screenshot1.png)
+![img](./client/public/screenshot2.png)
 
-## Running Locally
+<!-- ## Running Locally
 In the project directory, you can run:
 
 ```
@@ -56,4 +57,4 @@ The second .env file must be in the client folder and should store the following
 
 `REACT_APP_AUTH0_CLIENT_ID=<auth0-client-id>`
 
-These lines will connect the project to your Auth0 account. Be sure to change `<auth0-domain>` and `<auth0-client-id>` to your own Auth0 information.
+These lines will connect the project to your Auth0 account. Be sure to change `<auth0-domain>` and `<auth0-client-id>` to your own Auth0 information. -->
