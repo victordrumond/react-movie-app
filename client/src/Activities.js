@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Activities.css';
+import coverNotFound from './cover-not-found.png';
 import { UserContext } from './UserContext';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
@@ -30,7 +31,7 @@ function Activities() {
             }
             {activities.length > 0 && activities.map((activity, index) => (
                 <Alert key={index} className="activity d-flex">
-                    <img className="activity-img" src={activity.getImageUrl()} alt="" />
+                    <img className="activity-img" src={activity.getImageUrl() || coverNotFound} alt="" />
                     <div className="w-100 d-flex flex-column justify-content-between">
                         <div className="d-flex justify-content-between">
                             {activity.getLabel() === 'movie_deleted' &&
