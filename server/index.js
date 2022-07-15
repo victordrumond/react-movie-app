@@ -180,7 +180,7 @@ app.post('/api/add', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieSaved = userData.movies.findIndex(item => item.data.id === object.id);
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === object.id && item.data.media_type === object.media_type);
   if (isMovieSaved > -1) {
     const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(item => item.list === list);
     if (isMovieOnList > -1) {
@@ -218,12 +218,12 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id && item.data.media_type === movie.media_type);
   if (isMovieSaved < 0) {
     console.log(`${movie.title || movie.name} is not on ${list}`);
     return;
   }
-  const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
+  const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(item => item.list === list);
   if (isMovieOnList < 0) {
     console.log(`${movie.title || movie.name} is not on ${list}`);
     return;
@@ -334,7 +334,7 @@ app.post('/api/updaterating', checkJwt, async (req, res) => {
   if (userData.user.email !== email || userData.user.sub !== sub) {
     return res.sendStatus(401);
   }
-  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id);
+  const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id && item.data.media_type === movie.media_type);
   if (isMovieSaved < 0) {
     console.log(`${movie.title || movie.name} is not saved`);
     return;
@@ -381,7 +381,7 @@ app.post('/api/tv/manageseasons', checkJwt, async (req, res) => {
   let userData = await model.findOne({ "user.email": email });
   if (!userData) return res.sendStatus(404);
   if (userData.user.email !== email || userData.user.sub !== sub) return res.sendStatus(401);
-  const showIndex = userData.movies.findIndex(item => item.data.id === showId);
+  const showIndex = userData.movies.findIndex(item => item.data.id === showId && item.data.media_type === 'tv');
   const listIndex = userData.movies[showIndex].lists.findIndex(item => item.list === list);
   const listInfo = userData.movies[showIndex].lists[listIndex];
   if (listInfo.seasons) {

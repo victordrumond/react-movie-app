@@ -5,6 +5,7 @@ namespace TMDb {
         credits?: Credits;
         genres?: Genre[] | string[];
         id?: number;
+        media_type?: string;
         original_title?: string;
         overview?: string;
         poster_path?: string;
@@ -28,6 +29,7 @@ namespace TMDb {
         id?: number;
         in_production?: boolean;
         last_air_date?: string;
+        media_type?: string;
         name?: string;
         networks?: Network[];
         number_of_episodes?: number;

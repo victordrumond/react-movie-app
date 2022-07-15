@@ -44,11 +44,11 @@ export module Builder {
         return ['last_added', 'first_added', 'title', 'highest_score', 'lowest_score'];
     }
 
-    export function isItemOnList(userData: MovieApp.UserData, movieId: number, list: string): boolean {
-        const isMovieSaved = userData.movies.findIndex(item => item.data.id === movieId);
-        if (isMovieSaved > -1) {
-          const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(e => e.list === list);
-          return isMovieOnList > -1;
+    export function isItemOnList(userData: MovieApp.UserData, id: number, type: string, list: string): boolean {
+        const isItemSaved = userData.movies.findIndex(item => item.data.id === id && item.data.media_type === type);
+        if (isItemSaved > -1) {
+          const isItemOnList = userData.movies[isItemSaved].lists.findIndex(item => item.list === list);
+          return isItemOnList > -1;
         }
         return false;
     }

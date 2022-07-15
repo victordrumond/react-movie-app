@@ -74,7 +74,7 @@ function Search() {
 
     const handleAdd = async (item, list) => {
         setSearchFor("");
-        if (Builder.isItemOnList(context.userData, item.result.id, list)) {
+        if (Builder.isItemOnList(context.userData, item.result.id, item.result.media_type, list)) {
             setAddData([item.result.title || item.result.name, list, false]);
             setAddMovieToList(true);
             return;

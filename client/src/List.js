@@ -64,7 +64,7 @@ function List({ list, listData, layout }) {
     };
 
     const handleAdd = async (item, list) => {
-        if (Builder.isItemOnList(context.userData, item.id, list)) {
+        if (Builder.isItemOnList(context.userData, item.id, item.media_type, list)) {
             setAddData([item.title || item.name, list, false]);
             setAddItem(true);
             return;
