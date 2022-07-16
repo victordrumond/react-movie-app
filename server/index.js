@@ -136,17 +136,18 @@ app.get("/api/search/:query", async (req, res) => {
 app.patch("/api/updateitem", checkJwt, async (req, res) => {
   const [email, sub, id, type] = [req.body.user.email, req.body.user.sub, req.body.itemId, req.body.itemType];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) return res.sendStatus(404);
-  if (userData.user.email !== email || userData.user.sub !== sub) return res.sendStatus(401);
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const isItemSaved = userData.movies.findIndex(item => item.data.id === parseInt(id) && item.data.media_type === type);
   if (isItemSaved < 0) {
-    console.log(`Item is not saved`);
+    console.log(`Item is not saved [${email}]`);
     return;
   }
   const lastUpdated = Utils.getComparableDate(userData.movies[isItemSaved].updated);
   const newUpdate = Utils.getComparableDate(Date.now());
   if (newUpdate === lastUpdated) {
-    console.log(`Item is already updated`);
+    console.log(`Item data is already updated [${email}]`);
     return res.json(userData);
   }
   const credits = (type === 'tv') ? 'aggregate_credits' : 'credits';
@@ -165,7 +166,7 @@ app.patch("/api/updateitem", checkJwt, async (req, res) => {
     })
   ;
   userData = await userData.save();
-  console.log(`${itemName} data updated`);
+  console.log(`${itemName} data updated [${email}]`);
   return res.json(userData);
 });
 
@@ -174,17 +175,14 @@ app.patch("/api/updateitem", checkJwt, async (req, res) => {
 app.post('/api/add', checkJwt, async (req, res) => {
   const [email, sub, object, list] = [req.body.user.email, req.body.user.sub, req.body.item, req.body.list];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.sendStatus(404);
-  }
-  if (userData.user.email !== email || userData.user.sub !== sub) {
-    return res.sendStatus(401);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const isMovieSaved = userData.movies.findIndex(item => item.data.id === object.id && item.data.media_type === object.media_type);
   if (isMovieSaved > -1) {
     const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(item => item.list === list);
     if (isMovieOnList > -1) {
-      console.log(`${object.title || object.name} already on ${list}`);
+      console.log(`${object.title || object.name} already on ${list} [${email}]`);
       return;
     }
     await userData.movies[isMovieSaved].lists.push({ list: list, timestamp: Date.now() });
@@ -203,7 +201,7 @@ app.post('/api/add', checkJwt, async (req, res) => {
   const activityData = { image: object.poster_path, movie: object.title || object.name, list: list };
   userData = await Utils.recordActivity(userData, 'movie_added', activityData);
   userData = await userData.save();
-  console.log(`${object.title || object.name} added to ${list}`);
+  console.log(`${object.title || object.name} added to ${list} [${email}]`);
   return res.json(userData);
 })
 
@@ -212,20 +210,17 @@ app.post('/api/add', checkJwt, async (req, res) => {
 app.post('/api/deletemovie', checkJwt, async (req, res) => {
   const [email, sub, movie, list] = [req.body.user.email, req.body.user.sub, req.body.movie, req.body.list];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.sendStatus(404);
-  }
-  if (userData.user.email !== email || userData.user.sub !== sub) {
-    return res.sendStatus(401);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id && item.data.media_type === movie.media_type);
   if (isMovieSaved < 0) {
-    console.log(`${movie.title || movie.name} is not on ${list}`);
+    console.log(`${movie.title || movie.name} is not on ${list} [${email}]`);
     return;
   }
   const isMovieOnList = userData.movies[isMovieSaved].lists.findIndex(item => item.list === list);
   if (isMovieOnList < 0) {
-    console.log(`${movie.title || movie.name} is not on ${list}`);
+    console.log(`${movie.title || movie.name} is not on ${list} [${email}]`);
     return;
   }
   await userData.movies[isMovieSaved].lists.splice(isMovieOnList, 1);
@@ -235,7 +230,7 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, list: list };
   userData = await Utils.recordActivity(userData, 'movie_deleted', activityData);
   userData = await userData.save();
-  console.log(`${movie.title || movie.name} deleted from ${list}`);
+  console.log(`${movie.title || movie.name} deleted from ${list} [${email}]`);
   return res.json(userData);
 })
 
@@ -244,12 +239,9 @@ app.post('/api/deletemovie', checkJwt, async (req, res) => {
 app.post('/api/users/login', checkJwt, async (req, res) => {
   const [email, sub] = [req.body.user.email, req.body.user.sub];
   const userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.json(null);
-  }
-  if (userData.user.email === email && userData.user.sub === sub) {
-    return res.json(userData);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.json(null);
+  if (validation === '200') return res.json(userData);
   return res.sendStatus(401);
 })
 
@@ -258,9 +250,7 @@ app.post('/api/users/login', checkJwt, async (req, res) => {
 app.post('/api/users/newuser', checkJwt, async (req, res) => {
   const [email, sub] = [req.body.user.email, req.body.user.sub];
   const userData = await model.findOne({ "user.email": email });
-  if (userData) {
-    return res.sendStatus(403);
-  }
+  if (userData) return res.sendStatus(403);
   const newUser = {
     user: { email: email, sub: sub },
     data: [],
@@ -286,20 +276,17 @@ app.post('/api/users/newuser', checkJwt, async (req, res) => {
 app.post('/api/updatesorting', checkJwt, async (req, res) => {
   const [email, sub, sort, list] = [req.body.user.email, req.body.user.sub, req.body.value, req.body.list];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.sendStatus(404);
-  }
-  if (userData.user.email !== email || userData.user.sub !== sub) {
-    return res.sendStatus(401);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const currentSorting = userData.config.lists[list].sorting;
   if (currentSorting !== sort) {
     userData.config.lists[list].sorting = sort;
     userData = await userData.save();
-    console.log(`Sorting updated to ${sort} on ${list}`);
+    console.log(`Sorting updated to ${sort} on ${list} [${email}]`);
     return res.json(userData);
   }
-  console.log(`Current sorting on ${list} is already ${sort}`);
+  console.log(`Current sorting on ${list} is already ${sort} [${email}]`);
 })
 
 
@@ -307,20 +294,17 @@ app.post('/api/updatesorting', checkJwt, async (req, res) => {
 app.post('/api/updatefiltering', checkJwt, async (req, res) => {
   const [email, sub, filter, value, list] = [req.body.user.email, req.body.user.sub, req.body.filter, req.body.value, req.body.list];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.sendStatus(404);
-  }
-  if (userData.user.email !== email || userData.user.sub !== sub) {
-    return res.sendStatus(401);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const currentFiltering = userData.config.lists[list].filtering[filter];
   if (currentFiltering !== value) {
     userData.config.lists[list].filtering[filter] = value;
     userData = await userData.save();
-    console.log(`Filter ${filter} updated to ${value} on ${list}`);
+    console.log(`Filter ${filter} updated to ${value} on ${list} [${email}]`);
     return res.json(userData);
   }
-  console.log(`Filter ${filter} on ${list} is already ${value}`);
+  console.log(`Filter ${filter} on ${list} is already ${value} [${email}]`);
 })
 
 
@@ -328,24 +312,21 @@ app.post('/api/updatefiltering', checkJwt, async (req, res) => {
 app.post('/api/updaterating', checkJwt, async (req, res) => {
   const [email, sub, movie, score] = [req.body.user.email, req.body.user.sub, req.body.movie, req.body.score];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.sendStatus(404);
-  }
-  if (userData.user.email !== email || userData.user.sub !== sub) {
-    return res.sendStatus(401);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const isMovieSaved = userData.movies.findIndex(item => item.data.id === movie.id && item.data.media_type === movie.media_type);
   if (isMovieSaved < 0) {
-    console.log(`${movie.title || movie.name} is not saved`);
+    console.log(`${movie.title || movie.name} is not saved [${email}]`);
     return;
   }
   const movieRating = userData.movies[isMovieSaved].score;
   if (movieRating === score) {
-    console.log(`Current rating of ${movie.title || movie.name} is already ${score}`);
+    console.log(`Current rating of ${movie.title || movie.name} is already ${score} [${email}]`);
     return;
   }
   userData.movies[isMovieSaved].score = score;
-  console.log(`${movie.title || movie.name} rating set to ${score}`);
+  console.log(`${movie.title || movie.name} rating set to ${score} [${email}]`);
   const activityData = { image: movie.poster_path, movie: movie.title || movie.name, rating: score };
   userData = await Utils.recordActivity(userData, 'movie_rated', activityData);
   userData = await userData.save();
@@ -357,19 +338,16 @@ app.post('/api/updaterating', checkJwt, async (req, res) => {
 app.post('/api/updatecountry', checkJwt, async (req, res) => {
   const [email, sub, country] = [req.body.user.email, req.body.user.sub, req.body.country];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) {
-    return res.sendStatus(404);
-  }
-  if (userData.user.email !== email || userData.user.sub !== sub) {
-    return res.sendStatus(401);
-  }
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const currentCountry = userData.config.general.country;
   if (country === currentCountry) {
-    console.log(`Current country is already ${country}`);
+    console.log(`Current country is already ${country} [${email}]`);
     return res.json(userData);
   }
   userData.config.general.country = country;
-  console.log(`Country updated to ${country}`);
+  console.log(`Country updated to ${country} [${email}]`);
   userData = await userData.save();
   return res.json(userData);
 })
@@ -379,8 +357,9 @@ app.post('/api/updatecountry', checkJwt, async (req, res) => {
 app.post('/api/tv/manageseasons', checkJwt, async (req, res) => {
   const [email, sub, showId, list, season] = [req.body.user.email, req.body.user.sub, req.body.itemId, req.body.list, req.body.season];
   let userData = await model.findOne({ "user.email": email });
-  if (!userData) return res.sendStatus(404);
-  if (userData.user.email !== email || userData.user.sub !== sub) return res.sendStatus(401);
+  const validation = Utils.validateUser(userData, email, sub);
+  if (validation === '404') return res.sendStatus(404);
+  if (validation === '401') return res.sendStatus(401);
   const showIndex = userData.movies.findIndex(item => item.data.id === showId && item.data.media_type === 'tv');
   const listIndex = userData.movies[showIndex].lists.findIndex(item => item.list === list);
   const listInfo = userData.movies[showIndex].lists[listIndex];
@@ -388,7 +367,7 @@ app.post('/api/tv/manageseasons', checkJwt, async (req, res) => {
     const hasSeason = listInfo.seasons.findIndex(item => item === season);
     if (hasSeason > -1) {
       await userData.movies[showIndex].lists[listIndex].seasons.splice(hasSeason, 1);
-      console.log(`Season ${season} of ${userData.movies[showIndex].data.name} deselect on ${list}`);
+      console.log(`Season ${season} of ${userData.movies[showIndex].data.name} deselect on ${list} [${email}]`);
       userData = await userData.save();
       return res.json(userData);
     }
@@ -396,7 +375,7 @@ app.post('/api/tv/manageseasons', checkJwt, async (req, res) => {
   } else {
     userData.movies[showIndex].lists[listIndex].seasons = [season];
   }
-  console.log(`Season ${season} of ${userData.movies[showIndex].data.name} selected on ${list}`);
+  console.log(`Season ${season} of ${userData.movies[showIndex].data.name} selected on ${list} [${email}]`);
   userData = await userData.save();
   return res.json(userData);
 })

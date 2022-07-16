@@ -1,3 +1,13 @@
+const validateUser = (userData, email, sub) => {
+    if (!userData) {
+        return '404';
+    }
+    if (userData.user.email !== email || userData.user.sub !== sub) {
+        return '401';
+    }
+    return '200';
+}
+
 const recordActivity = async (userData, label, data) => {
     const newActivity = { label: label, data: data, timestamp: Date.now() };
     await userData.activities.unshift(newActivity);
@@ -116,4 +126,4 @@ const getComparableDate = (timestamp) => {
     return +isoDateString.substring(10, 0).replaceAll('-', '');
 }
 
-module.exports = { recordActivity, resizeActivities, prepareToAdd, prepareToUpdate, getComparableDate };
+module.exports = { validateUser, recordActivity, resizeActivities, prepareToAdd, prepareToUpdate, getComparableDate };
