@@ -86,4 +86,11 @@ namespace MovieApp {
         tvShows: boolean
     }
 
+    export type TrendingItem = {
+        backdrop_path?: string,
+        id?: number,
+        media_type?: string,
+        poster_path?: string
+    }
+
 }

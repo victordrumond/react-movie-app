@@ -49,11 +49,11 @@ export module LocalStorage {
         }
     }
 
-    export function hasUpdatedTrendingCovers(): boolean {
-        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers')!);
-        if (trendingCovers && trendingCovers.covers.length > 0) {
+    export function hasTrendingItems(): boolean {
+        let trendingItems = JSON.parse(localStorage.getItem('trendingItems')!);
+        if (trendingItems && trendingItems.data.length > 0) {
             let today = Helper.getComparableDate(Date.now());
-            let lastUpdate = Helper.getComparableDate(trendingCovers.updated);
+            let lastUpdate = Helper.getComparableDate(trendingItems.updated);
             if (today === lastUpdate) {
                 return true;
             }
@@ -61,24 +61,20 @@ export module LocalStorage {
         return false;
     }
 
-    export function getTrendingCovers(): string[] | null {
-        let trendingCovers = JSON.parse(localStorage.getItem('trendingCovers')!);
-        if (trendingCovers) {
-            return trendingCovers.covers;
+    export function getTrendingItems(): MovieApp.TrendingItem[] | null {
+        let trendingItems = JSON.parse(localStorage.getItem('trendingItems')!);
+        if (trendingItems) {
+            return trendingItems.data;
         }
         return null;
     }
 
-    export function setTrendingCovers(movies: string[]): void {
-        let covers = [];
-        for (const movie of movies) {
-            covers.push(movie);
-        }
-        let updatedTrendingCovers = {
+    export function setTrendingItems(items: MovieApp.TrendingItem[]): void {
+        let updatedTrendingItems = {
             updated: Date.now(),
-            covers: covers
+            data: items
         }
-        localStorage.setItem('trendingCovers', JSON.stringify(updatedTrendingCovers));
+        localStorage.setItem('trendingItems', JSON.stringify(updatedTrendingItems));
     }
 
     export function hasUpdatedCountryList(): boolean {

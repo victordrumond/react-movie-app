@@ -25,12 +25,20 @@ function Authentication() {
     const [index, setIndex] = useState(width < 768 ? 10 : 20);
 
     useEffect(() => {
-        if (LocalStorage.hasUpdatedTrendingCovers()) {
-            setCovers(LocalStorage.getTrendingCovers());
+        let covers = [];
+        if (LocalStorage.hasTrendingItems()) {
+            const items = LocalStorage.getTrendingItems();
+            for (let i = 0; i < 60; i++) {
+                covers.push(items[i].poster_path);
+            }
+            setCovers(covers);
         } else {
-            Requests.getCovers().then(res => {
-                setCovers(res.data);
-                LocalStorage.setTrendingCovers(res.data);
+            Requests.getTrending().then(res => {
+                for (let i = 0; i < 60; i++) {
+                    covers.push(res.data[i].poster_path);
+                }
+                setCovers(covers);
+                LocalStorage.setTrendingItems(res.data);
             })
         }
     }, []);

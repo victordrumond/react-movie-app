@@ -73,19 +73,27 @@ app.get("/api", (req, res) => {
 });
 
 
-// Get trending movies
-app.get("/api/authcovers", async (req, res) => {
-  let covers = [];
-  for (let i = 1; i <= 3; i++) {
+// Get trending items
+app.get("/api/trending", async (req, res) => {
+  let trending = [];
+  for (let i = 1; i <= 4; i++) {
     await axios
       .get("https://api.themoviedb.org/3/trending/all/day?api_key=" + process.env.TMDB_API_KEY + "&page=" + i)
       .then(response => {
-        let filteredResults = response.data.results.filter(item => item.media_type !== 'person');
-        filteredResults.forEach(item => covers.push(item.poster_path));
+        const filteredResults = response.data.results.filter(item => item.media_type !== 'person');
+        filteredResults.forEach(item => {
+          const itemData = {
+            id: item.id,
+            media_type: item.media_type,
+            poster_path: item.poster_path,
+            backdrop_path: item.backdrop_path
+          };
+          trending.push(itemData)
+        })
       })
     ;
   }
-  return res.json(covers);
+  return res.json(trending);
 })
 
 

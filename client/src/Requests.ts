@@ -12,9 +12,9 @@ export module Requests {
         return axios.patch('/api/users/edituser', body, config);
     }
 
-    // Get trending movies to display on home page
-    export function getCovers(): AxiosPromise {
-        return axios.get("/api/authcovers");
+    // Get trending items
+    export function getTrending(): AxiosPromise {
+        return axios.get("/api/trending");
     }
 
     // Get TBDb country list
